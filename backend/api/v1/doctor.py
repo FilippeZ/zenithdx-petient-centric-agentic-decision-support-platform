@@ -55,9 +55,37 @@ def doctor_reports(curr: dict = Depends(get_current_user)):
     finally:
         conn.close()
 
+import base64
+
+def path_to_base64_data_uri(path: Optional[str]) -> Optional[str]:
+    if not path:
+        return None
+    path_str = str(path)
+    if path_str.startswith("data:image"):
+        return path_str
+    
+    target_path = path_str
+    if path_str.startswith("/outputs/"):
+        target_path = str(settings.OUTPUT_DIR / path_str.replace("/outputs/", ""))
+    elif path_str.startswith("/uploads/"):
+        target_path = str(settings.UPLOAD_DIR / path_str.replace("/uploads/", ""))
+        
+    if os.path.exists(target_path) and os.path.isfile(target_path):
+        try:
+            with open(target_path, "rb") as f:
+                encoded = base64.b64encode(f.read()).decode("utf-8")
+                ext = os.path.splitext(target_path)[1].lstrip(".").lower() or "png"
+                return f"data:image/{ext};base64,{encoded}"
+        except Exception:
+            pass
+    return path_str
+
 def format_web_path(path: Optional[str]) -> Optional[str]:
     if not path:
         return None
+    b64 = path_to_base64_data_uri(path)
+    if b64 and b64.startswith("data:image"):
+        return b64
     path_str = str(path)
     if path_str.startswith(("/outputs", "/uploads", "http://", "https://")):
         return path_str

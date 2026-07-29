@@ -46,6 +46,31 @@ def pick_xai_report(agent_out: dict) -> str:
             return ao["xai_report"]
     return "No XAI report available."
 
+import base64
+
+def path_to_base64_data_uri(path: Optional[str]) -> Optional[str]:
+    if not path:
+        return None
+    path_str = str(path)
+    if path_str.startswith("data:image"):
+        return path_str
+    
+    target_path = path_str
+    if path_str.startswith("/outputs/"):
+        target_path = str(settings.OUTPUT_DIR / path_str.replace("/outputs/", ""))
+    elif path_str.startswith("/uploads/"):
+        target_path = str(settings.UPLOAD_DIR / path_str.replace("/uploads/", ""))
+        
+    if os.path.exists(target_path) and os.path.isfile(target_path):
+        try:
+            with open(target_path, "rb") as f:
+                encoded = base64.b64encode(f.read()).decode("utf-8")
+                ext = os.path.splitext(target_path)[1].lstrip(".").lower() or "png"
+                return f"data:image/{ext};base64,{encoded}"
+        except Exception:
+            pass
+    return path_str
+
 def save_xai_images_to_timestamp_folder(user_id: int, image_dict: dict):
     run_ts = dt.datetime.now().strftime("%Y%m%d_%H%M%S")
     out_dir = settings.OUTPUT_DIR / str(user_id) / run_ts
@@ -58,18 +83,19 @@ def save_xai_images_to_timestamp_folder(user_id: int, image_dict: dict):
             try:
                 if str(path) != str(dest):
                     shutil.copy2(path, dest)
-                try:
+                b64 = path_to_base64_data_uri(str(dest))
+                if b64 and b64.startswith("data:image"):
+                    updated[key] = b64
+                else:
                     rel_path = dest.relative_to(settings.OUTPUT_DIR).as_posix()
                     updated[key] = f"/outputs/{rel_path}"
-                except ValueError:
-                    updated[key] = str(dest)
             except Exception as e:
                 print(f"Error copying {path} to {dest}: {e}")
-                updated[key] = path
-        elif path and str(path).startswith(("/outputs", "/uploads", "http")):
+                updated[key] = path_to_base64_data_uri(path) or path
+        elif path and str(path).startswith(("data:image", "/outputs", "/uploads", "http")):
             updated[key] = path
         else:
-            updated[key] = path
+            updated[key] = path_to_base64_data_uri(path) or path
     return updated, str(out_dir)
 
 @router.post("/upload")

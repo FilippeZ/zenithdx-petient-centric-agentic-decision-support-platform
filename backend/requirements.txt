@@ -1,0 +1,64 @@
+﻿# ZenithDx Backend Dependencies
+# ================================
+# FastAPI & Web Server
+fastapi>=0.100.0,<1.0.0
+uvicorn[standard]>=0.22.0
+python-multipart>=0.0.6
+httpx>=0.24.0
+
+# Configuration & Data Validation
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+python-dotenv>=1.0.0
+
+# Database & pgvector
+sqlalchemy>=2.0.0
+psycopg2-binary>=2.9.6
+pgvector>=0.2.0
+alembic>=1.11.0
+
+# Security & Authentication
+passlib[bcrypt]>=1.7.4
+python-jose[cryptography]>=3.3.0
+
+# LangGraph & Agentic Framework
+langgraph>=0.0.10
+langchain>=0.1.0
+langchain-community>=0.0.10
+langchain-core>=0.1.0
+langchain-openai>=0.0.5
+
+# Machine Learning & Computer Vision (PyTorch)
+torch>=2.0.0
+torchvision>=0.15.0
+numpy>=1.24.0
+Pillow>=9.5.0
+opencv-python-headless>=4.7.0
+
+# TensorFlow / Keras (S2A-UNet)
+tensorflow>=2.12.0
+
+# RAG & NLP
+faiss-cpu>=1.7.4
+rank-bm25>=0.2.2
+transformers>=4.30.0
+tokenizers>=0.13.0
+sentence-transformers>=2.2.2
+spacy>=3.5.0
+scikit-learn>=1.2.0
+pandas>=2.0.0
+
+# Graph ML (PyG)
+torch-geometric>=2.3.0
+
+# Explainable AI (XAI)
+captum>=0.6.0
+matplotlib>=3.7.0
+
+# Report Generation
+weasyprint>=59.0
+
+# External Integration & Utilities
+requests>=2.30.0
+ollama>=0.1.6
+aiofiles>=23.1.0

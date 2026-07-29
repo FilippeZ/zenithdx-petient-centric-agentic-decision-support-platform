@@ -1,0 +1,16 @@
+.sphere-image {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: radial-gradient(circle, #ffffff 30%, #cccccc 70%, #666666);
+    box-shadow: inset -4px -4px 10px rgba(0, 0, 0, 0.4),
+                4px 4px 10px rgba(255, 255, 255, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    transform: rotateY(10deg) rotateX(10deg);
+    transition: transform 0.3s ease-in-out;
+}
+
+.sphere-image:hover {
+    transform: rotateY(0deg) rotateX(0deg) scale(1.05);
+}

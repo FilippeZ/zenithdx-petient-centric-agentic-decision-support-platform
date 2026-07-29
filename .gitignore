@@ -1,0 +1,71 @@
+# Environment & Variables
+.env
+.env.local
+.env.*.local
+
+# Python & Pycache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Heavy Machine Learning Weights & Embeddings
+*.pth
+*.pt
+*.gguf
+*.safetensors
+*.bin
+*.npz
+*.pkl
+*.h5
+*.keras
+*.onnx
+faiss_index/
+faiss_patient_index.bin
+faiss_index_D.idx
+visit_patient_emb.npz
+
+# Databases & Storage
+postgresql/
+*.sqlite3
+*.db
+
+# Node & Frontend
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+frontend/dist/
+frontend/build/
+
+# Application Outputs & Uploads
+backend/outputs/
+backend/uploads/
+outputs/
+uploads/
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

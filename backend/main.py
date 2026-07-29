@@ -34,6 +34,43 @@ if settings.OUTPUT_DIR.exists():
 if settings.UPLOAD_DIR.exists():
     app.mount("/uploads", StaticFiles(directory=str(settings.UPLOAD_DIR)), name="uploads")
 
+from fastapi import HTTPException
+from fastapi.responses import FileResponse
+
+@app.get("/outputs/{path:path}")
+def serve_outputs(path: str):
+    p = settings.OUTPUT_DIR / path
+    if p.exists() and p.is_file():
+        return FileResponse(str(p))
+    p_up = settings.UPLOAD_DIR / path
+    if p_up.exists() and p_up.is_file():
+        return FileResponse(str(p_up))
+    fname = os.path.basename(path)
+    for root, _, files in os.walk(str(settings.OUTPUT_DIR)):
+        if fname in files:
+            return FileResponse(os.path.join(root, fname))
+    for root, _, files in os.walk(str(settings.UPLOAD_DIR)):
+        if fname in files:
+            return FileResponse(os.path.join(root, fname))
+    raise HTTPException(404, f"Image file not found: {path}")
+
+@app.get("/uploads/{path:path}")
+def serve_uploads(path: str):
+    p = settings.UPLOAD_DIR / path
+    if p.exists() and p.is_file():
+        return FileResponse(str(p))
+    p_out = settings.OUTPUT_DIR / path
+    if p_out.exists() and p_out.is_file():
+        return FileResponse(str(p_out))
+    fname = os.path.basename(path)
+    for root, _, files in os.walk(str(settings.OUTPUT_DIR)):
+        if fname in files:
+            return FileResponse(os.path.join(root, fname))
+    for root, _, files in os.walk(str(settings.UPLOAD_DIR)):
+        if fname in files:
+            return FileResponse(os.path.join(root, fname))
+    raise HTTPException(404, f"Image file not found: {path}")
+
 @app.on_event("startup")
 def startup_event():
     import sys, requests

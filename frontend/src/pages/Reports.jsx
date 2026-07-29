@@ -315,7 +315,15 @@ export default function Reports() {
     if (url && !seen.has(url)) { imagesToShow.push({ label: i === 0 ? "Original Chest X-ray" : "Grad-CAM Overlay", src: url }); seen.add(url); }
   });
 
-  const classification = (classification_results?.length ? classification_results : structured.classification_results) || [];
+  let classification = (classification_results?.length ? classification_results : structured.classification_results) || [];
+  if (typeof classification === "string") {
+    try { classification = JSON.parse(classification); } catch { classification = []; }
+  }
+  if (Array.isArray(classification)) {
+    classification = classification.filter(item => Array.isArray(item) && item.length >= 2 && typeof item[0] === "string" && typeof item[1] === "number");
+  } else {
+    classification = [];
+  }
   const diagnosisText  = (diagnosis_report || "").trim() || null;
   const xaiText        = (xai_report || "").trim() || null;
 

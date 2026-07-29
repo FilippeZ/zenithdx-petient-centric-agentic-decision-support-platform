@@ -181,7 +181,7 @@ def detect_chest_xray(
             print(f"[VisualExplainer] Grad-CAM warning: {e}", file=sys.stderr)
 
     return {
-        "findings": findings if findings else ["No Finding"],
+        "findings": findings if findings else [("No Finding", 0.0)],
         "paths": {
             "original": orig_path,
             "mask": mask_path,

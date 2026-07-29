@@ -56,11 +56,18 @@ def save_xai_images_to_timestamp_folder(user_id: int, image_dict: dict):
             fname = os.path.basename(path)
             dest = out_dir / fname
             try:
-                shutil.copy2(path, dest)
-                updated[key] = str(dest)
+                if str(path) != str(dest):
+                    shutil.copy2(path, dest)
+                try:
+                    rel_path = dest.relative_to(settings.OUTPUT_DIR).as_posix()
+                    updated[key] = f"/outputs/{rel_path}"
+                except ValueError:
+                    updated[key] = str(dest)
             except Exception as e:
                 print(f"Error copying {path} to {dest}: {e}")
                 updated[key] = path
+        elif path and str(path).startswith(("/outputs", "/uploads", "http")):
+            updated[key] = path
         else:
             updated[key] = path
     return updated, str(out_dir)

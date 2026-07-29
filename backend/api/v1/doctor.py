@@ -55,16 +55,28 @@ def doctor_reports(curr: dict = Depends(get_current_user)):
     finally:
         conn.close()
 
+def format_web_path(path: Optional[str]) -> Optional[str]:
+    if not path:
+        return None
+    path_str = str(path)
+    if path_str.startswith(("/outputs", "/uploads", "http://", "https://")):
+        return path_str
+    if "outputs" in path_str.replace("\\", "/"):
+        parts = path_str.replace("\\", "/").split("outputs/")
+        if len(parts) > 1:
+            return f"/outputs/{parts[-1]}"
+    return path_str
+
 @router.get("/doctor/reports/{report_id}")
-def doctor_report(report_id: str, curr: dict = Depends(get_current_user)):
+def get_doctor_report(report_id: str, curr: dict = Depends(get_current_user)):
     _doctor_only(curr)
     conn = get_db_connection()
     try:
         with conn.cursor() as cur:
             cur.execute(
-                """SELECT p.id         AS report_id,
+                """SELECT p.id::text AS report_id,
                           u.full_name  AS patient_name,
-                          u.id         AS patient_id,
+                          p.user_id::text AS patient_id,
                           p.image_path,
                           p.symptoms,
                           p.submission_date,
@@ -105,18 +117,23 @@ def doctor_report(report_id: str, curr: dict = Depends(get_current_user)):
         "status": row["status"],
         "doctor_message": row.get("doctor_message"),
         "rating": row.get("rating"),
-        "image_path": row["image_path"],
+        "image_path": format_web_path(row["image_path"]),
     }
     diagnosis_report = row["diagnosis"] or ""
+
+    orig_img = format_web_path(row.get("original_xray") or xai_data.get("original_xray"))
+    grad_img = format_web_path(row.get("gradcam_overlay") or xai_data.get("gradcam_overlay"))
+    capt_img = format_web_path(row.get("captum_image") or xai_data.get("captum_image"))
+    mask_img = format_web_path(xai_data.get("mask_image"))
 
     return {
         "patient_overview": patient_overview,
         "diagnosis": diagnosis_report,
         "diagnosis_report": diagnosis_report,
-        "original_xray": row.get("original_xray") or xai_data.get("original_xray"),
-        "gradcam_overlay": row.get("gradcam_overlay") or xai_data.get("gradcam_overlay"),
-        "captum_image": row.get("captum_image") or xai_data.get("captum_image"),
-        "mask_image": xai_data.get("mask_image"),
+        "original_xray": orig_img,
+        "gradcam_overlay": grad_img,
+        "captum_image": capt_img,
+        "mask_image": mask_img,
         "classification_results": row.get("classification_results") or xai_data.get("classification_results"),
         **{k: v for k, v in (xai_data or {}).items()
             if k not in {

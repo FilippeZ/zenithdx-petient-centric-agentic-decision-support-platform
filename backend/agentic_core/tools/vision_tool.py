@@ -11,9 +11,8 @@ from pipelines.vision.resnet50 import load_resnet
 from xai.visual_explainer import detect_chest_xray
 
 DEFAULT_LABEL_COLS = [
-    "Atelectasis", "Cardiomegaly", "Effusion", "Infiltration", "Mass",
-    "Nodule", "Pneumonia", "Pneumothorax", "Consolidation", "Edema",
-    "Emphysema", "Fibrosis", "Pleural_Thickening", "Hernia"
+    "Atelectasis", "Consolidation", "Edema",
+    "Lung Lesion", "Lung Opacity", "Pneumonia"
 ]
 
 _SA_UNET = None

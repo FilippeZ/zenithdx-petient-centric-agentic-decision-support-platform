@@ -44,7 +44,7 @@ def load_resnet(weights_path: str, label_cols: list[str]):
     except Exception:
         model = create_model(len(label_cols), pretrained=False).to(device)
         
-    thresholds = np.array([0.35] * len(label_cols))
+    thresholds = np.array([0.70] * len(label_cols))
 
     if os.path.isfile(weights_path) and os.path.getsize(weights_path) > 100:
         try:
@@ -60,7 +60,7 @@ def load_resnet(weights_path: str, label_cols: list[str]):
                     state_dict = ckpt["state_dict"]
                 else:
                     state_dict = ckpt
-                thresholds = np.array(ckpt.get("best_thresholds", [0.35] * len(label_cols)))
+                thresholds = np.array(ckpt.get("best_thresholds", [0.70] * len(label_cols)))
             else:
                 state_dict = ckpt
                 thresholds = np.array([0.35] * len(label_cols))

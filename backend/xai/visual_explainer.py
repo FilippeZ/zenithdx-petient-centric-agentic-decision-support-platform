@@ -144,10 +144,15 @@ def detect_chest_xray(
     gradcam_segmented_path = None
 
     # 3. Grad-CAM Explainability
-    if return_explainability and findings and resnet is not None and tensor is not None:
+    if return_explainability and resnet is not None and tensor is not None:
         try:
-            top_label, _ = findings[0]
-            top_idx = label_cols.index(top_label)
+            if findings and isinstance(findings[0], (tuple, list)) and findings[0][0] in label_cols:
+                top_label = findings[0][0]
+                top_idx = label_cols.index(top_label)
+            else:
+                top_idx = 0
+                top_label = label_cols[0] if label_cols else "Attention Map"
+
             cam = grad_cam_torch(resnet, tensor, target_class_idx=top_idx, target_layer='layer4')
             cam = cv2.resize(cam, IMG_SIZE_CLS, interpolation=cv2.INTER_LINEAR)
             cam = (cam - cam.min()) / (cam.max() - cam.min() + 1e-8)

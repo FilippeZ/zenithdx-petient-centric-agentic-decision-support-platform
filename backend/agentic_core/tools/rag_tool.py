@@ -53,13 +53,13 @@ def _fallback_clinical_generator(prompt: str) -> str:
 
     query_lower = query.lower()
     
-    if any(k in query_lower for k in ["cough", "fever", "chest pain", "shortness of breath", "dyspnea", "pneumonia", "sputum", "lung"]):
-        final_diag = "Community-Acquired Pneumonia (CAP)"
+    if any(k in query_lower for k in ["breath", "breathe", "breathing", "cough", "fever", "chest", "dyspnea", "shortness", "sob", "pneumonia", "sputum", "lung", "respiratory", "air", "suffocat", "wheez", "gasp"]):
+        final_diag = "Acute Lower Respiratory Distress Syndrome (Under Evaluation)"
         diff_list = [
-            "1. Community-Acquired Pneumonia (CAP): High probability given fever, productive cough, and localized chest symptoms.",
-            "2. Acute Bronchitis: Secondary consideration for inflammatory lower airway symptoms.",
-            "3. Pleurisy / Pleural Inflammation: Supported by pleuritic discomfort on respiration.",
-            "4. Viral Upper/Lower Respiratory Tract Infection: Differential candidate pending viral panel."
+            "1. Community-Acquired Pneumonia (CAP): High probability given acute respiratory distress, productive cough, and localized pulmonary presentation.",
+            "2. Acute Asthma Exacerbation / Bronchospasm: Secondary consideration for reactive lower airway obstruction.",
+            "3. Acute Bronchitis: Secondary consideration for acute inflammatory lower airway disease.",
+            "4. Pleurisy / Pleural Inflammation: Supported by respiratory discomfort and dyspnea on inspiration."
         ]
     elif any(k in query_lower for k in ["headache", "migraine", "dizziness", "head", "cephalea"]):
         final_diag = "Acute Tension / Vasomotor Headache"

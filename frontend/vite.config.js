@@ -15,6 +15,7 @@ export default defineConfig({
       '/register': 'http://localhost:8000',
       '/upload': 'http://localhost:8000',
       '/uploads': 'http://localhost:8000',
+      '/outputs': 'http://localhost:8000',
       '/patients': 'http://localhost:8000',
       '/reports': 'http://localhost:8000',
       '/doctor': 'http://localhost:8000',

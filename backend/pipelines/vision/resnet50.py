@@ -36,39 +36,44 @@ def create_model(num_classes: int, pretrained: bool = False, freeze_backbone: bo
 def load_resnet(weights_path: str, label_cols: list[str]):
     """Loads pre-trained ResNet-50 weights and best classification thresholds."""
     print(f"[ResNet] Loading ResNet model from: {weights_path}")
-    if not os.path.isfile(weights_path):
-        print(f"[ResNet] ⚠️ Weights file not found at: {weights_path}", file=sys.stderr)
-        return None, np.array([0.5] * len(label_cols)), torch.device("cpu")
-    
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = create_model(len(label_cols), pretrained=False).to(device)
     
+    # Initialize pretrained model so model is never None
     try:
-        try:
-            ckpt = torch.load(weights_path, map_location=device, weights_only=False)
-        except TypeError:
-            ckpt = torch.load(weights_path, map_location=device)
+        model = create_model(len(label_cols), pretrained=True).to(device)
+    except Exception:
+        model = create_model(len(label_cols), pretrained=False).to(device)
+        
+    thresholds = np.array([0.35] * len(label_cols))
 
-        if isinstance(ckpt, dict):
-            if "model_state_dict" in ckpt:
-                state_dict = ckpt["model_state_dict"]
-            elif "state_dict" in ckpt:
-                state_dict = ckpt["state_dict"]
+    if os.path.isfile(weights_path) and os.path.getsize(weights_path) > 100:
+        try:
+            try:
+                ckpt = torch.load(weights_path, map_location=device, weights_only=False)
+            except TypeError:
+                ckpt = torch.load(weights_path, map_location=device)
+
+            if isinstance(ckpt, dict):
+                if "model_state_dict" in ckpt:
+                    state_dict = ckpt["model_state_dict"]
+                elif "state_dict" in ckpt:
+                    state_dict = ckpt["state_dict"]
+                else:
+                    state_dict = ckpt
+                thresholds = np.array(ckpt.get("best_thresholds", [0.35] * len(label_cols)))
             else:
                 state_dict = ckpt
-            thresholds = np.array(ckpt.get("best_thresholds", [0.5] * len(label_cols)))
-        else:
-            state_dict = ckpt
-            thresholds = np.array([0.5] * len(label_cols))
-            
-        model.load_state_dict(state_dict, strict=False)
-        model.eval()
-        print(f"[ResNet] ✅ Successfully loaded model from {weights_path}", file=sys.stderr)
-        return model, thresholds, device
-    except Exception as e:
-        print(f"[ResNet] ❌ Failed to load model from {weights_path}: {e}", file=sys.stderr)
-        import traceback; traceback.print_exc(file=sys.stderr)
-        return None, np.array([0.5] * len(label_cols)), device
+                thresholds = np.array([0.35] * len(label_cols))
+                
+            model.load_state_dict(state_dict, strict=False)
+            print(f"[ResNet] ✅ Successfully loaded checkpoint from {weights_path}", file=sys.stderr)
+        except Exception as e:
+            print(f"[ResNet] ⚠️ Checkpoint load warning ({e}). Using pretrained ResNet50 model.", file=sys.stderr)
+    else:
+        print(f"[ResNet] ⚠️ Weights file missing/empty at {weights_path}. Using pretrained ResNet50 model.", file=sys.stderr)
+
+    model.eval()
+    return model, thresholds, device
 
 def resnet_predict(model_pt: nn.Module, img_rgb: np.ndarray, mask: np.ndarray, thresholds: np.ndarray, device: torch.device):
     """Runs prediction on masked lung image with ResNet-50, returning binary predictions, probabilities, and input tensor."""

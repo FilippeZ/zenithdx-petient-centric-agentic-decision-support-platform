@@ -34,15 +34,26 @@ def _init_vision_models():
         except Exception as e:
             print(f"[VisionTool] Error loading vision models ({e})", file=sys.stderr)
 
+from pipelines.vision.cloud_vision_client import CloudVisionClient
+
+_CLOUD_CLIENT = CloudVisionClient()
+
 def run_vision_analysis(image_path: str, user_id: str = "default") -> dict:
-    """Executes S2A-UNet segmentation, ResNet classification, and Grad-CAM explainability on input X-ray."""
+    """Executes S2A-UNet segmentation, ResNet classification, and Grad-CAM explainability locally or via Google Colab Cloud GPU."""
+    if _CLOUD_CLIENT.is_configured():
+        try:
+            print(f"[VisionTool] ☁️ Sending X-ray to Cloud Vision Microservice: {_CLOUD_CLIENT.endpoint_url}")
+            return _CLOUD_CLIENT.analyze_xray(image_path)
+        except Exception as e:
+            print(f"[VisionTool] ⚠️ Cloud Vision request failed ({e}). Falling back to local execution.", file=sys.stderr)
+
     _init_vision_models()
     
     return detect_chest_xray(
         image_or_path=image_path,
         sa_unet=_SA_UNET,
         resnet=_RESNET,
-        thresholds=_THRESHOLDS if _THRESHOLDS is not None else np.array([0.5] * len(DEFAULT_LABEL_COLS)),
+        thresholds=_THRESHOLDS if _THRESHOLDS is not None else np.array([0.70] * len(DEFAULT_LABEL_COLS)),
         label_cols=_LABEL_COLS or DEFAULT_LABEL_COLS,
         device=_DEVICE or "cpu",
         return_explainability=True,

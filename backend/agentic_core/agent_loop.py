@@ -100,6 +100,9 @@ def react_agent_node(state: AgentState) -> dict:
         paths = result.get("paths", {})
         cache["original_xray_path"] = paths.get("original")
         cache["gradcam_overlay_path"] = paths.get("gradcam_overlay")
+        cache["captum_image_path"] = paths.get("captum_image")
+        if result.get("captum"):
+            cache["cloud_top_words"] = result["captum"].get("top_words", [])
 
         prev_diag = get_last_report(state)
         tool_input = {"prev_diag": prev_diag, "xray_findings": xray_findings, "user_query": user_query}
@@ -206,7 +209,8 @@ def final_answer_node(state: AgentState) -> dict:
         "classification_results": cls_results,
         "original_xray": context_cache.get("original_xray_path"),
         "gradcam_overlay": context_cache.get("gradcam_overlay_path"),
-        "top_words": xai_dict.get("top_words", {}),
+        "captum_image": context_cache.get("captum_image_path") or xai_dict.get("captum_image"),
+        "top_words": context_cache.get("cloud_top_words") or xai_dict.get("top_words", {}),
     }
     for k, v in xai_dict.items():
         if k.startswith("captum_"):

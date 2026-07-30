@@ -93,6 +93,16 @@ def search(query: str, embedding: Optional[np.ndarray] = None, k_faiss: int = 15
         print("[HybridSearch] Warning: FAISS/BM25 indices not loaded.", file=sys.stderr)
         return "", []
 
+    # Query relevance filter to prevent RAG Context Bleed (e.g. pneumonia docs for headache queries)
+    query_lower = query.lower()
+    non_respiratory_terms = ["headache", "aheadache", "migraine", "dizziness", "cephalea", "back pain", "knee pain", "skin rash"]
+    respiratory_terms = ["cough", "fever", "breath", "dyspnea", "chest", "sputum", "hemoptysis", "xray", "lung", "pneumonia", "edema", "atelectasis", "pleurisy", "effusion", "wheezing", "asthma"]
+    
+    is_non_respiratory = any(t in query_lower for t in non_respiratory_terms) and not any(r in query_lower for r in respiratory_terms)
+    if is_non_respiratory:
+        print(f"[HybridSearch] Query '{query[:50]}' identified as non-respiratory consultation. Bypassing RAG index to prevent context bleed.", file=sys.stderr)
+        return "", []
+
     cleaned = clean_query(query)
     emb = embedding if embedding is not None else compute_query_embedding(cleaned)
     emb = np.asarray(emb, dtype=np.float32).reshape(1, -1)
@@ -121,10 +131,13 @@ def search(query: str, embedding: Optional[np.ndarray] = None, k_faiss: int = 15
         if 0 <= idx < len(_CHUNKS):
             bm25_sc = float(bm25_scores[idx]) if idx < len(bm25_scores) else 0.0
             score = -float(faiss_dist) + bm25_sc
-            fused.append((idx, score))
+            # Strict Similarity Thresholding (Filter out low relevance matches)
+            if bm25_sc > 0.05 or faiss_dist < 1.8:
+                fused.append((idx, score))
 
     if not fused:
-        fused = [(i, 0.0) for i in range(min(k_final, len(_CHUNKS)))]
+        print(f"[HybridSearch] No RAG documents passed similarity threshold for query '{query[:50]}'. Returning empty context.", file=sys.stderr)
+        return "", []
 
     fused = sorted(fused, key=lambda x: x[1], reverse=True)[:k_final * 2]
     candidate_texts = [

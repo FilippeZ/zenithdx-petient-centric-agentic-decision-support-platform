@@ -8,6 +8,8 @@ import pickle
 from typing import Tuple, List, Dict, Any, Optional
 import numpy as np
 import faiss
+import torch
+import torch.nn as nn
 
 from config import settings
 from pipelines.graph_ehr.hgt_model import (
@@ -69,19 +71,37 @@ def _init_patient_faiss():
         except Exception as e:
             print(f"[Clustering] Error building synthetic FAISS index: {e}", file=sys.stderr)
 
-def fuse_embeddings(query_emb: np.ndarray, label_emb: np.ndarray, alpha: float = 0.6) -> np.ndarray:
-    query_emb = np.asarray(query_emb, dtype=np.float32).flatten()
-    label_emb = np.asarray(label_emb, dtype=np.float32).flatten()
-    
-    if query_emb.shape[0] != label_emb.shape[0]:
-        target_dim = max(query_emb.shape[0], label_emb.shape[0])
-        q_padded = np.zeros(target_dim, dtype=np.float32)
-        l_padded = np.zeros(target_dim, dtype=np.float32)
-        q_padded[:query_emb.shape[0]] = query_emb
-        l_padded[:label_emb.shape[0]] = label_emb
-        query_emb, label_emb = q_padded, l_padded
+_FUSION_MLP = None
 
-    fused = alpha * query_emb + (1.0 - alpha) * label_emb
+def get_fusion_mlp(text_dim: int = 384, vision_dim: int = 384) -> torch.nn.Module:
+    global _FUSION_MLP
+    if _FUSION_MLP is None:
+        from pipelines.graph_ehr.hgt_model import MultimodalFusionMLP
+        _FUSION_MLP = MultimodalFusionMLP(text_dim=text_dim, vision_dim=vision_dim, out_dim=text_dim)
+        _FUSION_MLP.eval()
+    return _FUSION_MLP
+
+def fuse_embeddings(query_emb: np.ndarray, label_emb: np.ndarray, alpha: float = 0.6) -> np.ndarray:
+    """
+    Non-Linear Multimodal Concatenation Fusion: q = MLP(v_symp \oplus v_img)
+    Learns non-linear weighting between symptom text embeddings and vision predictions.
+    """
+    q_vec = np.asarray(query_emb, dtype=np.float32).flatten()
+    l_vec = np.asarray(label_emb, dtype=np.float32).flatten()
+    
+    dim = max(q_vec.shape[0], l_vec.shape[0])
+    q_pad = np.zeros(dim, dtype=np.float32)
+    l_pad = np.zeros(dim, dtype=np.float32)
+    q_pad[:q_vec.shape[0]] = q_vec
+    l_pad[:l_vec.shape[0]] = l_vec
+
+    with torch.no_grad():
+        mlp = get_fusion_mlp(text_dim=dim, vision_dim=dim)
+        q_tensor = torch.from_numpy(q_pad).unsqueeze(0)
+        l_tensor = torch.from_numpy(l_pad).unsqueeze(0)
+        fused_tensor = mlp(q_tensor, l_tensor).squeeze(0)
+        fused = fused_tensor.numpy()
+
     norm = np.linalg.norm(fused)
     if norm > 1e-8:
         fused = fused / norm

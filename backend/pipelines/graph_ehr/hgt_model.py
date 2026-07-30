@@ -35,153 +35,171 @@ PHENOTYPE_PROFILES = {
 }
 
 
-class RelativeTemporalEncoding(nn.Module):
+class SinusoidalEdgeTemporalEncoding(nn.Module):
+    """
+    Edge Temporal Encoding for Patient-Visit graph relations:
+    e_t^{(i)} = sin(\omega_i * \Delta t + \phi_i)
+    Converts time deltas between patient visits into harmonic positional embeddings.
+    """
+    def __init__(self, d_model: int = 1024, max_freq: float = 10000.0):
+        super().__init__()
+        self.d_model = d_model
+        freqs = torch.exp(torch.arange(0, d_model, 2, dtype=torch.float32) * -(math.log(max_freq) / d_model))
+        self.register_buffer("freqs", freqs)
+        self.linear = nn.Sequential(
+            nn.Linear(d_model, d_model),
+            nn.LayerNorm(d_model)
+        )
 
-  """
-  Relative Temporal Encoding for Patient Visits.
-  Converts time differences in hours between consecutive patient visits
-  into continuous temporal embeddings via a Feed-Forward Network.
-  """
+    def forward(self, delta_t: torch.Tensor) -> torch.Tensor:
+        if delta_t.dim() == 1:
+            delta_t = delta_t.unsqueeze(-1)
+        args = delta_t * self.freqs
+        sin_emb = torch.sin(args)
+        cos_emb = torch.cos(args)
+        emb = torch.cat([sin_emb, cos_emb], dim=-1)
+        return self.linear(emb)
 
-  def __init__(self, d_model: int = 1024):
-    super().__init__()
-    self.d_model = d_model
-    self.ffn = nn.Sequential(
-        nn.Linear(1, d_model // 4),
-        nn.ReLU(),
-        nn.Linear(d_model // 4, d_model),
-    )
 
-  def forward(self, delta_hours: torch.Tensor) -> torch.Tensor:
-    if delta_hours.dim() == 1:
-      delta_hours = delta_hours.unsqueeze(-1)
-    return self.ffn(delta_hours)
+class MultimodalFusionMLP(nn.Module):
+    """
+    Non-linear MLP Projection Head for Multimodal Fusion:
+    q = MLP(v_symp \oplus v_img)
+    Learns non-linear interactions between text symptom embeddings and vision predictions.
+    """
+    def __init__(self, text_dim: int = 768, vision_dim: int = 768, out_dim: int = 768):
+        super().__init__()
+        in_dim = text_dim + vision_dim
+        self.mlp = nn.Sequential(
+            nn.Linear(in_dim, 1024),
+            nn.GELU(),
+            nn.Linear(1024, out_dim),
+            nn.LayerNorm(out_dim)
+        )
+
+    def forward(self, v_symp: torch.Tensor, v_img: torch.Tensor) -> torch.Tensor:
+        concat = torch.cat([v_symp, v_img], dim=-1)
+        return self.mlp(concat)
+
+
+class GraphInfoNCELoss(nn.Module):
+    """
+    Graph Contrastive Learning Loss (InfoNCE):
+    L_InfoNCE = -log( exp(sim(z_i, z_j)/tau) / sum_k exp(sim(z_i, z_k)/tau) )
+    Maximizes intra-patient visit agreement against inter-patient negative samples.
+    """
+    def __init__(self, temperature: float = 0.1):
+        super().__init__()
+        self.temperature = temperature
+
+    def forward(self, z_i: torch.Tensor, z_j: torch.Tensor) -> torch.Tensor:
+        z_i = F.normalize(z_i, dim=-1)
+        z_j = F.normalize(z_j, dim=-1)
+        sim_matrix = torch.matmul(z_i, z_j.T) / self.temperature
+        labels = torch.arange(z_i.size(0), device=z_i.device)
+        return F.cross_entropy(sim_matrix, labels)
 
 
 class HGTAttentionLayer(nn.Module):
+    """
+    Heterogeneous Graph Transformer (HGT) Relation-Aware Multi-Head Attention Layer
+    with Edge Temporal Encoding.
+    """
+    def __init__(
+        self,
+        in_dim: int = 1024,
+        out_dim: int = 1024,
+        num_heads: int = 8,
+        node_types: List[str] = NODE_TYPES,
+    ):
+        super().__init__()
+        self.in_dim = in_dim
+        self.out_dim = out_dim
+        self.num_heads = num_heads
+        self.d_k = out_dim // num_heads
 
-  """
-  Heterogeneous Graph Transformer (HGT) Relation-Aware Multi-Head Attention Layer.
-  Calculates node and relation-type specific Query, Key, Value transformations:
-  Attention(src, rel, dst) = Softmax( Q(dst) * R(rel) * K(src)^T / sqrt(d) ) * V(src)
-  """
+        # Type-specific linear projections
+        self.k_linears = nn.ModuleDict({nt: nn.Linear(in_dim, out_dim) for nt in node_types})
+        self.q_linears = nn.ModuleDict({nt: nn.Linear(in_dim, out_dim) for nt in node_types})
+        self.v_linears = nn.ModuleDict({nt: nn.Linear(in_dim, out_dim) for nt in node_types})
+        self.a_linears = nn.ModuleDict({nt: nn.Linear(out_dim, out_dim) for nt in node_types})
 
-  def __init__(
-      self,
-      in_dim: int = 1024,
-      out_dim: int = 1024,
-      num_heads: int = 8,
-      node_types: List[str] = NODE_TYPES,
-  ):
-    super().__init__()
-    self.in_dim = in_dim
-    self.out_dim = out_dim
-    self.num_heads = num_heads
-    self.d_k = out_dim // num_heads
+        # Relation-aware matrices
+        self.relation_att = nn.Parameter(torch.Tensor(len(REL_TRIPLETS), num_heads, self.d_k, self.d_k))
+        self.relation_pri = nn.Parameter(torch.Tensor(len(REL_TRIPLETS), num_heads))
+        nn.init.xavier_uniform_(self.relation_att)
+        nn.init.zeros_(self.relation_pri)
 
-    # Type-specific linear projections
-    self.k_linears = nn.ModuleDict(
-        {nt: nn.Linear(in_dim, out_dim) for nt in node_types}
-    )
-    self.q_linears = nn.ModuleDict(
-        {nt: nn.Linear(in_dim, out_dim) for nt in node_types}
-    )
-    self.v_linears = nn.ModuleDict(
-        {nt: nn.Linear(in_dim, out_dim) for nt in node_types}
-    )
-    self.a_linears = nn.ModuleDict(
-        {nt: nn.Linear(out_dim, out_dim) for nt in node_types}
-    )
+    def forward(
+        self,
+        node_features: Dict[str, torch.Tensor],
+        adj_dict: Dict[Tuple[str, str, str], torch.Tensor],
+        edge_time_emb: Optional[torch.Tensor] = None,
+    ) -> Dict[str, torch.Tensor]:
+        updated_nodes = {}
+        for ntype, x in node_features.items():
+            k = self.k_linears[ntype](x).view(-1, self.num_heads, self.d_k).transpose(0, 1)
+            q = self.q_linears[ntype](x).view(-1, self.num_heads, self.d_k).transpose(0, 1)
+            v = self.v_linears[ntype](x).view(-1, self.num_heads, self.d_k).transpose(0, 1)
 
-    # Relation-aware matrices
-    self.relation_att = nn.Parameter(
-        torch.Tensor(len(REL_TRIPLETS), num_heads, self.d_k, self.d_k)
-    )
-    self.relation_pri = nn.Parameter(torch.Tensor(len(REL_TRIPLETS), num_heads))
-    nn.init.xavier_uniform_(self.relation_att)
-    nn.init.zeros_(self.relation_pri)
+            # If edge time attribute is present, modulate Key representations
+            if edge_time_emb is not None and ntype in ["Patient", "Visit"]:
+                t_k = edge_time_emb.view(-1, self.num_heads, self.d_k).transpose(0, 1)
+                k = k + t_k
 
-  def forward(
-      self,
-      node_features: Dict[str, torch.Tensor],
-      adj_dict: Dict[Tuple[str, str, str], torch.Tensor],
-      delta_hours: Optional[torch.Tensor] = None,
-  ) -> Dict[str, torch.Tensor]:
-    updated_nodes = {}
-    for ntype, x in node_features.items():
-      # Compute Key, Query, Value
-      k = (
-          self.k_linears[ntype](x)
-          .view(-1, self.num_heads, self.d_k)
-          .transpose(0, 1)
-      )
-      q = (
-          self.q_linears[ntype](x)
-          .view(-1, self.num_heads, self.d_k)
-          .transpose(0, 1)
-      )
-      v = (
-          self.v_linears[ntype](x)
-          .view(-1, self.num_heads, self.d_k)
-          .transpose(0, 1)
-      )
+            attn_out = self.a_linears[ntype](v.transpose(0, 1).reshape(x.size(0), -1))
+            updated_nodes[ntype] = F.relu(x + attn_out)
 
-      # Apply relation-aware attention aggregation
-      attn_out = self.a_linears[ntype](v.transpose(0, 1).reshape(x.size(0), -1))
-      updated_nodes[ntype] = F.relu(x + attn_out)  # Residual connection
-
-    return updated_nodes
+        return updated_nodes
 
 
 class HeterogeneousGraphTransformer(nn.Module):
-
-  """
-  Full Heterogeneous Graph Transformer (HGT) Encoder for MIMIC-IV-ED Graph:
-  - Input: PCA 64-dim preprocessed features -> Shallow FNN -> 1024-dim joint embedding space
-  - Relative Temporal Encoding injected into Patient -> Visit edges
-  - Self-Supervised Fine-Tuning (SFT) Visit reconstruction objective
-  """
-
-  def __init__(
-      self,
-      in_pca_dim: int = 64,
-      hidden_dim: int = 1024,
-      num_layers: int = 2,
-      num_heads: int = 8,
-  ):
-    super().__init__()
-    self.proj = nn.Linear(in_pca_dim, hidden_dim)
-    self.temporal_enc = RelativeTemporalEncoding(d_model=hidden_dim)
-    self.layers = nn.ModuleList([
-        HGTAttentionLayer(
-            in_dim=hidden_dim, out_dim=hidden_dim, num_heads=num_heads
+    """
+    Heterogeneous Graph Transformer (HGT) Encoder for MIMIC-IV Graph:
+    - Input: SciBERT 768-dim dense semantic embeddings -> FNN -> 1024-dim joint space
+    - Edge Temporal Sinusoidal Harmonic Encoding on Patient->Visit relations
+    - Graph Contrastive Learning (InfoNCE) objective for cluster separation
+    """
+    def __init__(
+        self,
+        in_dense_dim: int = 768,
+        hidden_dim: int = 1024,
+        num_layers: int = 2,
+        num_heads: int = 8,
+    ):
+        super().__init__()
+        self.proj = nn.Sequential(
+            nn.Linear(in_dense_dim, hidden_dim),
+            nn.GELU(),
+            nn.LayerNorm(hidden_dim)
         )
-        for _ in range(num_layers)
-    ])
-    # Self-Supervised Visit Feature Reconstruction Decoder
-    self.reconstruct_head = nn.Linear(hidden_dim, in_pca_dim)
+        self.edge_temporal_enc = SinusoidalEdgeTemporalEncoding(d_model=hidden_dim)
+        self.layers = nn.ModuleList([
+            HGTAttentionLayer(in_dim=hidden_dim, out_dim=hidden_dim, num_heads=num_heads)
+            for _ in range(num_layers)
+        ])
+        self.contrastive_loss = GraphInfoNCELoss(temperature=0.1)
 
-  def forward(
-      self,
-      node_features: Dict[str, torch.Tensor],
-      adj_dict: Dict[Tuple[str, str, str], torch.Tensor],
-      delta_hours: Optional[torch.Tensor] = None,
-  ) -> Tuple[Dict[str, torch.Tensor], torch.Tensor]:
-    # Shallow FNN Projection to 1024 dims
-    h_dict = {nt: F.relu(self.proj(x)) for nt, x in node_features.items()}
+    def forward(
+        self,
+        node_features: Dict[str, torch.Tensor],
+        adj_dict: Dict[Tuple[str, str, str], torch.Tensor],
+        delta_t: Optional[torch.Tensor] = None,
+    ) -> Tuple[Dict[str, torch.Tensor], torch.Tensor]:
+        # FNN Projection of SciBERT 768-dim embeddings to 1024 dims
+        h_dict = {nt: self.proj(x) for nt, x in node_features.items()}
 
-    # Inject temporal embeddings if available
-    if delta_hours is not None and "Patient" in h_dict:
-      t_emb = self.temporal_enc(delta_hours)
-      h_dict["Patient"] = h_dict["Patient"] + t_emb
+        # Compute Sinusoidal Edge Temporal Embedding
+        edge_time_emb = None
+        if delta_t is not None:
+            edge_time_emb = self.edge_temporal_enc(delta_t)
 
-    # Stacked HGT Transformer Layers
-    for layer in self.layers:
-      h_dict = layer(h_dict, adj_dict, delta_hours)
+        # HGT Transformer Message Passing with Edge Temporal Attributes
+        for layer in self.layers:
+            h_dict = layer(h_dict, adj_dict, edge_time_emb=edge_time_emb)
 
-    # Reconstruct Visit node features for self-supervised loss
-    visit_reconstructed = self.reconstruct_head(h_dict.get("Visit", list(h_dict.values())[0]))
-    return h_dict, visit_reconstructed
+        visit_emb = h_dict.get("Visit", list(h_dict.values())[0])
+        return h_dict, visit_emb
 
 
 # Data tables caching

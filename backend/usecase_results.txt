@@ -1,0 +1,212 @@
+================================================================================
+                ZENITHDX MULTI-MODAL USE CASES TEST REPORT
+================================================================================
+Execution Date: 2026-07-30 11:19:05
+Test X-Ray Image Source: pneumonia.jpeg
+Total Use Cases Executed: 4
+================================================================================
+
+--------------------------------------------------------------------------------
+USE CASE 1: Text-Only Clinical Consultation
+--------------------------------------------------------------------------------
+Inputs:
+  - User Query: Patient presents with acute tension headache, neck stiffness, and mild dizziness.
+  - Image Path: None
+  - Patient ID: None
+Status: SUCCESS
+Execution Time: 5.43 seconds
+
+[1] IMAGE GENERATION & XAI METRICS:
+  - Original X-Ray Saved: False -> Path: None
+  - Grad-CAM Overlay Generated: False -> Path: None
+  - Captum Feature Ablation XAI Plot: True -> Path: C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\default\20260730_111844\query_captum_attribution.png
+
+[2] VISION FINDINGS & CLASSIFICATION:
+  - Findings/Probabilities: []
+  - Labels: []
+
+[3] PATIENT EHR HISTORY RETRIEVAL:
+  - History Retrieved: False
+  - History Excerpt: N/A (No patient history attached or retrieved)...
+
+[4] DIAGNOSIS REPORT TEXT OUTPUT:
+### Assessment:
+Patient presenting with: "Patient presents with acute tension headache, neck stiffness, and mild dizziness.". Radiological Evaluation: No chest X-ray was provided for this consultation. Longitudinal EHR history: None provided/retrieved.
+
+### Differential Diagnosis:
+1. Tension-Type Headache: Primary differential based on reported head discomfort and muscle tension.
+2. Migraine without Aura: Secondary consideration pending photo/phonophobia assessment.
+3. Cervicogenic Headache: Referred pain secondary to upper cervical spine tension.
+4. Sinusitis-Associated Headache: Secondary to paranasal mucosal congestion.
+
+### Final Diagnosis:
+Acute Tension / Vasomotor Headache
+
+### Explanation of Final Diagnosis:
+The diagnostic rationale for Acute Tension / Vasomotor Headache is derived by synthesizing the patient's presentation ("Patient presents with acute tension headache, neck stiffness, and mild dizziness.") with multi-modal imaging/EHR findings and evidence-based consensus guidelines.
+
+[5] XAI CLINICAL REPORT TEXT OUTPUT:
+### XAI Text Attribution Analysis (Captum Feature Ablation):
+- Target Clinical Query: "Patient presents with acute tension headache, neck stiffness, and mild dizziness."
+- Radiological Evaluation: No X-ray provided
+- Longitudinal History Integrated: No
+- Top Key Clinical Predictors: stiffness, dizziness, headache, mild, neck
+- Captum Feature Ablation Plot: Generated (C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\default\20260730_111844\query_captum_attribution.png)
+
+================================================================================
+
+--------------------------------------------------------------------------------
+USE CASE 2: Multi-Modal Vision Diagnostic with Pneumonia X-Ray (pneumonia.jpeg)
+--------------------------------------------------------------------------------
+Inputs:
+  - User Query: Patient presents with severe persistent cough, high fever, dyspnea, and right-sided pleuritic chest pain.
+  - Image Path: C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\pneumonia.jpeg
+  - Patient ID: None
+Status: SUCCESS
+Execution Time: 7.38 seconds
+
+[1] IMAGE GENERATION & XAI METRICS:
+  - Original X-Ray Saved: True -> Path: C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\default\pneumonia_original.png
+  - Grad-CAM Overlay Generated: True -> Path: C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\default\pneumonia_gradcam_overlay.png
+  - Captum Feature Ablation XAI Plot: True -> Path: C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\default\20260730_111852\query_captum_attribution.png
+
+[2] VISION FINDINGS & CLASSIFICATION:
+  - Findings/Probabilities: [('Pneumonia', 0.5726698637008667), ('Consolidation', 0.5499612092971802), ('Lung Lesion', 0.4965185225009918), ('Atelectasis', 0.46156227588653564), ('Edema', 0.46080416440963745)]
+  - Labels: []
+
+[3] PATIENT EHR HISTORY RETRIEVAL:
+  - History Retrieved: False
+  - History Excerpt: N/A (No patient history attached or retrieved)...
+
+[4] DIAGNOSIS REPORT TEXT OUTPUT:
+### Assessment:
+Patient presenting with: "Patient presents with severe persistent cough, high fever, dyspnea, and right-sided pleuritic chest pain.". Radiological Evaluation: The following chest X-ray findings were detected: Pneumonia, Consolidation, Lung Lesion, Atelectasis, Edema.. Longitudinal EHR history: None provided/retrieved.
+
+### Differential Diagnosis:
+1. Community-Acquired Pneumonia (CAP): High probability given acute respiratory distress, fever, and pulmonary presentation.
+2. Acute Asthma Exacerbation / Bronchospasm: Secondary consideration for reactive lower airway obstruction.
+3. Acute Bronchitis: Secondary consideration for acute inflammatory lower airway disease.
+4. Pleurisy / Pleural Inflammation: Supported by respiratory discomfort and dyspnea on inspiration.
+
+### Final Diagnosis:
+Acute Lower Respiratory Infection / Pneumonia
+
+### Explanation of Final Diagnosis:
+The diagnostic rationale for Acute Lower Respiratory Infection / Pneumonia is derived by synthesizing the patient's presentation ("Patient presents with severe persistent cough, high fever, dyspnea, and right-sided pleuritic chest pain.") with multi-modal imaging/EHR findings and evidence-based consensus guidelines.
+
+[5] XAI CLINICAL REPORT TEXT OUTPUT:
+### XAI Text Attribution Analysis (Captum Feature Ablation):
+- Target Clinical Query: "Patient presents with severe persistent cough, high fever, dyspnea, and right-sided pleuritic chest pain."
+- Radiological Findings Considered: Pneumonia, Consolidation, Lung Lesion, Atelectasis, Edema
+- Longitudinal History Integrated: No
+- Top Key Clinical Predictors: pain, fever, dyspnea, chest, cough
+- Captum Feature Ablation Plot: Generated (C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\default\20260730_111852\query_captum_attribution.png)
+
+================================================================================
+
+--------------------------------------------------------------------------------
+USE CASE 3: Full Multi-Modal Vision & Longitudinal EHR Diagnostic (pneumonia.jpeg + Patient 10000032 + Query)
+--------------------------------------------------------------------------------
+Inputs:
+  - User Query: Patient with known pulmonary history presents with acute shortness of breath and fever.
+  - Image Path: C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\pneumonia.jpeg
+  - Patient ID: 10000032
+Status: SUCCESS
+Execution Time: 6.49 seconds
+
+[1] IMAGE GENERATION & XAI METRICS:
+  - Original X-Ray Saved: True -> Path: C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\10000032\pneumonia_original.png
+  - Grad-CAM Overlay Generated: True -> Path: C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\10000032\pneumonia_gradcam_overlay.png
+  - Captum Feature Ablation XAI Plot: True -> Path: C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\10000032\20260730_111858\query_captum_attribution.png
+
+[2] VISION FINDINGS & CLASSIFICATION:
+  - Findings/Probabilities: [('Pneumonia', 0.5726698637008667), ('Consolidation', 0.5499612092971802), ('Lung Lesion', 0.4965185225009918), ('Atelectasis', 0.46156227588653564), ('Edema', 0.46080416440963745)]
+  - Labels: []
+
+[3] PATIENT EHR HISTORY RETRIEVAL:
+  - History Retrieved: True
+  - History Excerpt: Chief Complaint: Abd pain, Abdominal distention
+Triage Vitals: Heartrate: 70.0, Temperature: 98.4, Resprate: 16.0, O2sat: 97.0, Sbp: 106.0, Dbp: 63.0
+Diagnosis: OTH SEQUELA, CHR LIV DIS (ICD: 5728)
+Admitted: 2180-05-06 19:17:00 - Discharged: 2180-05-06 23:30:00 (Disposition: ADMITTED)
+Chief Complain...
+
+[4] DIAGNOSIS REPORT TEXT OUTPUT:
+### Assessment:
+Patient presenting with: "Patient with known pulmonary history presents with acute shortness of breath and fever.". Radiological Evaluation: The following chest X-ray findings were detected: Pneumonia, Consolidation, Lung Lesion, Atelectasis, Edema.. Longitudinal EHR history integrated into clinical evaluation.
+
+### Differential Diagnosis:
+1. Community-Acquired Pneumonia (CAP): High probability given acute respiratory distress, fever, and pulmonary presentation.
+2. Acute Asthma Exacerbation / Bronchospasm: Secondary consideration for reactive lower airway obstruction.
+3. Acute Bronchitis: Secondary consideration for acute inflammatory lower airway disease.
+4. Pleurisy / Pleural Inflammation: Supported by respiratory discomfort and dyspnea on inspiration.
+
+### Final Diagnosis:
+Acute Lower Respiratory Infection / Pneumonia
+
+### Explanation of Final Diagnosis:
+The diagnostic rationale for Acute Lower Respiratory Infection / Pneumonia is derived by synthesizing the patient's presentation ("Patient with known pulmonary history presents with acute shortness of breath and fever.") with multi-modal imaging/EHR findings and evidence-based consensus guidelines.
+
+[5] XAI CLINICAL REPORT TEXT OUTPUT:
+### XAI Text Attribution Analysis (Captum Feature Ablation):
+- Target Clinical Query: "Patient with known pulmonary history presents with acute shortness of breath and fever."
+- Radiological Findings Considered: Pneumonia, Consolidation, Lung Lesion, Atelectasis, Edema
+- Longitudinal History Integrated: Yes
+- Top Key Clinical Predictors: fever, shortness, breath, presents, known
+- Captum Feature Ablation Plot: Generated (C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\10000032\20260730_111858\query_captum_attribution.png)
+
+================================================================================
+
+--------------------------------------------------------------------------------
+USE CASE 4: EHR Patient History Diagnostic (Patient 10000032 without Image)
+--------------------------------------------------------------------------------
+Inputs:
+  - User Query: Patient followup visit for prior respiratory infection symptoms.
+  - Image Path: None
+  - Patient ID: 10000032
+Status: SUCCESS
+Execution Time: 5.23 seconds
+
+[1] IMAGE GENERATION & XAI METRICS:
+  - Original X-Ray Saved: False -> Path: None
+  - Grad-CAM Overlay Generated: False -> Path: None
+  - Captum Feature Ablation XAI Plot: True -> Path: C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\10000032\20260730_111904\query_captum_attribution.png
+
+[2] VISION FINDINGS & CLASSIFICATION:
+  - Findings/Probabilities: []
+  - Labels: []
+
+[3] PATIENT EHR HISTORY RETRIEVAL:
+  - History Retrieved: True
+  - History Excerpt: Chief Complaint: Abd pain, Abdominal distention
+Triage Vitals: Heartrate: 70.0, Temperature: 98.4, Resprate: 16.0, O2sat: 97.0, Sbp: 106.0, Dbp: 63.0
+Diagnosis: OTH SEQUELA, CHR LIV DIS (ICD: 5728)
+Admitted: 2180-05-06 19:17:00 - Discharged: 2180-05-06 23:30:00 (Disposition: ADMITTED)
+Chief Complain...
+
+[4] DIAGNOSIS REPORT TEXT OUTPUT:
+### Assessment:
+Patient presenting with: "Patient followup visit for prior respiratory infection symptoms.". Radiological Evaluation: No chest X-ray was provided for this consultation. Longitudinal EHR history integrated into clinical evaluation.
+
+### Differential Diagnosis:
+1. Post-Infectious Airway Hyperreactivity: Primary consideration following resolved respiratory infection.
+2. Resolving Acute Bronchitis: Secondary differential undergoing clinical resolution.
+3. Early Asthma Exacerbation: Secondary monitoring for lingering reactive symptoms.
+
+### Final Diagnosis:
+Resolved / Improving Post-Infectious Airway Hyperreactivity
+
+### Explanation of Final Diagnosis:
+The diagnostic rationale for Resolved / Improving Post-Infectious Airway Hyperreactivity is derived by synthesizing the patient's presentation ("Patient followup visit for prior respiratory infection symptoms.") with multi-modal imaging/EHR findings and evidence-based consensus guidelines.
+
+[5] XAI CLINICAL REPORT TEXT OUTPUT:
+### XAI Text Attribution Analysis (Captum Feature Ablation):
+- Target Clinical Query: "Patient followup visit for prior respiratory infection symptoms."
+- Radiological Evaluation: No X-ray provided
+- Longitudinal History Integrated: Yes
+- Top Key Clinical Predictors: visit, prior, respiratory, patient, followup
+- Captum Feature Ablation Plot: Generated (C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\10000032\20260730_111904\query_captum_attribution.png)
+
+================================================================================
+
+FINAL SUMMARY: 4/4 Use Cases Executed Successfully.

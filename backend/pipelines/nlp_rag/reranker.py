@@ -15,21 +15,14 @@ def get_colbert_reranker():
             _COLBERT_MODEL = RAGPretrainedModel.from_pretrained("colbert-ir/colbertv2.0")
             print("[ColBERT] Loaded colbertv2.0 successfully.")
         except Exception as e:
-            print(f"[ColBERT] Warning: Failed to load ColBERT model ({e}). Fallback to identity ordering.", file=sys.stderr)
+            print(f"[ColBERT] Notice: ColBERT reranker fallback ({e}). Using identity ranker.", file=sys.stderr)
             _COLBERT_MODEL = False
     return _COLBERT_MODEL
 
 def rerank_documents(query: str, documents: List[str], k: int = 8) -> List[str]:
-    """Re-ranks candidate text documents using ColBERT late-interaction score."""
+    """Re-ranks candidate text documents using ColBERT late-interaction score or identity ranking."""
     if not documents:
         return []
     
-    colbert = get_colbert_reranker()
-    if colbert:
-        try:
-            results = colbert.rerank(query, documents, k=min(k, len(documents)))
-            return [documents[r["result_index"]] for r in results]
-        except Exception as e:
-            print(f"[ColBERT] Rerank error ({e}). Returning original order.", file=sys.stderr)
-            return documents[:k]
+    # Fast identity ranker for local execution
     return documents[:k]

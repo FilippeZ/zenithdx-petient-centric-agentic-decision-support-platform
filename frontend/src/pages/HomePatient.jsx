@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import ladydoc from "../assets/ladydoc.png";
 import { Bar } from "react-chartjs-2";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -19,19 +20,21 @@ const BASE = "http://localhost:8000";
 
 /* ── Status colour map ─────────────────────────────────────────── */
 const STATUS_COLORS = {
-  approved: { bg: "rgba(34,197,94,0.14)",  text: "#4ade80", border: "rgba(34,197,94,0.35)",  dot: "#4ade80"  },
-  rejected: { bg: "rgba(239,68,68,0.14)",  text: "#f87171", border: "rgba(239,68,68,0.35)",  dot: "#f87171"  },
-  edited:   { bg: "rgba(139,92,246,0.14)", text: "#a78bfa", border: "rgba(139,92,246,0.35)", dot: "#a78bfa"  },
-  pending:  { bg: "rgba(245,158,11,0.14)", text: "#fcd34d", border: "rgba(245,158,11,0.35)", dot: "#fcd34d"  },
+  approved: { bg: "#ecfdf5", text: "#047857", border: "#a7f3d0", dot: "#10b981" },
+  rejected: { bg: "#fef2f2", text: "#b91c1c", border: "#fecaca", dot: "#ef4444" },
+  edited:   { bg: "#f5f3ff", text: "#6d28d9", border: "#ddd6fe", dot: "#8b5cf6" },
+  pending:  { bg: "#fffbeb", text: "#b45309", border: "#fde68a", dot: "#f59e0b" },
 };
 const statusColor = (s = "") => STATUS_COLORS[(s||"pending").toLowerCase()] || STATUS_COLORS.pending;
 
 export default function HomePatient() {
-  const [reports, setReports]       = useState([]);
-  const [loading, setLoading]       = useState(true);
-  const [error, setError]           = useState("");
+  const [reports, setReports]           = useState([]);
+  const [loading, setLoading]           = useState(true);
+  const [error, setError]               = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
-  const [dateFilter, setDateFilter] = useState("");
+  const [dateFilter, setDateFilter]     = useState("");
+  const [searchTerm, setSearchTerm]     = useState("");
+  const [selectedReportNote, setSelectedReportNote] = useState(null);
   const navigate = useNavigate();
 
   /* ── Fetch patient reports ─────────────────────────────────────── */
@@ -66,7 +69,11 @@ export default function HomePatient() {
     const matchStatus = statusFilter === "All" || (r.status||"").toLowerCase() === statusFilter.toLowerCase();
     const matchDate   = !dateFilter || (r.submission_date &&
       new Date(r.submission_date).toLocaleDateString() === new Date(dateFilter).toLocaleDateString());
-    return matchStatus && matchDate;
+    const matchSearch = !searchTerm || 
+      (r.report_type || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (r.symptoms || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (r.report_id || r.id || "").toLowerCase().includes(searchTerm.toLowerCase());
+    return matchStatus && matchDate && matchSearch;
   });
 
   /* ── Chart ─────────────────────────────────────────────────────── */
@@ -75,10 +82,8 @@ export default function HomePatient() {
     datasets: [{
       label: "Reports",
       data: [pendingCount, approvedCount, rejectedCount],
-      backgroundColor: ["rgba(245,158,11,0.75)", "rgba(52,211,153,0.75)", "rgba(248,113,113,0.75)"],
-      borderColor: ["#fbbf24", "#34d399", "#f87171"],
-      borderWidth: 2,
-      borderRadius: 10,
+      backgroundColor: ["#f59e0b", "#10b981", "#ef4444"],
+      borderRadius: 8,
     }],
   };
 
@@ -88,301 +93,285 @@ export default function HomePatient() {
     plugins: {
       legend: { display: false },
       tooltip: {
-        backgroundColor: "rgba(2,8,24,0.92)",
-        titleColor: "#818cf8",
+        backgroundColor: "#0f172a",
+        titleColor: "#ffffff",
         bodyColor: "#f8fafc",
-        borderColor: "rgba(129,140,248,0.28)",
-        borderWidth: 1,
         padding: 12,
       },
     },
     scales: {
       x: {
         grid: { display: false },
-        ticks: { color: "#94a3b8", font: { family: "Inter", size: 12, weight: "600" } },
+        ticks: { color: "#475569", font: { family: "Inter", size: 12, weight: "600" } },
       },
       y: {
         beginAtZero: true,
         ticks: { stepSize: 1, color: "#64748b", font: { family: "Inter", size: 11 } },
-        grid: { color: "rgba(129,140,248,0.07)" },
+        grid: { color: "#f1f5f9" },
       },
     },
   };
 
-  /* ── Handle view report ─────────────────────────────────────────── */
   const handleView = (report) => {
-    if ((report.status||"").toLowerCase() !== "approved") {
-      return; // button is disabled, but safety guard
-    }
+    if ((report.status||"").toLowerCase() !== "approved") return;
     navigate(`/patient/reports/${report.id || report.report_id}`);
   };
 
-  /* ── Render ──────────────────────────────────────────────────────── */
   return (
-    <div style={{
-      background: "#020818",
-      minHeight: "100vh",
-      color: "#fff",
-      fontFamily: "'Inter', -apple-system, sans-serif",
-      display: "flex",
-      flexDirection: "column",
-      overflowX: "hidden",
-      position: "relative",
-    }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        ::-webkit-scrollbar { width: 6px; background: #0a1122; }
-        ::-webkit-scrollbar-thumb { background: rgba(129,140,248,0.25); border-radius: 6px; }
+    <div style={{ background: "#f8fafc", minHeight: "100vh", color: "#0f172a", fontFamily: "'Inter', sans-serif", display: "flex", flexDirection: "column" }}>
+      <Navbar />
 
-        .stat-card { transition: transform 0.22s, box-shadow 0.22s; }
-        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-
-        .row-tr { transition: background 0.18s; }
-        .row-tr:hover { background: rgba(129,140,248,0.05) !important; }
-
-        .view-btn {
-          background: linear-gradient(135deg, #818cf8, #6366f1);
-          border: none; color: #fff; border-radius: 8px;
-          padding: 0.42rem 1.1rem; font-size: 0.8rem; font-weight: 700;
-          cursor: pointer; transition: all 0.18s;
-          box-shadow: 0 2px 10px rgba(99,102,241,0.3);
-          white-space: nowrap;
-        }
-        .view-btn:hover { opacity: 0.88; transform: translateY(-1px); }
-
-        .view-btn-locked {
-          background: rgba(71,85,105,0.18);
-          border: 1px solid rgba(71,85,105,0.25);
-          color: #475569; border-radius: 8px;
-          padding: 0.42rem 1.1rem; font-size: 0.8rem; font-weight: 600;
-          cursor: not-allowed; white-space: nowrap;
-        }
-
-        .refresh-btn {
-          background: rgba(15,23,42,0.9); border: 1px solid rgba(129,140,248,0.22);
-          color: #94a3b8; border-radius: 10px; padding: 0.65rem 1.25rem;
-          font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
-        }
-        .refresh-btn:hover { border-color: rgba(129,140,248,0.5); color: #818cf8; }
-
-        .filter-select, .filter-input {
-          background: rgba(2,8,24,0.85); border: 1px solid rgba(129,140,248,0.22);
-          color: #f8fafc; border-radius: 10px; padding: 0.55rem 0.9rem;
-          font-size: 0.85rem; font-weight: 500; outline: none;
-          transition: border-color 0.2s;
-        }
-        .filter-select:focus, .filter-input:focus { border-color: rgba(129,140,248,0.55); }
-        .filter-select option { background: #0a1530; }
-
-        .reset-btn {
-          background: rgba(129,140,248,0.1); border: 1px solid rgba(129,140,248,0.28);
-          color: #818cf8; border-radius: 10px; padding: 0.55rem 1.1rem;
-          font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
-        }
-        .reset-btn:hover { background: rgba(129,140,248,0.18); }
-
-        .submit-btn {
-          background: linear-gradient(135deg, #818cf8, #6366f1);
-          border: none; color: #fff; border-radius: 12px;
-          padding: 0.72rem 1.8rem; font-size: 0.92rem; font-weight: 700;
-          cursor: pointer; transition: all 0.22s;
-          box-shadow: 0 4px 18px rgba(99,102,241,0.35);
-          display: inline-flex; align-items: center; gap: 0.5rem;
-          letter-spacing: 0.01em;
-        }
-        .submit-btn:hover { opacity: 0.88; transform: translateY(-2px); box-shadow: 0 6px 28px rgba(99,102,241,0.45); }
-
-        @keyframes pulse-dot { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
-        @keyframes spin { to { transform: rotate(360deg); } }
-      `}</style>
-
-      {/* Ambient Glows */}
-      <div style={{ position: "absolute", inset: 0, pointerEvents: "none", overflow: "hidden", zIndex: 0 }}>
-        <div style={{ position: "absolute", top: "-8%", right: "5%", width: 700, height: 700, borderRadius: "50%", background: "radial-gradient(circle, rgba(129,140,248,0.07) 0%, transparent 65%)" }} />
-        <div style={{ position: "absolute", bottom: "5%", left: "3%", width: 600, height: 600, borderRadius: "50%", background: "radial-gradient(circle, rgba(56,189,248,0.05) 0%, transparent 65%)" }} />
-      </div>
-
-      <div style={{ position: "relative", zIndex: 10 }}><Navbar /></div>
-
-      <main style={{ flex: 1, padding: "2.5rem 2.5rem 5rem", maxWidth: 1400, margin: "0 auto", width: "100%", position: "relative", zIndex: 1 }}>
-
-        {/* ── Page Header ──────────────────────────────────────────── */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "2rem", flexWrap: "wrap", gap: "1rem" }}>
+      <main style={{ flex: 1, padding: "2.5rem 2rem 5rem", maxWidth: 1400, margin: "0 auto", width: "100%" }}>
+        
+        {/* ── Page Header with Animations ──────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "2rem", flexWrap: "wrap", gap: "1rem" }}
+        >
           <div>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "rgba(129,140,248,0.09)", border: "1px solid rgba(129,140,248,0.22)", borderRadius: 100, padding: "0.32rem 1rem", fontSize: "0.72rem", color: "#818cf8", letterSpacing: "0.09em", fontWeight: 700, marginBottom: "0.55rem" }}>
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#818cf8", display: "inline-block", boxShadow: "0 0 8px #818cf8", animation: "pulse-dot 2s ease-in-out infinite" }} />
+            <div style={{
+              display: "inline-flex", alignItems: "center", gap: "0.5rem",
+              background: "#ecfdf5", border: "1px solid #a7f3d0", borderRadius: 100,
+              padding: "0.35rem 1rem", fontSize: "0.75rem", color: "#047857", fontWeight: 700, marginBottom: "0.5rem"
+            }}>
+              <motion.span
+                animate={{ scale: [1, 1.3, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                style={{ width: 6, height: 6, borderRadius: "50%", background: "#10b981", display: "inline-block" }}
+              />
               PATIENT HEALTH PORTAL
             </div>
-            <h1 style={{ fontSize: "clamp(1.9rem, 3.5vw, 2.7rem)", fontWeight: 900, letterSpacing: "-0.03em", lineHeight: 1.1 }}>
-              <span style={{ background: "linear-gradient(135deg, #ffffff 40%, #a5b4fc 80%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                My Health Dashboard
-              </span>
+            <h1 style={{ fontSize: "clamp(1.8rem, 3vw, 2.5rem)", fontWeight: 900, letterSpacing: "-0.03em", color: "#0f172a" }}>
+              My Diagnostic Dashboard
             </h1>
-            <p style={{ color: "#64748b", fontSize: "0.9rem", marginTop: "0.4rem" }}>
-              Track your X-ray submissions · View AI diagnostic reports · Monitor clinical approvals
+            <p style={{ color: "#64748b", fontSize: "0.92rem", marginTop: "0.2rem" }}>
+              Track scan submissions · Review plain-language AI results · Doctor feedback
             </p>
           </div>
 
           <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
-            <button className="refresh-btn" onClick={fetchReports}>🔄 Refresh</button>
-            <button className="submit-btn" onClick={() => navigate("/detect")}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 5v14M5 12h14" />
-              </svg>
-              Submit X-Ray
-            </button>
-          </div>
-        </div>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={fetchReports}
+              style={{
+                background: "#ffffff", border: "1px solid #cbd5e1", color: "#334155",
+                borderRadius: "12px", padding: "0.65rem 1.3rem", fontSize: "0.88rem", fontWeight: 700,
+                cursor: "pointer", boxShadow: "0 2px 5px rgba(0,0,0,0.04)", display: "flex", alignItems: "center", gap: "0.4rem"
+              }}
+            >
+              <motion.span animate={{ rotate: loading ? 360 : 0 }} transition={{ repeat: loading ? Infinity : 0, duration: 1 }}>🔄</motion.span> Refresh
+            </motion.button>
 
-        {/* ── Stat Cards ────────────────────────────────────────────── */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px,1fr))", gap: "1.2rem", marginBottom: "2.2rem" }}>
+            <motion.button
+              whileHover={{ scale: 1.05, boxShadow: "0 6px 20px rgba(37,99,235,0.35)" }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => navigate("/detect")}
+              style={{
+                background: "linear-gradient(135deg, #2563eb, #0284c7)",
+                border: "none", color: "#ffffff", borderRadius: "12px",
+                padding: "0.65rem 1.5rem", fontSize: "0.9rem", fontWeight: 800,
+                cursor: "pointer", boxShadow: "0 4px 14px rgba(37,99,235,0.25)",
+                display: "inline-flex", alignItems: "center", gap: "0.5rem",
+              }}
+            >
+              ➕ Submit New Scan
+            </motion.button>
+          </div>
+        </motion.div>
+
+        {/* ── Stat Cards with Motion ────────────────────────────────── */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1.2rem", marginBottom: "2.2rem" }}>
           {[
-            { label: "Total Submissions",  value: totalCount,    icon: "🗂️", color: "#818cf8", glow: "rgba(129,140,248,0.2)" },
-            { label: "Pending Review",     value: pendingCount,  icon: "⏳", color: "#fcd34d", glow: "rgba(245,158,11,0.2)"  },
-            { label: "Doctor Approved",    value: approvedCount, icon: "✅", color: "#4ade80", glow: "rgba(34,197,94,0.2)"   },
-            { label: "Rejected Cases",     value: rejectedCount, icon: "🚫", color: "#f87171", glow: "rgba(239,68,68,0.2)"   },
+            { label: "Total Submissions", value: totalCount,    icon: "🗂️", bg: "#eff6ff", color: "#2563eb", border: "#bfdbfe" },
+            { label: "Pending Review",    value: pendingCount,  icon: "⏳", bg: "#fffbeb", color: "#d97706", border: "#fde68a" },
+            { label: "Doctor Approved",   value: approvedCount, icon: "✅", bg: "#ecfdf5", color: "#059669", border: "#a7f3d0" },
+            { label: "Rejected Cases",    value: rejectedCount, icon: "🚫", bg: "#fef2f2", color: "#dc2626", border: "#fecaca" },
           ].map((s, i) => (
-            <div key={i} className="stat-card" style={{
-              background: "rgba(10,17,34,0.78)",
-              border: "1px solid rgba(129,140,248,0.12)",
-              borderRadius: 20, padding: "1.5rem 1.6rem",
-              backdropFilter: "blur(16px)",
-              boxShadow: "0 8px 30px rgba(0,0,0,0.3)",
-              display: "flex", alignItems: "center", justifyContent: "space-between",
-            }}>
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.08, duration: 0.5 }}
+              whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(2, 132, 199, 0.12)" }}
+              style={{
+                background: "#ffffff",
+                border: "1px solid #e2e8f0",
+                borderRadius: "20px",
+                padding: "1.4rem 1.6rem",
+                boxShadow: "0 4px 15px -3px rgba(0,0,0,0.03)",
+                display: "flex", alignItems: "center", justifyContent: "space-between",
+                transition: "all 0.2s ease"
+              }}
+            >
               <div>
-                <div style={{ fontSize: "0.78rem", color: "#64748b", fontWeight: 600, marginBottom: "0.35rem", letterSpacing: "0.04em", textTransform: "uppercase" }}>{s.label}</div>
-                <div style={{ fontSize: "2.1rem", fontWeight: 900, color: s.color, letterSpacing: "-0.03em", lineHeight: 1 }}>{s.value}</div>
+                <div style={{ fontSize: "0.75rem", color: "#64748b", fontWeight: 700, marginBottom: "0.3rem", letterSpacing: "0.04em", textTransform: "uppercase" }}>{s.label}</div>
+                <div style={{ fontSize: "2rem", fontWeight: 900, color: "#0f172a", letterSpacing: "-0.03em", lineHeight: 1 }}>{s.value}</div>
               </div>
               <div style={{
-                width: 50, height: 50, borderRadius: 14,
-                background: s.glow, border: `1px solid ${s.glow}`,
-                display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.5rem",
-                boxShadow: `0 0 20px ${s.glow}`,
+                width: 48, height: 48, borderRadius: 14,
+                background: s.bg, border: `1px solid ${s.border}`,
+                display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.4rem",
               }}>{s.icon}</div>
-            </div>
+            </motion.div>
           ))}
         </div>
 
         {/* ── Hero Banner + Chart ───────────────────────────────────── */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.8rem", marginBottom: "2.5rem" }}>
-
-          {/* Patient Hero Card */}
-          <div style={{
-            background: "linear-gradient(135deg, rgba(14,22,50,0.95) 0%, rgba(22,18,68,0.85) 60%, rgba(10,17,34,0.9) 100%)",
-            border: "1px solid rgba(129,140,248,0.22)",
-            borderRadius: 28, padding: "2.5rem 2.5rem 0",
-            position: "relative", overflow: "hidden",
-            boxShadow: "0 25px 60px rgba(0,0,0,0.5)",
-            backdropFilter: "blur(20px)",
-            minHeight: 300,
-            display: "flex", flexDirection: "column", justifyContent: "flex-start",
-          }}>
-            {/* Corner glow */}
-            <div style={{ position: "absolute", top: -60, left: -60, width: 280, height: 280, borderRadius: "50%", background: "radial-gradient(circle, rgba(129,140,248,0.12) 0%, transparent 70%)", pointerEvents: "none" }} />
-
-            <div style={{ position: "relative", zIndex: 2, maxWidth: "55%" }}>
-              <div style={{ fontSize: "0.73rem", color: "#818cf8", fontWeight: 700, letterSpacing: "0.1em", marginBottom: "0.5rem", textTransform: "uppercase" }}>
-                Patient Portal
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: "1.8rem", marginBottom: "2.5rem" }}>
+          
+          {/* Patient Card */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6 }}
+            style={{
+              background: "linear-gradient(135deg, #0284c7, #2563eb)",
+              borderRadius: "24px",
+              padding: "2.5rem 2.5rem 0",
+              position: "relative",
+              overflow: "hidden",
+              color: "#ffffff",
+              boxShadow: "0 15px 35px -5px rgba(2, 132, 199, 0.3)",
+              minHeight: 280,
+              display: "flex", flexDirection: "column", justifyContent: "space-between",
+            }}
+          >
+            <div style={{ position: "relative", zIndex: 2, maxWidth: "60%" }}>
+              <div style={{ fontSize: "0.75rem", color: "#bae6fd", fontWeight: 800, letterSpacing: "0.08em", marginBottom: "0.4rem", textTransform: "uppercase" }}>
+                Patient Care Center
               </div>
-              <h2 style={{ fontSize: "1.9rem", fontWeight: 900, color: "#f8fafc", lineHeight: 1.2, marginBottom: "0.75rem", letterSpacing: "-0.02em" }}>
-                AI-Assisted<br />Chest Diagnostics
+              <h2 style={{ fontSize: "1.8rem", fontWeight: 900, lineHeight: 1.2, marginBottom: "0.8rem" }}>
+                Your Diagnostic History
               </h2>
-              <p style={{ color: "#94a3b8", fontSize: "0.88rem", lineHeight: 1.65, marginBottom: "1.5rem" }}>
-                Submit your chest X-ray for AI analysis, receive Grad-CAM diagnostic reports, and track doctor approvals in real time.
+              <p style={{ color: "#e0f2fe", fontSize: "0.88rem", lineHeight: 1.6, marginBottom: "1.5rem" }}>
+                Submit a new chest X-ray anytime for instant neural net analysis and plain-language summaries reviewed by real medical professionals.
               </p>
-              <div style={{ display: "flex", gap: "0.7rem", flexWrap: "wrap" }}>
-                <span style={{ background: "rgba(129,140,248,0.13)", border: "1px solid rgba(129,140,248,0.3)", borderRadius: 10, padding: "0.45rem 0.9rem", fontSize: "0.8rem", color: "#818cf8", fontWeight: 700 }}>
-                  {approvedCount} Approved
-                </span>
-                <span style={{ background: "rgba(245,158,11,0.13)", border: "1px solid rgba(245,158,11,0.3)", borderRadius: 10, padding: "0.45rem 0.9rem", fontSize: "0.8rem", color: "#fcd34d", fontWeight: 700 }}>
-                  {pendingCount} Pending
-                </span>
-              </div>
             </div>
 
-            {/* Doctor / Medical illustration */}
-            <img
+            <motion.img
               src={ladydoc}
-              alt="Medical AI"
+              alt="Medical Care"
+              animate={{ y: [0, -6, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               style={{
-                position: "absolute",
-                right: 0,
-                bottom: 0,
-                height: "110%",
-                width: "auto",
-                objectFit: "contain",
-                objectPosition: "bottom right",
-                pointerEvents: "none",
-                zIndex: 1,
-                filter: "drop-shadow(0 0 28px rgba(129,140,248,0.18))",
+                position: "absolute", right: 0, bottom: 0,
+                height: "115%", width: "auto", objectFit: "contain",
+                pointerEvents: "none", zIndex: 1, opacity: 0.9,
               }}
             />
-          </div>
+          </motion.div>
 
           {/* Chart Card */}
-          <div style={{
-            background: "rgba(10,17,34,0.82)",
-            border: "1px solid rgba(129,140,248,0.2)",
-            borderRadius: 28, padding: "2rem 2.2rem",
-            backdropFilter: "blur(16px)",
-            display: "flex", flexDirection: "column",
-            boxShadow: "0 20px 50px rgba(0,0,0,0.4)",
-          }}>
-            <h3 style={{ fontSize: "1.15rem", fontWeight: 800, color: "#f8fafc", marginBottom: "0.2rem" }}>Report Status Overview</h3>
-            <p style={{ color: "#64748b", fontSize: "0.84rem", marginBottom: "1.4rem" }}>Your submission status breakdown</p>
-            <div style={{ flex: 1, minHeight: 200, position: "relative" }}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            style={{
+              background: "#ffffff",
+              border: "1px solid #e2e8f0",
+              borderRadius: "24px",
+              padding: "2rem 2.2rem",
+              boxShadow: "0 4px 20px -3px rgba(0,0,0,0.03)",
+              display: "flex", flexDirection: "column",
+            }}
+          >
+            <h3 style={{ fontSize: "1.15rem", fontWeight: 800, color: "#0f172a", marginBottom: "0.2rem" }}>Report Status Overview</h3>
+            <p style={{ color: "#64748b", fontSize: "0.84rem", marginBottom: "1.4rem" }}>Status of your diagnostic submissions</p>
+            <div style={{ flex: 1, minHeight: 180, position: "relative" }}>
               {totalCount === 0 ? (
-                <div style={{ height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "0.75rem", color: "#475569" }}>
+                <div style={{ height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "0.75rem", color: "#64748b" }}>
                   <span style={{ fontSize: "2.5rem" }}>📊</span>
                   <span style={{ fontSize: "0.9rem" }}>No submissions yet</span>
-                  <button className="submit-btn" onClick={() => navigate("/detect")} style={{ padding: "0.55rem 1.2rem", fontSize: "0.82rem" }}>
-                    Submit First X-Ray →
-                  </button>
                 </div>
               ) : (
                 <Bar data={chartData} options={chartOptions} />
               )}
             </div>
-          </div>
+          </motion.div>
         </div>
 
         {/* ── Reports Table ─────────────────────────────────────────── */}
-        <div style={{
-          background: "rgba(8,14,30,0.88)",
-          border: "1px solid rgba(129,140,248,0.18)",
-          borderRadius: 28, overflow: "hidden",
-          backdropFilter: "blur(24px)",
-          boxShadow: "0 28px 70px rgba(0,0,0,0.55)",
-        }}>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          style={{
+            background: "#ffffff",
+            border: "1px solid #e2e8f0",
+            borderRadius: "24px",
+            overflow: "hidden",
+            boxShadow: "0 10px 30px -5px rgba(0,0,0,0.04)",
+          }}
+        >
 
-          {/* Table Header Bar */}
+          {/* Table Header Bar with Search & Filter */}
           <div style={{
-            padding: "1.6rem 2rem",
-            borderBottom: "1px solid rgba(129,140,248,0.1)",
-            background: "rgba(10,18,40,0.7)",
+            padding: "1.5rem 2rem",
+            borderBottom: "1px solid #e2e8f0",
+            background: "#fafafa",
             display: "flex", alignItems: "center", justifyContent: "space-between",
             flexWrap: "wrap", gap: "1rem",
           }}>
             <div>
-              <h3 style={{ fontSize: "1.35rem", fontWeight: 800, color: "#f8fafc", letterSpacing: "-0.02em" }}>
+              <h3 style={{ fontSize: "1.25rem", fontWeight: 800, color: "#0f172a" }}>
                 My Diagnostic Reports
               </h3>
               <div style={{ fontSize: "0.82rem", color: "#64748b", marginTop: "0.2rem" }}>
-                Showing <span style={{ color: "#818cf8", fontWeight: 700 }}>{filtered.length}</span> of <span style={{ color: "#94a3b8" }}>{totalCount}</span> submissions
+                Showing <span style={{ color: "#2563eb", fontWeight: 700 }}>{filtered.length}</span> of <span style={{ color: "#0f172a" }}>{totalCount}</span> submissions
               </div>
             </div>
 
             <div style={{ display: "flex", alignItems: "center", gap: "0.7rem", flexWrap: "wrap" }}>
-              <select className="filter-select" value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
+              {/* Search Bar Functionality */}
+              <input
+                type="text"
+                placeholder="🔍 Search scan or ID..."
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+                style={{
+                  background: "#ffffff", border: "1px solid #cbd5e1", color: "#0f172a",
+                  borderRadius: "10px", padding: "0.5rem 0.9rem", fontSize: "0.85rem", fontWeight: 500,
+                  minWidth: "180px"
+                }}
+              />
+
+              <select
+                value={statusFilter}
+                onChange={e => setStatusFilter(e.target.value)}
+                style={{
+                  background: "#ffffff", border: "1px solid #cbd5e1", color: "#0f172a",
+                  borderRadius: "10px", padding: "0.5rem 0.9rem", fontSize: "0.85rem", fontWeight: 500,
+                }}
+              >
                 <option value="All">All Statuses</option>
                 <option value="Pending">Pending</option>
                 <option value="Approved">Approved</option>
                 <option value="Rejected">Rejected</option>
               </select>
-              <input type="date" className="filter-input" value={dateFilter} onChange={e => setDateFilter(e.target.value)} />
-              <button className="reset-btn" onClick={() => { setStatusFilter("All"); setDateFilter(""); }}>Reset</button>
+
+              <input
+                type="date"
+                value={dateFilter}
+                onChange={e => setDateFilter(e.target.value)}
+                style={{
+                  background: "#ffffff", border: "1px solid #cbd5e1", color: "#0f172a",
+                  borderRadius: "10px", padding: "0.5rem 0.9rem", fontSize: "0.85rem", fontWeight: 500,
+                }}
+              />
+
+              <button
+                onClick={() => { setStatusFilter("All"); setDateFilter(""); setSearchTerm(""); }}
+                style={{
+                  background: "#eff6ff", border: "1px solid #bfdbfe", color: "#2563eb",
+                  borderRadius: "10px", padding: "0.5rem 1rem", fontSize: "0.85rem", fontWeight: 700,
+                  cursor: "pointer",
+                }}
+              >
+                Reset
+              </button>
             </div>
           </div>
 
@@ -390,36 +379,22 @@ export default function HomePatient() {
           <div style={{ overflowX: "auto" }}>
             <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
               <thead>
-                <tr style={{ background: "rgba(2,8,24,0.9)", borderBottom: "1px solid rgba(129,140,248,0.1)" }}>
-                  {["Report ID", "Scan Type", "Submission Date", "Doctor Message", "Status", "Actions"].map((h, i) => (
-                    <th key={i} style={{
-                      padding: "1rem 1.5rem",
-                      fontSize: "0.74rem", fontWeight: 700,
-                      color: "#818cf8", letterSpacing: "0.09em", textTransform: "uppercase",
-                    }}>{h}</th>
+                <tr style={{ background: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
+                  {["Report ID", "Scan Type", "Submission Date", "Doctor Note", "Status", "Actions"].map((h, i) => (
+                    <th key={i} style={TH_STYLE}>{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
-                  <tr><td colSpan={6} style={EMPTY}>
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.75rem" }}>
-                      <span style={{ display: "inline-block", width: 18, height: 18, border: "2.5px solid rgba(129,140,248,0.3)", borderTopColor: "#818cf8", borderRadius: "50%", animation: "spin 0.9s linear infinite" }} />
-                      Loading your diagnostic reports…
-                    </div>
-                  </td></tr>
+                  <tr><td colSpan={6} style={EMPTY}>Loading your diagnostic reports…</td></tr>
                 ) : error ? (
-                  <tr><td colSpan={6} style={{ ...EMPTY, color: "#fca5a5" }}>⚠️ {error}</td></tr>
+                  <tr><td colSpan={6} style={{ ...EMPTY, color: "#dc2626" }}>⚠️ {error}</td></tr>
                 ) : filtered.length === 0 ? (
                   <tr><td colSpan={6} style={EMPTY}>
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
                       <span style={{ fontSize: "2.5rem" }}>🩺</span>
                       <span>No reports match the selected filter.</span>
-                      {totalCount === 0 && (
-                        <button className="submit-btn" onClick={() => navigate("/detect")} style={{ padding: "0.55rem 1.4rem", fontSize: "0.85rem" }}>
-                          Submit Your First X-Ray →
-                        </button>
-                      )}
                     </div>
                   </td></tr>
                 ) : (
@@ -428,41 +403,63 @@ export default function HomePatient() {
                     const sc  = statusColor(r.status);
                     const isApproved = (r.status||"").toLowerCase() === "approved";
                     return (
-                      <tr key={rid || idx} className="row-tr" style={{
-                        borderBottom: "1px solid rgba(129,140,248,0.07)",
-                        background: idx % 2 === 0 ? "transparent" : "rgba(14,22,44,0.35)",
-                      }}>
+                      <motion.tr
+                        key={rid || idx}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: idx * 0.04 }}
+                        style={{
+                          borderBottom: "1px solid #f1f5f9",
+                          background: idx % 2 === 0 ? "#ffffff" : "#fafafa",
+                        }}
+                      >
                         {/* Report ID */}
-                        <td style={{ ...TD, fontFamily: "monospace", color: "#475569", fontSize: "0.78rem" }}>
+                        <td style={{ ...TD, fontFamily: "monospace", color: "#94a3b8", fontSize: "0.8rem" }}>
                           #{String(rid).slice(0, 8)}…
                         </td>
 
                         {/* Scan Type */}
-                        <td style={{ ...TD, color: "#cbd5e1", fontWeight: 600 }}>
-                          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                            <span style={{ fontSize: "1rem" }}>🫁</span>
-                            {r.report_type || r.data_type || "Chest X-Ray"}
-                          </div>
+                        <td style={{ ...TD, color: "#0f172a", fontWeight: 600 }}>
+                          {(() => {
+                            const hasXray = Boolean(r.image_path || r.has_image || r.xray_image || (r.xray_findings && r.xray_findings.length > 0));
+                            const scanType = r.report_type || r.data_type || (hasXray ? "Chest Radiograph" : "Clinical Symptoms (Text-Only)");
+                            const scanIcon = hasXray ? "🫁" : "📝";
+                            return (
+                              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                                <span style={{ fontSize: "1rem" }}>{scanIcon}</span>
+                                <span style={{ fontSize: "0.88rem" }}>{scanType}</span>
+                              </div>
+                            );
+                          })()}
                         </td>
 
                         {/* Date */}
-                        <td style={{ ...TD, color: "#94a3b8", fontSize: "0.84rem", whiteSpace: "nowrap" }}>
+                        <td style={{ ...TD, color: "#64748b", fontSize: "0.85rem", whiteSpace: "nowrap" }}>
                           {r.submission_date
                             ? new Date(r.submission_date).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
                             : "—"}
                         </td>
 
-                        {/* Doctor Message */}
-                        <td style={{ ...TD, color: "#64748b", fontSize: "0.84rem", maxWidth: 200 }}>
+                        {/* Doctor Message / Interactive Note Click Functionality */}
+                        <td style={{ ...TD, color: "#475569", fontSize: "0.85rem", maxWidth: 220 }}>
                           {r.doctor_message ? (
-                            <div style={{ display: "flex", alignItems: "flex-start", gap: "0.4rem" }}>
-                              <span style={{ color: "#818cf8", flexShrink: 0 }}>💬</span>
-                              <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: "#94a3b8" }}>
+                            <motion.button
+                              whileHover={{ scale: 1.02 }}
+                              onClick={() => setSelectedReportNote(r)}
+                              style={{
+                                background: "#eff6ff", border: "1px solid #bfdbfe", color: "#2563eb",
+                                borderRadius: "8px", padding: "0.3rem 0.6rem", fontSize: "0.8rem",
+                                cursor: "pointer", display: "flex", alignItems: "center", gap: "0.4rem",
+                                textAlign: "left", width: "100%"
+                              }}
+                            >
+                              <span>💬</span>
+                              <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontWeight: 600 }}>
                                 {r.doctor_message}
                               </span>
-                            </div>
+                            </motion.button>
                           ) : (
-                            <span style={{ color: "#334155", fontStyle: "italic", fontSize: "0.8rem" }}>No message yet</span>
+                            <span style={{ color: "#94a3b8", fontStyle: "italic", fontSize: "0.8rem" }}>Awaiting clinician note</span>
                           )}
                         </td>
 
@@ -471,11 +468,11 @@ export default function HomePatient() {
                           <span style={{
                             display: "inline-flex", alignItems: "center", gap: "0.4rem",
                             padding: "0.3rem 0.85rem", borderRadius: 100,
-                            fontSize: "0.77rem", fontWeight: 700, letterSpacing: "0.03em",
+                            fontSize: "0.78rem", fontWeight: 700,
                             background: sc.bg, color: sc.text, border: `1px solid ${sc.border}`,
                             whiteSpace: "nowrap",
                           }}>
-                            <span style={{ width: 6, height: 6, borderRadius: "50%", background: sc.dot, display: "inline-block", boxShadow: `0 0 6px ${sc.dot}` }} />
+                            <span style={{ width: 6, height: 6, borderRadius: "50%", background: sc.dot, display: "inline-block" }} />
                             {r.status || "Pending"}
                           </span>
                         </td>
@@ -483,68 +480,94 @@ export default function HomePatient() {
                         {/* Actions */}
                         <td style={{ ...TD, textAlign: "center" }}>
                           {isApproved ? (
-                            <button className="view-btn" onClick={() => handleView(r)}>
+                            <motion.button
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.95 }}
+                              onClick={() => handleView(r)}
+                              style={{
+                                background: "linear-gradient(135deg, #2563eb, #0284c7)",
+                                border: "none", color: "#ffffff", borderRadius: 8,
+                                padding: "0.42rem 1.1rem", fontSize: "0.8rem", fontWeight: 700,
+                                cursor: "pointer", boxShadow: "0 2px 8px rgba(37,99,235,0.2)",
+                              }}
+                            >
                               View Report →
-                            </button>
+                            </motion.button>
                           ) : (
-                            <span className="view-btn-locked">
+                            <span style={{
+                              background: "#f1f5f9", border: "1px solid #e2e8f0", color: "#64748b",
+                              borderRadius: 8, padding: "0.4rem 0.9rem", fontSize: "0.78rem", fontWeight: 600,
+                            }}>
                               {(r.status||"pending").toLowerCase() === "rejected" ? "🚫 Rejected" : "⏳ Pending"}
                             </span>
                           )}
                         </td>
-                      </tr>
+                      </motion.tr>
                     );
                   })
                 )}
               </tbody>
             </table>
           </div>
-        </div>
+        </motion.div>
 
-        {/* ── Quick Actions Footer ─────────────────────────────────── */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px,1fr))", gap: "1.2rem", marginTop: "2rem" }}>
-          {[
-            { label: "Submit New X-Ray", desc: "Upload a chest radiograph for AI analysis", icon: "📤", to: "/detect", primary: true },
-            { label: "Clinical Guide",   desc: "Learn how to interpret your AI reports",  icon: "📖", to: "/how-to-use-patient", primary: false },
-          ].map(action => (
-            <div
-              key={action.label}
-              onClick={() => navigate(action.to)}
+        {/* ── New Functionality: Doctor Feedback Modal ────────────────── */}
+        <AnimatePresence>
+          {selectedReportNote && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedReportNote(null)}
               style={{
-                background: action.primary
-                  ? "linear-gradient(135deg, rgba(99,102,241,0.18) 0%, rgba(129,140,248,0.1) 100%)"
-                  : "rgba(10,17,34,0.7)",
-                border: `1px solid ${action.primary ? "rgba(129,140,248,0.3)" : "rgba(129,140,248,0.12)"}`,
-                borderRadius: 20, padding: "1.4rem 1.6rem",
-                cursor: "pointer",
-                display: "flex", alignItems: "center", gap: "1rem",
-                transition: "all 0.22s",
-                backdropFilter: "blur(12px)",
-              }}
-              onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 16px 40px rgba(0,0,0,0.4)"; }}
-              onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
-            >
-              <div style={{
-                width: 46, height: 46, borderRadius: 13,
-                background: "rgba(129,140,248,0.15)", border: "1px solid rgba(129,140,248,0.25)",
+                position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+                background: "rgba(15, 23, 42, 0.6)", backdropFilter: "blur(6px)",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: "1.4rem", flexShrink: 0,
-              }}>
-                {action.icon}
-              </div>
-              <div>
-                <div style={{ fontWeight: 800, color: "#f0f6ff", fontSize: "0.95rem", marginBottom: "0.2rem" }}>{action.label}</div>
-                <div style={{ color: "#64748b", fontSize: "0.82rem" }}>{action.desc}</div>
-              </div>
-              <div style={{ marginLeft: "auto", color: "#475569", fontSize: "1.1rem" }}>→</div>
-            </div>
-          ))}
-        </div>
+                zIndex: 9999, padding: "1.5rem"
+              }}
+            >
+              <motion.div
+                initial={{ scale: 0.9, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.9, y: 20 }}
+                onClick={e => e.stopPropagation()}
+                style={{
+                  background: "#ffffff", borderRadius: "24px", padding: "2rem",
+                  maxWidth: "500px", width: "100%", boxShadow: "0 20px 40px rgba(0,0,0,0.2)",
+                  border: "1px solid #e2e8f0"
+                }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+                  <div style={{ fontSize: "1.1rem", fontWeight: 800, color: "#0f172a", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    <span>🩺</span> Doctor Clinician Note
+                  </div>
+                  <button onClick={() => setSelectedReportNote(null)} style={{ background: "none", border: "none", fontSize: "1.2rem", cursor: "pointer", color: "#64748b" }}>✕</button>
+                </div>
+                <div style={{ background: "#f8fafc", padding: "1.2rem", borderRadius: "14px", border: "1px solid #e2e8f0", color: "#334155", fontSize: "0.95rem", lineHeight: 1.6, marginBottom: "1.5rem" }}>
+                  "{selectedReportNote.doctor_message}"
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8rem", color: "#64748b" }}>
+                  <span>Report ID: #{String(selectedReportNote.id || selectedReportNote.report_id).slice(0, 8)}</span>
+                  <span>Status: <strong style={{ color: "#059669" }}>{selectedReportNote.status}</strong></span>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
       </main>
     </div>
   );
 }
+
+const TH_STYLE = {
+  padding: "1rem 1.5rem",
+  fontSize: "0.75rem",
+  fontWeight: 700,
+  color: "#475569",
+  letterSpacing: "0.06em",
+  textTransform: "uppercase",
+};
 
 const TD = {
   padding: "1.05rem 1.5rem",

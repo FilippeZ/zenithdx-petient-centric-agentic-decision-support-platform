@@ -38,7 +38,7 @@ def planner_node(state: AgentState) -> dict:
     if state.metadata.get("patient_id"):
         plan.extend(["history_diag", "history_rag_web_enrichment"])
     plan.append("consistency_check")
-    return {"plan": plan}
+    return {"plan": plan, "intermediate_steps": [], "context_cache": {}}
 
 def get_last_report(state: AgentState) -> str:
     for step in reversed(state.intermediate_steps):
@@ -60,10 +60,22 @@ def react_agent_node(state: AgentState) -> dict:
     xray_image = str(metadata.get("image_path", ""))
     patient_id = metadata.get("patient_id")
 
+    # Pre-fetch patient history if patient_id is present and history not yet cached
+    if patient_id and "history_text" not in cache:
+        try:
+            rel_visits, _, visit_texts, _ = run_ehr_analysis(user_query, cache.get("xray_findings", []), patient_id)
+            cache["history_text"] = visit_texts
+            cache["history_retrieved"] = len(visit_texts) > 0
+            cache["relevant_visits"] = rel_visits
+        except Exception as e:
+            print(f"[AgentLoop] Warning pre-fetching patient history: {e}", file=sys.stderr)
+
+    history_texts = cache.get("history_text")
+
     print(f"\n[Agent Debug] [react_agent_node] Step: {next_tool}")
 
     if next_tool == "query_diag":
-        prompt = generate_initial_prompt(user_query)
+        prompt = generate_initial_prompt(user_query, history_text=history_texts)
         diagnosis_report = llm_generate(prompt)
         new_action = AgentAction(
             tool_name=next_tool,
@@ -82,7 +94,7 @@ def react_agent_node(state: AgentState) -> dict:
         rag = str(rag)[:1000]
         cache["rag_query"] = rag
         tool_input = {"prev_diag": prev_diag, "rag": rag, "web_context": cache.get("web_context_query"), "query": user_query}
-        prompt = generate_rag_web_enrichment_prompt(prev_diag=prev_diag, rag=rag, web_context=cache["web_context_query"], user_query=user_query)
+        prompt = generate_rag_web_enrichment_prompt(prev_diag=prev_diag, rag=rag, web_context=cache["web_context_query"], user_query=user_query, history_text=history_texts)
         diagnosis_report = llm_generate(prompt)
         new_action = AgentAction(tool_name=next_tool, tool_input=tool_input, tool_output=diagnosis_report)
         return {"intermediate_steps": state.intermediate_steps + [new_action], "context_cache": cache}
@@ -100,13 +112,14 @@ def react_agent_node(state: AgentState) -> dict:
         paths = result.get("paths", {})
         cache["original_xray_path"] = paths.get("original")
         cache["gradcam_overlay_path"] = paths.get("gradcam_overlay")
+        cache["gradcam_segmented_path"] = paths.get("gradcam_segmented")
         cache["captum_image_path"] = paths.get("captum_image")
         if result.get("captum"):
             cache["cloud_top_words"] = result["captum"].get("top_words", [])
 
         prev_diag = get_last_report(state)
         tool_input = {"prev_diag": prev_diag, "xray_findings": xray_findings, "user_query": user_query}
-        prompt = generate_image_enrichment_prompt(prev_diag=prev_diag, xray_findings=xray_findings, user_query=user_query)
+        prompt = generate_image_enrichment_prompt(prev_diag=prev_diag, xray_findings=xray_findings, user_query=user_query, history_text=history_texts)
         diagnosis_report = llm_generate(prompt)
         new_action = AgentAction(tool_name=next_tool, tool_input=tool_input, tool_output=diagnosis_report)
         return {"intermediate_steps": state.intermediate_steps + [new_action], "context_cache": cache}
@@ -120,7 +133,7 @@ def react_agent_node(state: AgentState) -> dict:
         cache["rag_image"] = str(rag)[:1000] if rag else ""
         prev_diag = get_last_report(state)
         tool_input = {"prev_diag": prev_diag, "rag": cache["rag_image"], "web_context": cache["web_context_image"], "xray_findings": xray_findings, "user_query": user_query}
-        prompt = generate_image_rag_web_enrichment_prompt(prev_diag=prev_diag, rag=cache["rag_image"], web_context=cache["web_context_image"], xray_findings=xray_findings, user_query=user_query)
+        prompt = generate_image_rag_web_enrichment_prompt(prev_diag=prev_diag, rag=cache["rag_image"], web_context=cache["web_context_image"], xray_findings=xray_findings, user_query=user_query, history_text=history_texts)
         diagnosis_report = llm_generate(prompt)
         new_action = AgentAction(tool_name=next_tool, tool_input=tool_input, tool_output=diagnosis_report)
         return {"intermediate_steps": state.intermediate_steps + [new_action], "context_cache": cache}
@@ -131,8 +144,13 @@ def react_agent_node(state: AgentState) -> dict:
             return {"intermediate_steps": state.intermediate_steps + [completed_action], "context_cache": cache}
         
         image_labels = cache.get("xray_findings", [])
-        rel_visits, _, visit_texts, _ = run_ehr_analysis(user_query, image_labels, patient_id)
-        cache["history_text"] = visit_texts
+        if "history_text" not in cache:
+            rel_visits, _, visit_texts, _ = run_ehr_analysis(user_query, image_labels, patient_id)
+            cache["history_text"] = visit_texts
+            cache["history_retrieved"] = len(visit_texts) > 0
+            cache["relevant_visits"] = rel_visits
+        else:
+            visit_texts = cache["history_text"]
         prev_diag = get_last_report(state)
         tool_input = {"prev_diag": prev_diag, "history": visit_texts, "user_query": user_query, "xray_findings": image_labels}
         prompt = generate_history_enrichment_prompt(prev_diag=prev_diag, history_text=visit_texts, user_query=user_query, xray_findings=image_labels)
@@ -155,7 +173,7 @@ def react_agent_node(state: AgentState) -> dict:
         xray_findings = cache.get("xray_findings", [])
         history = cache.get("history_text", "")
         tool_input = {"final_diag": prev_diag, "query": user_query, "xray_findings": xray_findings, "history": history}
-        prompt = generate_consistency_prompt(final_diag=prev_diag, query=user_query, xray_findings=xray_findings, history=history)
+        prompt = generate_consistency_prompt(final_diag=prev_diag, user_query=user_query, xray_findings=xray_findings, history_text=history)
         diagnosis_report = llm_generate(prompt)
         new_action = AgentAction(tool_name=next_tool, tool_input=tool_input, tool_output=diagnosis_report)
         return {"intermediate_steps": state.intermediate_steps + [new_action], "context_cache": cache}
@@ -188,12 +206,24 @@ def final_answer_node(state: AgentState) -> dict:
     run_ts = datetime.now().strftime("%Y%m%d_%H%M%S")
     session_dir = str(settings.OUTPUT_DIR / user_id / run_ts)
 
+    history_texts = context_cache.get("history_text", [])
+    history_retrieved = bool(context_cache.get("history_retrieved", False))
+    if not history_texts or (isinstance(history_texts, list) and len(history_texts) == 0):
+        history_retrieved = False
+        history_str = None
+    else:
+        history_str = "\n".join(history_texts) if isinstance(history_texts, list) else str(history_texts)
+
+    xray_findings = context_cache.get("xray_findings", [])
+    has_image = bool(state.metadata.get("image_path")) and len(xray_findings) > 0
+
     try:
         xai_dict = enrich_with_captum_xai(
             answer=answer,
             query=state.input,
-            xray_findings=", ".join(context_cache.get("xray_findings", [])),
-            history=str(context_cache.get("history_text", "")),
+            xray_findings=", ".join(xray_findings) if has_image else None,
+            history=history_str,
+            history_retrieved=history_retrieved,
             user_id=user_id,
             out_dir=session_dir
         )
@@ -206,11 +236,14 @@ def final_answer_node(state: AgentState) -> dict:
     agent_output = {
         "diagnosis": answer or "[No diagnosis generated]",
         "xai_report": xai_dict.get("explain_text") or "No XAI explanation generated.",
-        "classification_results": cls_results,
-        "original_xray": context_cache.get("original_xray_path"),
-        "gradcam_overlay": context_cache.get("gradcam_overlay_path"),
+        "classification_results": cls_results if has_image else [],
+        "original_xray": context_cache.get("original_xray_path") if has_image else None,
+        "gradcam_overlay": context_cache.get("gradcam_overlay_path") if has_image else None,
+        "gradcam_segmented": context_cache.get("gradcam_segmented_path") if has_image else None,
         "captum_image": context_cache.get("captum_image_path") or xai_dict.get("captum_image"),
         "top_words": context_cache.get("cloud_top_words") or xai_dict.get("top_words", {}),
+        "history_retrieved": history_retrieved,
+        "history_text": history_str if history_retrieved else None,
     }
     for k, v in xai_dict.items():
         if k.startswith("captum_"):

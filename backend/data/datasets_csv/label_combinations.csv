@@ -1,0 +1,61 @@
+,count
+(none),11405
+Lung Opacity,10130
+Atelectasis,5596
+Pneumonia,3127
+Edema,3088
+Atelectasis|Lung Opacity,2580
+Lung Opacity|Pneumonia,2204
+Lung Lesion,1363
+Edema|Lung Opacity,1089
+Lung Lesion|Lung Opacity,954
+Consolidation,850
+Atelectasis|Lung Opacity|Pneumonia,572
+Atelectasis|Pneumonia,387
+Consolidation|Pneumonia,355
+Consolidation|Lung Opacity,330
+Edema|Pneumonia,306
+Atelectasis|Edema,306
+Edema|Lung Opacity|Pneumonia,301
+Lung Lesion|Lung Opacity|Pneumonia,175
+Atelectasis|Edema|Lung Opacity,158
+Atelectasis|Consolidation,145
+Atelectasis|Lung Lesion,145
+Atelectasis|Lung Lesion|Lung Opacity,134
+Consolidation|Edema,118
+Consolidation|Lung Opacity|Pneumonia,110
+Atelectasis|Consolidation|Lung Opacity,85
+Lung Lesion|Pneumonia,79
+Consolidation|Lung Lesion|Lung Opacity,49
+Consolidation|Lung Lesion,48
+Atelectasis|Consolidation|Pneumonia,47
+Consolidation|Edema|Lung Opacity,43
+Consolidation|Edema|Pneumonia,41
+Atelectasis|Edema|Lung Opacity|Pneumonia,40
+Edema|Lung Lesion|Lung Opacity,40
+Edema|Lung Lesion,30
+Atelectasis|Lung Lesion|Lung Opacity|Pneumonia,25
+Consolidation|Lung Lesion|Pneumonia,20
+Consolidation|Edema|Lung Opacity|Pneumonia,20
+Atelectasis|Edema|Pneumonia,20
+Atelectasis|Consolidation|Edema,18
+Consolidation|Lung Lesion|Lung Opacity|Pneumonia,16
+Atelectasis|Consolidation|Lung Opacity|Pneumonia,15
+Edema|Lung Lesion|Lung Opacity|Pneumonia,13
+Atelectasis|Consolidation|Lung Lesion,10
+Consolidation|Edema|Lung Lesion|Lung Opacity,8
+Atelectasis|Consolidation|Edema|Lung Opacity,7
+Atelectasis|Lung Lesion|Pneumonia,7
+Atelectasis|Consolidation|Edema|Pneumonia,5
+Consolidation|Edema|Lung Lesion|Lung Opacity|Pneumonia,5
+Atelectasis|Consolidation|Lung Lesion|Lung Opacity,5
+Consolidation|Edema|Lung Lesion,4
+Consolidation|Edema|Lung Lesion|Pneumonia,4
+Atelectasis|Edema|Lung Lesion,4
+Atelectasis|Edema|Lung Lesion|Lung Opacity,4
+Edema|Lung Lesion|Pneumonia,3
+Atelectasis|Consolidation|Lung Lesion|Lung Opacity|Pneumonia,2
+Atelectasis|Consolidation|Edema|Lung Opacity|Pneumonia,2
+Atelectasis|Consolidation|Lung Lesion|Pneumonia,1
+Atelectasis|Edema|Lung Lesion|Lung Opacity|Pneumonia,1
+Atelectasis|Consolidation|Edema|Lung Lesion|Pneumonia,1

@@ -1,0 +1,974 @@
+[
+  {
+    "case": {
+      "id": 1,
+      "title": "Multimodal Acute Bacterial Pneumonia Consultation",
+      "symptoms": "I have acute chest pain, persistent productive cough, shortness of breath, and high fever (38.8C).",
+      "image_path": "pneumonia.jpeg",
+      "patient_id": "79407290-14fd-4316-a9b2-8b7f8df2196a"
+    },
+    "elapsed": 414.8,
+    "out": {
+      "diagnosis": "### **Clinical Assessment**\n\nThe patient presents with acute chest pain, persistent productive cough, shortness of breath, and high fever (38.8C). The clinical evaluation is based solely on the reported symptoms.\n\n### **Differential Diagnosis**\n\n1.  Pneumonia\n2.  Pulmonary embolism\n3.  Acute bronchitis\n4.  Influenza\n5.  Tuberculosis\n6.  Bronchiectasis\n\nThese conditions are considered in light of the patient's respiratory symptoms, fever, and productive cough.\n\n### **Final Diagnosis**\n\nBased on the clinical presentation, the most likely diagnosis is pneumonia.\n\n### **Diagnostic Rationale & Explanation**\n\nThe presence of acute chest pain, persistent productive cough, shortness of breath, and high fever (38.8C) in a patient with a history of respiratory symptoms (dysphagia, unspecified) suggests an infectious process. The recent admission for OTH SEQUELA, CHR LIV DIS (ICD: 5728) may be related to the current presentation, as pneumonia can occur as a complication of previous infections or inflammatory conditions.\n\nThe patient's vital signs show tachycardia (heart rate: 81.0), mild hypotension (blood pressure: 148.0/83.0), and respiratory distress (respiratory rate: 16.0). The oxygen saturation is normal (O2sat: 100.0).\n\nGiven the patient's history of multiple admissions for various conditions, it is essential to consider all possible causes of acute chest pain and productive cough.\n\n### **Additional Considerations**\n\nThe patient's recent history of suture removal and laceration without foreign body in another part of the head suggests a possible traumatic cause for their current symptoms. However, the presence of fever and productive cough points towards an infectious process.\n\n### **Recommendations**\n\n1.  Order a chest X-ray or CT scan to confirm the diagnosis and rule out other potential causes.\n2.  Administer antibiotics empirically based on the patient's clinical presentation and risk factors.\n3.  Monitor the patient closely for signs of respiratory failure or sepsis.\n4.  Consider further diagnostic testing, such as a sputum culture or blood work, to identify the underlying cause of pneumonia.\n\n### **Follow-up**\n\nSchedule follow-up appointments with the patient to monitor their progress and adjust treatment as necessary.\n\n### **Additional Concerns**\n\nGiven the patient's history of multiple admissions for various conditions, it is essential to consider the possibility of a systemic infection or sepsis. The patient's recent admission for OTH SEQUELA, CHR LIV DIS (ICD: 5728) may be related to the current presentation, as pneumonia can occur as a complication of previous infections or inflammatory conditions.\n\n### **Potential Complications**\n\nMonitor the patient closely for signs of respiratory failure, sepsis, or multi-organ failure. Consider consulting with an infectious disease specialist or intensivist if necessary.\n\n### **Lifestyle & Environmental Risks**\n\n*   Smoking (damages lung defenses)\n*   Alcohol or drug abuse (increases aspiration risk)\n*   Hospitalization (especially with ventilators)\n*   Exposure to infectious agents (crowded places, daycare, healthcare facilities)\n\n### **Diagnosis of Pneumonia**\n\nA healthcare provider will diagnose pneumonia through:\n\n*   Exudative Causes (Protein-Rich Fluid)\n    *   Pneumonia - bacterial or viral lung infections.\n    *   Tuberculosis - can cause chronic pleural effusion.\n    *   Cancer (Lung, Breast, or Lymphoma) - can spread to the pleura.\n    *   Autoimmune Diseases (e.g., Lupus, Rheumatoid Arthritis).\n    *   Chest Trauma or Surgery - may lead to fluid accumulation.\n    *   Esophageal Rupture or Pancreatitis - rare causes.\n\n*   Exudative Pleural Effusion (Protein-Rich Fluid)\n    *   Caused by inflammation, infection, or cancer, leading to leaky blood vessels.\n    *   Common causes include pneumonia, tuberculosis, cancer (lung, breast, lymphoma).\n\n### **Consensus Guideline 1: Evaluation of Chest X-ray Lung Opacity, Lung Lesion, Consolidation, Edema, Pneumonia, Atelectasis in Acute Clinical Care.**\n\nClinical Reference 2: Diagnostic criteria and management for chest X-ray Lung Opacity, Lung Lesion, Consolidation, Edema, Pneumonia, Atelectasis.\n\nSystematic Review 3: Multi-modal triage protocols for chest X-ray Lung Opacity, Lung Lesion, Consolidation, Edema, Pneumonia, Atelectasis.",
+      "xai_report": "### XAI Text Attribution Analysis (Captum Feature Ablation):\n- Target Clinical Query: \"I have acute chest pain, persistent productive cough, shortness of breath, and high fever (38.8C).\"\n- Radiological Findings Considered: Lung Opacity, Lung Lesion, Consolidation, Edema, Pneumonia, Atelectasis\n- Longitudinal History Integrated: Yes\n- Top Key Clinical Predictors: pain, breath, fever, cough, shortness\n- Captum Sequence Attribution Plot: Generated (C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\79407290-14fd-4316-a9b2-8b7f8df2196a\\20260730_220923\\captum_query_20260730_220925_seq.png)\n- Captum Token Attribution Plot: Generated (C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\79407290-14fd-4316-a9b2-8b7f8df2196a\\20260730_220923\\captum_query_20260730_220925_tok.png)",
+      "classification_results": [
+        [
+          "Lung Opacity",
+          0.601075291633606
+        ],
+        [
+          "Lung Lesion",
+          0.5324812531471252
+        ],
+        [
+          "Consolidation",
+          0.529543399810791
+        ],
+        [
+          "Edema",
+          0.4687598645687103
+        ],
+        [
+          "Pneumonia",
+          0.44401460886001587
+        ],
+        [
+          "Atelectasis",
+          0.42674577236175537
+        ]
+      ],
+      "classification_labels": [],
+      "original_xray": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\79407290-14fd-4316-a9b2-8b7f8df2196a\\pneumonia_original.png",
+      "gradcam_overlay": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\79407290-14fd-4316-a9b2-8b7f8df2196a\\pneumonia_gradcam_overlay.png",
+      "captum_image": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\79407290-14fd-4316-a9b2-8b7f8df2196a\\20260730_220923\\captum_query_20260730_220925_seq.png",
+      "history_retrieved": true,
+      "history_text": "Chief Complaint: Throat foreign body sensation\nTriage Vitals: Heartrate: 81.0, Temperature: 97.6, Resprate: 16.0, O2sat: 100.0, Sbp: 148.0, Dbp: 83.0\nDiagnosis: Dysphagia, unspecified (ICD: R1310)\nAdmitted: 2181-11-14 21:51:00 - Discharged: 2181-11-15 02:06:42 (Disposition: ADMITTED)\nChief Complaint: Abd pain, Abdominal distention\nTriage Vitals: Heartrate: 70.0, Temperature: 98.4, Resprate: 16.0, O2sat: 97.0, Sbp: 106.0, Dbp: 63.0\nDiagnosis: OTH SEQUELA, CHR LIV DIS (ICD: 5728)\nAdmitted: 2180-05-06 19:17:00 - Discharged: 2180-05-06 23:30:00 (Disposition: ADMITTED)\nChief Complaint: ANEMIA S/P FALL\nTriage Vitals: Heartrate: 87.0, Temperature: 99.2, Resprate: 18.0, O2sat: 100.0, Sbp: 124.0, Dbp: 75.0\nDiagnosis: CONG FACTOR VIII DIORD (ICD: 2860)\nAdmitted: 2192-11-29 18:44:00 - Discharged: 2192-11-30 03:32:00 (Disposition: ADMITTED)\nChief Complaint: Suture removal\nTriage Vitals: Heartrate: 60.0, Temperature: 98.4, Resprate: 16.0, O2sat: 98.0, Sbp: 143.0, Dbp: 74.0\nDiagnosis: Laceration w/o foreign body of oth part of head, subs encntr (ICD: S0181XD)\nAdmitted: 2154-12-17 16:37:00 - Discharged: 2154-12-17 16:59:00 (Disposition: HOME)\nChief Complaint: L Hip pain\nTriage Vitals: Heartrate: 104.0, Temperature: 97.5, Resprate: 16.0, O2sat: 99.0, Sbp: 130.0, Dbp: 71.0\nDiagnosis: Oth fracture of head and neck of left femur, init (ICD: S72092A)\nAdmitted: 2183-09-18 08:41:00 - Discharged: 2183-09-18 20:20:00 (Disposition: ADMITTED)",
+      "captum_query_seq": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\79407290-14fd-4316-a9b2-8b7f8df2196a\\20260730_220923\\captum_query_20260730_220925_seq.png",
+      "captum_query_tok": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\79407290-14fd-4316-a9b2-8b7f8df2196a\\20260730_220923\\captum_query_20260730_220925_tok.png",
+      "captum_image_seq": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\79407290-14fd-4316-a9b2-8b7f8df2196a\\20260730_220923\\captum_image_20260730_220926_seq.png",
+      "captum_image_tok": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\79407290-14fd-4316-a9b2-8b7f8df2196a\\20260730_220923\\captum_image_20260730_220926_tok.png",
+      "captum_history_seq": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\79407290-14fd-4316-a9b2-8b7f8df2196a\\20260730_220923\\captum_history_20260730_220927_seq.png",
+      "captum_history_tok": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\79407290-14fd-4316-a9b2-8b7f8df2196a\\20260730_220923\\captum_history_20260730_220927_tok.png",
+      "top_words": {
+        "Query": [
+          [
+            "pain",
+            0.85
+          ],
+          [
+            "breath",
+            0.835
+          ],
+          [
+            "fever",
+            0.824
+          ],
+          [
+            "cough",
+            0.81
+          ],
+          [
+            "shortness",
+            0.761
+          ]
+        ],
+        "Image Findings": [
+          [
+            "opacity",
+            0.759
+          ],
+          [
+            "lesion",
+            0.747
+          ],
+          [
+            "pneumonia",
+            0.701
+          ],
+          [
+            "edema",
+            0.57
+          ],
+          [
+            "lung",
+            0.474
+          ]
+        ],
+        "History": [
+          [
+            "pain",
+            0.687
+          ],
+          [
+            "dbp",
+            0.644
+          ],
+          [
+            "1000",
+            0.642
+          ],
+          [
+            "5728",
+            0.636
+          ],
+          [
+            "resprate",
+            0.634
+          ]
+        ]
+      },
+      "elapsed_sec": 414.8,
+      "agent_outcome": {
+        "diagnosis": "### **Clinical Assessment**\n\nThe patient presents with acute chest pain, persistent productive cough, shortness of breath, and high fever (38.8C). The clinical evaluation is based solely on the reported symptoms.\n\n### **Differential Diagnosis**\n\n1.  Pneumonia\n2.  Pulmonary embolism\n3.  Acute bronchitis\n4.  Influenza\n5.  Tuberculosis\n6.  Bronchiectasis\n\nThese conditions are considered in light of the patient's respiratory symptoms, fever, and productive cough.\n\n### **Final Diagnosis**\n\nBased on the clinical presentation, the most likely diagnosis is pneumonia.\n\n### **Diagnostic Rationale & Explanation**\n\nThe presence of acute chest pain, persistent productive cough, shortness of breath, and high fever (38.8C) in a patient with a history of respiratory symptoms (dysphagia, unspecified) suggests an infectious process. The recent admission for OTH SEQUELA, CHR LIV DIS (ICD: 5728) may be related to the current presentation, as pneumonia can occur as a complication of previous infections or inflammatory conditions.\n\nThe patient's vital signs show tachycardia (heart rate: 81.0), mild hypotension (blood pressure: 148.0/83.0), and respiratory distress (respiratory rate: 16.0). The oxygen saturation is normal (O2sat: 100.0).\n\nGiven the patient's history of multiple admissions for various conditions, it is essential to consider all possible causes of acute chest pain and productive cough.\n\n### **Additional Considerations**\n\nThe patient's recent history of suture removal and laceration without foreign body in another part of the head suggests a possible traumatic cause for their current symptoms. However, the presence of fever and productive cough points towards an infectious process.\n\n### **Recommendations**\n\n1.  Order a chest X-ray or CT scan to confirm the diagnosis and rule out other potential causes.\n2.  Administer antibiotics empirically based on the patient's clinical presentation and risk factors.\n3.  Monitor the patient closely for signs of respiratory failure or sepsis.\n4.  Consider further diagnostic testing, such as a sputum culture or blood work, to identify the underlying cause of pneumonia.\n\n### **Follow-up**\n\nSchedule follow-up appointments with the patient to monitor their progress and adjust treatment as necessary.\n\n### **Additional Concerns**\n\nGiven the patient's history of multiple admissions for various conditions, it is essential to consider the possibility of a systemic infection or sepsis. The patient's recent admission for OTH SEQUELA, CHR LIV DIS (ICD: 5728) may be related to the current presentation, as pneumonia can occur as a complication of previous infections or inflammatory conditions.\n\n### **Potential Complications**\n\nMonitor the patient closely for signs of respiratory failure, sepsis, or multi-organ failure. Consider consulting with an infectious disease specialist or intensivist if necessary.\n\n### **Lifestyle & Environmental Risks**\n\n*   Smoking (damages lung defenses)\n*   Alcohol or drug abuse (increases aspiration risk)\n*   Hospitalization (especially with ventilators)\n*   Exposure to infectious agents (crowded places, daycare, healthcare facilities)\n\n### **Diagnosis of Pneumonia**\n\nA healthcare provider will diagnose pneumonia through:\n\n*   Exudative Causes (Protein-Rich Fluid)\n    *   Pneumonia - bacterial or viral lung infections.\n    *   Tuberculosis - can cause chronic pleural effusion.\n    *   Cancer (Lung, Breast, or Lymphoma) - can spread to the pleura.\n    *   Autoimmune Diseases (e.g., Lupus, Rheumatoid Arthritis).\n    *   Chest Trauma or Surgery - may lead to fluid accumulation.\n    *   Esophageal Rupture or Pancreatitis - rare causes.\n\n*   Exudative Pleural Effusion (Protein-Rich Fluid)\n    *   Caused by inflammation, infection, or cancer, leading to leaky blood vessels.\n    *   Common causes include pneumonia, tuberculosis, cancer (lung, breast, lymphoma).\n\n### **Consensus Guideline 1: Evaluation of Chest X-ray Lung Opacity, Lung Lesion, Consolidation, Edema, Pneumonia, Atelectasis in Acute Clinical Care.**\n\nClinical Reference 2: Diagnostic criteria and management for chest X-ray Lung Opacity, Lung Lesion, Consolidation, Edema, Pneumonia, Atelectasis.\n\nSystematic Review 3: Multi-modal triage protocols for chest X-ray Lung Opacity, Lung Lesion, Consolidation, Edema, Pneumonia, Atelectasis.",
+        "xai_report": "### XAI Text Attribution Analysis (Captum Feature Ablation):\n- Target Clinical Query: \"I have acute chest pain, persistent productive cough, shortness of breath, and high fever (38.8C).\"\n- Radiological Findings Considered: Lung Opacity, Lung Lesion, Consolidation, Edema, Pneumonia, Atelectasis\n- Longitudinal History Integrated: Yes\n- Top Key Clinical Predictors: pain, breath, fever, cough, shortness\n- Captum Sequence Attribution Plot: Generated (C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\79407290-14fd-4316-a9b2-8b7f8df2196a\\20260730_220923\\captum_query_20260730_220925_seq.png)\n- Captum Token Attribution Plot: Generated (C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\79407290-14fd-4316-a9b2-8b7f8df2196a\\20260730_220923\\captum_query_20260730_220925_tok.png)",
+        "classification_results": [
+          [
+            "Lung Opacity",
+            0.601075291633606
+          ],
+          [
+            "Lung Lesion",
+            0.5324812531471252
+          ],
+          [
+            "Consolidation",
+            0.529543399810791
+          ],
+          [
+            "Edema",
+            0.4687598645687103
+          ],
+          [
+            "Pneumonia",
+            0.44401460886001587
+          ],
+          [
+            "Atelectasis",
+            0.42674577236175537
+          ]
+        ],
+        "original_xray": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\79407290-14fd-4316-a9b2-8b7f8df2196a\\pneumonia_original.png",
+        "gradcam_overlay": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\79407290-14fd-4316-a9b2-8b7f8df2196a\\pneumonia_gradcam_overlay.png",
+        "gradcam_segmented": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\79407290-14fd-4316-a9b2-8b7f8df2196a\\pneumonia_gradcam_segmented.png",
+        "captum_image": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\79407290-14fd-4316-a9b2-8b7f8df2196a\\20260730_220923\\captum_query_20260730_220925_seq.png",
+        "top_words": {
+          "Query": [
+            [
+              "pain",
+              0.85
+            ],
+            [
+              "breath",
+              0.835
+            ],
+            [
+              "fever",
+              0.824
+            ],
+            [
+              "cough",
+              0.81
+            ],
+            [
+              "shortness",
+              0.761
+            ]
+          ],
+          "Image Findings": [
+            [
+              "opacity",
+              0.759
+            ],
+            [
+              "lesion",
+              0.747
+            ],
+            [
+              "pneumonia",
+              0.701
+            ],
+            [
+              "edema",
+              0.57
+            ],
+            [
+              "lung",
+              0.474
+            ]
+          ],
+          "History": [
+            [
+              "pain",
+              0.687
+            ],
+            [
+              "dbp",
+              0.644
+            ],
+            [
+              "1000",
+              0.642
+            ],
+            [
+              "5728",
+              0.636
+            ],
+            [
+              "resprate",
+              0.634
+            ]
+          ]
+        },
+        "history_retrieved": true,
+        "history_text": "Chief Complaint: Throat foreign body sensation\nTriage Vitals: Heartrate: 81.0, Temperature: 97.6, Resprate: 16.0, O2sat: 100.0, Sbp: 148.0, Dbp: 83.0\nDiagnosis: Dysphagia, unspecified (ICD: R1310)\nAdmitted: 2181-11-14 21:51:00 - Discharged: 2181-11-15 02:06:42 (Disposition: ADMITTED)\nChief Complaint: Abd pain, Abdominal distention\nTriage Vitals: Heartrate: 70.0, Temperature: 98.4, Resprate: 16.0, O2sat: 97.0, Sbp: 106.0, Dbp: 63.0\nDiagnosis: OTH SEQUELA, CHR LIV DIS (ICD: 5728)\nAdmitted: 2180-05-06 19:17:00 - Discharged: 2180-05-06 23:30:00 (Disposition: ADMITTED)\nChief Complaint: ANEMIA S/P FALL\nTriage Vitals: Heartrate: 87.0, Temperature: 99.2, Resprate: 18.0, O2sat: 100.0, Sbp: 124.0, Dbp: 75.0\nDiagnosis: CONG FACTOR VIII DIORD (ICD: 2860)\nAdmitted: 2192-11-29 18:44:00 - Discharged: 2192-11-30 03:32:00 (Disposition: ADMITTED)\nChief Complaint: Suture removal\nTriage Vitals: Heartrate: 60.0, Temperature: 98.4, Resprate: 16.0, O2sat: 98.0, Sbp: 143.0, Dbp: 74.0\nDiagnosis: Laceration w/o foreign body of oth part of head, subs encntr (ICD: S0181XD)\nAdmitted: 2154-12-17 16:37:00 - Discharged: 2154-12-17 16:59:00 (Disposition: HOME)\nChief Complaint: L Hip pain\nTriage Vitals: Heartrate: 104.0, Temperature: 97.5, Resprate: 16.0, O2sat: 99.0, Sbp: 130.0, Dbp: 71.0\nDiagnosis: Oth fracture of head and neck of left femur, init (ICD: S72092A)\nAdmitted: 2183-09-18 08:41:00 - Discharged: 2183-09-18 20:20:00 (Disposition: ADMITTED)",
+        "captum_query_seq": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\79407290-14fd-4316-a9b2-8b7f8df2196a\\20260730_220923\\captum_query_20260730_220925_seq.png",
+        "captum_query_tok": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\79407290-14fd-4316-a9b2-8b7f8df2196a\\20260730_220923\\captum_query_20260730_220925_tok.png",
+        "captum_image_seq": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\79407290-14fd-4316-a9b2-8b7f8df2196a\\20260730_220923\\captum_image_20260730_220926_seq.png",
+        "captum_image_tok": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\79407290-14fd-4316-a9b2-8b7f8df2196a\\20260730_220923\\captum_image_20260730_220926_tok.png",
+        "captum_history_seq": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\79407290-14fd-4316-a9b2-8b7f8df2196a\\20260730_220923\\captum_history_20260730_220927_seq.png",
+        "captum_history_tok": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\79407290-14fd-4316-a9b2-8b7f8df2196a\\20260730_220923\\captum_history_20260730_220927_tok.png"
+      }
+    }
+  },
+  {
+    "case": {
+      "id": 2,
+      "title": "Pure Text Consultation (No Imaging) — Tension / Migraine Headache",
+      "symptoms": "I have a severe headache, sensitivity to light, and dizziness for the past 24 hours.",
+      "image_path": null,
+      "patient_id": null
+    },
+    "elapsed": 83.82,
+    "out": {
+      "diagnosis": "**Clinical Assessment**\n\nThe patient presents with a sudden onset of severe headache, sensitivity to light, and dizziness over the past 24 hours. The clinical evaluation is based solely on the reported symptoms provided.\n\n**Differential Diagnosis**\n\nBased on the clinical presentation, a comprehensive differential diagnosis includes:\n\n1. **Migraine**: Characterized by severe headache, often accompanied by sensitivity to light and sound, nausea, and vomiting.\n2. **Tension Headache**: A common type of headache characterized by a dull, aching sensation, often accompanied by sensitivity to light and noise.\n3. **Cluster Headache**: A rare but severe type of headache that occurs in clusters or cycles, often accompanied by autonomic symptoms such as nasal congestion and tearing.\n4. **Sinusitis**: Inflammation or infection of the sinuses, which can cause headaches, facial pain, and sensitivity to light.\n5. **Post-Traumatic Headache**: A headache that develops after a head injury, often characterized by severe pain and sensitivity to light.\n\n**Final Diagnosis**\n\nBased on the clinical presentation, **Migraine** is the most likely diagnosis.\n\n**Diagnostic Rationale & Explanation**\n\nThe patient's sudden onset of severe headache, sensitivity to light, and dizziness over the past 24 hours are consistent with a migraine. The absence of prior patient history makes it difficult to determine other potential causes, but the combination of symptoms suggests a vascular etiology. Further evaluation would be necessary to confirm this diagnosis and rule out other potential causes.\n\n**Potential Complications**\n\n- **Lung Infection (Empyema)** – pus buildup leading to abscess formation.\n- **Lung Scarring (Fibrosis)** – long-term damage.\n- **Collapsed Lung (Pneumothorax)** – occurs if air enters the pleural space.\n- **Breathing Difficulties** – due to repeated fluid buildup.\n\n**Hospital-Acquired Pneumonia (HAP) and Healthcare-Associated Pneumonia (HCAP)**\n\nGiven the patient's symptoms, there is a low risk of hospital-acquired pneumonia or healthcare-associated pneumonia at this time. However, it is essential to monitor the patient for any signs of respiratory distress or infection.\n\n**Recommendations**\n\n- Continue to monitor the patient's vital signs and symptoms.\n- Consider administering pain management medication as needed.\n- Schedule an appointment with a neurologist for further evaluation and potential migraine treatment.\n- Perform a thorough physical examination, including a neurological assessment, to rule out any other potential causes of the patient's symptoms.\n\n**Follow-up**\n\nSchedule a follow-up appointment in 1-2 weeks to reassess the patient's symptoms and adjust treatment as needed.",
+      "xai_report": "### XAI Text Attribution Analysis (Captum Feature Ablation):\n- Target Clinical Query: \"I have a severe headache, sensitivity to light, and dizziness for the past 24 hours.\"\n- Radiological Evaluation: No X-ray provided\n- Longitudinal History Integrated: No\n- Top Key Clinical Predictors: dizziness, headache, past, light, severe\n- Captum Sequence Attribution Plot: Generated (C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_221049\\captum_query_20260730_221051_seq.png)\n- Captum Token Attribution Plot: Generated (C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_221049\\captum_query_20260730_221051_tok.png)",
+      "classification_results": [],
+      "classification_labels": [],
+      "original_xray": null,
+      "gradcam_overlay": null,
+      "captum_image": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_221049\\captum_query_20260730_221051_seq.png",
+      "history_retrieved": false,
+      "history_text": null,
+      "captum_query_seq": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_221049\\captum_query_20260730_221051_seq.png",
+      "captum_query_tok": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_221049\\captum_query_20260730_221051_tok.png",
+      "captum_image_seq": null,
+      "captum_image_tok": null,
+      "captum_history_seq": null,
+      "captum_history_tok": null,
+      "top_words": {
+        "Query": [
+          [
+            "dizziness",
+            0.928
+          ],
+          [
+            "headache",
+            0.829
+          ],
+          [
+            "past",
+            0.588
+          ],
+          [
+            "light",
+            0.583
+          ],
+          [
+            "severe",
+            0.568
+          ]
+        ]
+      },
+      "elapsed_sec": 83.82,
+      "agent_outcome": {
+        "diagnosis": "**Clinical Assessment**\n\nThe patient presents with a sudden onset of severe headache, sensitivity to light, and dizziness over the past 24 hours. The clinical evaluation is based solely on the reported symptoms provided.\n\n**Differential Diagnosis**\n\nBased on the clinical presentation, a comprehensive differential diagnosis includes:\n\n1. **Migraine**: Characterized by severe headache, often accompanied by sensitivity to light and sound, nausea, and vomiting.\n2. **Tension Headache**: A common type of headache characterized by a dull, aching sensation, often accompanied by sensitivity to light and noise.\n3. **Cluster Headache**: A rare but severe type of headache that occurs in clusters or cycles, often accompanied by autonomic symptoms such as nasal congestion and tearing.\n4. **Sinusitis**: Inflammation or infection of the sinuses, which can cause headaches, facial pain, and sensitivity to light.\n5. **Post-Traumatic Headache**: A headache that develops after a head injury, often characterized by severe pain and sensitivity to light.\n\n**Final Diagnosis**\n\nBased on the clinical presentation, **Migraine** is the most likely diagnosis.\n\n**Diagnostic Rationale & Explanation**\n\nThe patient's sudden onset of severe headache, sensitivity to light, and dizziness over the past 24 hours are consistent with a migraine. The absence of prior patient history makes it difficult to determine other potential causes, but the combination of symptoms suggests a vascular etiology. Further evaluation would be necessary to confirm this diagnosis and rule out other potential causes.\n\n**Potential Complications**\n\n- **Lung Infection (Empyema)** – pus buildup leading to abscess formation.\n- **Lung Scarring (Fibrosis)** – long-term damage.\n- **Collapsed Lung (Pneumothorax)** – occurs if air enters the pleural space.\n- **Breathing Difficulties** – due to repeated fluid buildup.\n\n**Hospital-Acquired Pneumonia (HAP) and Healthcare-Associated Pneumonia (HCAP)**\n\nGiven the patient's symptoms, there is a low risk of hospital-acquired pneumonia or healthcare-associated pneumonia at this time. However, it is essential to monitor the patient for any signs of respiratory distress or infection.\n\n**Recommendations**\n\n- Continue to monitor the patient's vital signs and symptoms.\n- Consider administering pain management medication as needed.\n- Schedule an appointment with a neurologist for further evaluation and potential migraine treatment.\n- Perform a thorough physical examination, including a neurological assessment, to rule out any other potential causes of the patient's symptoms.\n\n**Follow-up**\n\nSchedule a follow-up appointment in 1-2 weeks to reassess the patient's symptoms and adjust treatment as needed.",
+        "xai_report": "### XAI Text Attribution Analysis (Captum Feature Ablation):\n- Target Clinical Query: \"I have a severe headache, sensitivity to light, and dizziness for the past 24 hours.\"\n- Radiological Evaluation: No X-ray provided\n- Longitudinal History Integrated: No\n- Top Key Clinical Predictors: dizziness, headache, past, light, severe\n- Captum Sequence Attribution Plot: Generated (C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_221049\\captum_query_20260730_221051_seq.png)\n- Captum Token Attribution Plot: Generated (C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_221049\\captum_query_20260730_221051_tok.png)",
+        "classification_results": [],
+        "original_xray": null,
+        "gradcam_overlay": null,
+        "gradcam_segmented": null,
+        "captum_image": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_221049\\captum_query_20260730_221051_seq.png",
+        "top_words": {
+          "Query": [
+            [
+              "dizziness",
+              0.928
+            ],
+            [
+              "headache",
+              0.829
+            ],
+            [
+              "past",
+              0.588
+            ],
+            [
+              "light",
+              0.583
+            ],
+            [
+              "severe",
+              0.568
+            ]
+          ]
+        },
+        "history_retrieved": false,
+        "history_text": null,
+        "captum_query_seq": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_221049\\captum_query_20260730_221051_seq.png",
+        "captum_query_tok": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_221049\\captum_query_20260730_221051_tok.png",
+        "captum_image_seq": null,
+        "captum_image_tok": null,
+        "captum_history_seq": null,
+        "captum_history_tok": null
+      }
+    }
+  },
+  {
+    "case": {
+      "id": 3,
+      "title": "Complex Multi-Label Pulmonary Pathology & Edema",
+      "symptoms": "Shortness of breath when lying flat, swelling in legs, and severe nocturnal dyspnea.",
+      "image_path": "pneumonia.jpeg",
+      "patient_id": "e53fa09e-f9ae-4ffe-a201-25c18bc94a71"
+    },
+    "elapsed": 414.35,
+    "out": {
+      "diagnosis": "### **Clinical Assessment**\n\nThe patient presents with a complex clinical picture, and the evaluation is based solely on the reported symptoms. The patient's shortness of breath when lying flat, swelling in legs, and severe nocturnal dyspnea are concerning for an underlying cardiac or pulmonary condition.\n\n### **Differential Diagnosis**\n\n1. **Pulmonary Embolism**: Given the sudden onset of shortness of breath, especially when lying flat, and the presence of swelling in the legs, a pulmonary embolism should be considered.\n2. **Cardiac Tamponade**: The severe nocturnal dyspnea and swelling in the legs may suggest cardiac tamponade, which requires prompt attention.\n3. **Pulmonary Edema**: This condition could also be a consideration, especially given the patient's recent history of abdominal pain and distention.\n\n### **Final Diagnosis**\n\nBased on the reported symptoms and the absence of any imaging studies, a definitive diagnosis cannot be made. However, the presence of shortness of breath when lying flat, swelling in legs, and severe nocturnal dyspnea warrants further investigation to rule out pulmonary embolism or cardiac tamponade.\n\n### **Diagnostic Rationale & Explanation**\n\nThe clinical presentation is concerning for an acute cardiovascular event. The sudden onset of symptoms, especially shortness of breath when lying flat, suggests a possible pulmonary embolism or cardiac tamponade. Further evaluation with imaging studies (e.g., chest X-ray, CT pulmonary angiography) and possibly echocardiogram would be necessary to confirm the diagnosis and guide management.\n\nIt is essential to note that the patient's recent history of abdominal pain and distention may have contributed to their current presentation, but this does not rule out other potential causes. A thorough evaluation and further diagnostic testing are required to determine the underlying cause of the patient's symptoms.\n\n### **Additional Considerations**\n\nGiven the patient's complex medical history, including a previous diagnosis of dysphagia and anemia, it is crucial to consider any potential interactions between medications or underlying conditions that may be contributing to their current presentation. A thorough review of the patient's medication list and medical history is necessary to ensure comprehensive care.\n\n### **Recommendations**\n\n1. **Imaging studies**: Order a chest X-ray or CT pulmonary angiography to evaluate for pulmonary embolism.\n2. **Echocardiogram**: Consider ordering an echocardiogram to assess cardiac function and rule out cardiac tamponade.\n3. **Further evaluation**: Schedule a follow-up appointment to further evaluate the patient's symptoms and determine the underlying cause of their presentation.\n\n### **Monitoring**\n\nThe patient should be monitored closely for any signs of worsening symptoms, such as increased shortness of breath or swelling in the legs. Regular assessment of vital signs and oxygen saturation levels is necessary to ensure timely intervention if needed.\n\n### **Next Steps**\n\nSchedule a follow-up appointment with the patient within 24 hours to reassess their symptoms and determine the next course of action. Consider consulting with a cardiologist or pulmonologist for further evaluation and management.\n\n**Note:** Given the complexity of the patient's presentation, it is essential to consider all potential causes and rule out any underlying conditions that may be contributing to their symptoms. A thorough evaluation and further diagnostic testing are necessary to determine the underlying cause of the patient's symptoms.\n\n### **RAG Context:**\n\nGiven the patient's recent history of abdominal pain and distention, it is crucial to consider the possibility of a gastrointestinal source for their current presentation. Further evaluation with imaging studies (e.g., CT abdomen) may be necessary to rule out any underlying conditions that may be contributing to their symptoms.\n\n### **Lifestyle & Environmental Risks:**\n\n- **Smoking**: Damages lung defenses\n- **Alcohol or drug abuse**: Increases aspiration risk\n- **Hospitalization**: Especially with ventilators\n- **Exposure to infectious agents**: Crowded places, daycare, healthcare facilities\n\n**Note:** The patient's recent history of abdominal pain and distention may have contributed to their current presentation. Further evaluation with imaging studies (e.g., CT abdomen) may be necessary to rule out any underlying conditions that may be contributing to their symptoms.\n\n### **Diagnosis of Pneumonia:**\n\nA healthcare provider will diagnose pneumonia through:\n\n- **Exudative Causes (Protein-Rich Fluid)**:\n  - **Pneumonia**: Bacterial or viral lung infections.\n  - **Tuberculosis**: Can cause chronic pleural effusion.\n  - **Cancer (Lung, Breast, or Lymphoma)**: Can spread to the pleura.\n  - **Autoimmune Diseases (e.g., Lupus, Rheumatoid Arthritis)**.\n  - **Chest Trauma or Surgery**: May lead to fluid accumulation.\n  - **Esophageal Rupture or Pancreatitis**: Rare causes.\n\n- **Exudative Pleural Effusion** (Protein-Rich Fluid):\n  - Caused by inflammation, infection, or cancer, leading to leaky blood vessels.",
+      "xai_report": "### XAI Text Attribution Analysis (Captum Feature Ablation):\n- Target Clinical Query: \"Shortness of breath when lying flat, swelling in legs, and severe nocturnal dyspnea.\"\n- Radiological Findings Considered: Lung Opacity, Lung Lesion, Consolidation, Edema, Pneumonia, Atelectasis\n- Longitudinal History Integrated: Yes\n- Top Key Clinical Predictors: breath, shortness, dyspnea, when, nocturnal\n- Captum Sequence Attribution Plot: Generated (C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\e53fa09e-f9ae-4ffe-a201-25c18bc94a71\\20260730_221741\\captum_query_20260730_221742_seq.png)\n- Captum Token Attribution Plot: Generated (C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\e53fa09e-f9ae-4ffe-a201-25c18bc94a71\\20260730_221741\\captum_query_20260730_221742_tok.png)",
+      "classification_results": [
+        [
+          "Lung Opacity",
+          0.601075291633606
+        ],
+        [
+          "Lung Lesion",
+          0.5324812531471252
+        ],
+        [
+          "Consolidation",
+          0.529543399810791
+        ],
+        [
+          "Edema",
+          0.4687598645687103
+        ],
+        [
+          "Pneumonia",
+          0.44401460886001587
+        ],
+        [
+          "Atelectasis",
+          0.42674577236175537
+        ]
+      ],
+      "classification_labels": [],
+      "original_xray": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\e53fa09e-f9ae-4ffe-a201-25c18bc94a71\\pneumonia_original.png",
+      "gradcam_overlay": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\e53fa09e-f9ae-4ffe-a201-25c18bc94a71\\pneumonia_gradcam_overlay.png",
+      "captum_image": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\e53fa09e-f9ae-4ffe-a201-25c18bc94a71\\20260730_221741\\captum_query_20260730_221742_seq.png",
+      "history_retrieved": true,
+      "history_text": "Chief Complaint: Throat foreign body sensation\nTriage Vitals: Heartrate: 81.0, Temperature: 97.6, Resprate: 16.0, O2sat: 100.0, Sbp: 148.0, Dbp: 83.0\nDiagnosis: Dysphagia, unspecified (ICD: R1310)\nAdmitted: 2181-11-14 21:51:00 - Discharged: 2181-11-15 02:06:42 (Disposition: ADMITTED)\nChief Complaint: Abd pain, Abdominal distention\nTriage Vitals: Heartrate: 70.0, Temperature: 98.4, Resprate: 16.0, O2sat: 97.0, Sbp: 106.0, Dbp: 63.0\nDiagnosis: OTH SEQUELA, CHR LIV DIS (ICD: 5728)\nAdmitted: 2180-05-06 19:17:00 - Discharged: 2180-05-06 23:30:00 (Disposition: ADMITTED)\nChief Complaint: ANEMIA S/P FALL\nTriage Vitals: Heartrate: 87.0, Temperature: 99.2, Resprate: 18.0, O2sat: 100.0, Sbp: 124.0, Dbp: 75.0\nDiagnosis: CONG FACTOR VIII DIORD (ICD: 2860)\nAdmitted: 2192-11-29 18:44:00 - Discharged: 2192-11-30 03:32:00 (Disposition: ADMITTED)\nChief Complaint: Suture removal\nTriage Vitals: Heartrate: 60.0, Temperature: 98.4, Resprate: 16.0, O2sat: 98.0, Sbp: 143.0, Dbp: 74.0\nDiagnosis: Laceration w/o foreign body of oth part of head, subs encntr (ICD: S0181XD)\nAdmitted: 2154-12-17 16:37:00 - Discharged: 2154-12-17 16:59:00 (Disposition: HOME)\nChief Complaint: L Hip pain\nTriage Vitals: Heartrate: 104.0, Temperature: 97.5, Resprate: 16.0, O2sat: 99.0, Sbp: 130.0, Dbp: 71.0\nDiagnosis: Oth fracture of head and neck of left femur, init (ICD: S72092A)\nAdmitted: 2183-09-18 08:41:00 - Discharged: 2183-09-18 20:20:00 (Disposition: ADMITTED)",
+      "captum_query_seq": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\e53fa09e-f9ae-4ffe-a201-25c18bc94a71\\20260730_221741\\captum_query_20260730_221742_seq.png",
+      "captum_query_tok": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\e53fa09e-f9ae-4ffe-a201-25c18bc94a71\\20260730_221741\\captum_query_20260730_221742_tok.png",
+      "captum_image_seq": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\e53fa09e-f9ae-4ffe-a201-25c18bc94a71\\20260730_221741\\captum_image_20260730_221745_seq.png",
+      "captum_image_tok": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\e53fa09e-f9ae-4ffe-a201-25c18bc94a71\\20260730_221741\\captum_image_20260730_221745_tok.png",
+      "captum_history_seq": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\e53fa09e-f9ae-4ffe-a201-25c18bc94a71\\20260730_221741\\captum_history_20260730_221745_seq.png",
+      "captum_history_tok": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\e53fa09e-f9ae-4ffe-a201-25c18bc94a71\\20260730_221741\\captum_history_20260730_221745_tok.png",
+      "top_words": {
+        "Query": [
+          [
+            "breath",
+            0.854
+          ],
+          [
+            "shortness",
+            0.685
+          ],
+          [
+            "dyspnea",
+            0.681
+          ],
+          [
+            "when",
+            0.581
+          ],
+          [
+            "nocturnal",
+            0.572
+          ]
+        ],
+        "Image Findings": [
+          [
+            "pneumonia",
+            0.919
+          ],
+          [
+            "opacity",
+            0.756
+          ],
+          [
+            "lesion",
+            0.721
+          ],
+          [
+            "edema",
+            0.553
+          ],
+          [
+            "consolidation",
+            0.541
+          ]
+        ],
+        "History": [
+          [
+            "pain",
+            0.924
+          ],
+          [
+            "o2sat",
+            0.645
+          ],
+          [
+            "810",
+            0.62
+          ],
+          [
+            "1000",
+            0.618
+          ],
+          [
+            "throat",
+            0.612
+          ]
+        ]
+      },
+      "elapsed_sec": 414.35,
+      "agent_outcome": {
+        "diagnosis": "### **Clinical Assessment**\n\nThe patient presents with a complex clinical picture, and the evaluation is based solely on the reported symptoms. The patient's shortness of breath when lying flat, swelling in legs, and severe nocturnal dyspnea are concerning for an underlying cardiac or pulmonary condition.\n\n### **Differential Diagnosis**\n\n1. **Pulmonary Embolism**: Given the sudden onset of shortness of breath, especially when lying flat, and the presence of swelling in the legs, a pulmonary embolism should be considered.\n2. **Cardiac Tamponade**: The severe nocturnal dyspnea and swelling in the legs may suggest cardiac tamponade, which requires prompt attention.\n3. **Pulmonary Edema**: This condition could also be a consideration, especially given the patient's recent history of abdominal pain and distention.\n\n### **Final Diagnosis**\n\nBased on the reported symptoms and the absence of any imaging studies, a definitive diagnosis cannot be made. However, the presence of shortness of breath when lying flat, swelling in legs, and severe nocturnal dyspnea warrants further investigation to rule out pulmonary embolism or cardiac tamponade.\n\n### **Diagnostic Rationale & Explanation**\n\nThe clinical presentation is concerning for an acute cardiovascular event. The sudden onset of symptoms, especially shortness of breath when lying flat, suggests a possible pulmonary embolism or cardiac tamponade. Further evaluation with imaging studies (e.g., chest X-ray, CT pulmonary angiography) and possibly echocardiogram would be necessary to confirm the diagnosis and guide management.\n\nIt is essential to note that the patient's recent history of abdominal pain and distention may have contributed to their current presentation, but this does not rule out other potential causes. A thorough evaluation and further diagnostic testing are required to determine the underlying cause of the patient's symptoms.\n\n### **Additional Considerations**\n\nGiven the patient's complex medical history, including a previous diagnosis of dysphagia and anemia, it is crucial to consider any potential interactions between medications or underlying conditions that may be contributing to their current presentation. A thorough review of the patient's medication list and medical history is necessary to ensure comprehensive care.\n\n### **Recommendations**\n\n1. **Imaging studies**: Order a chest X-ray or CT pulmonary angiography to evaluate for pulmonary embolism.\n2. **Echocardiogram**: Consider ordering an echocardiogram to assess cardiac function and rule out cardiac tamponade.\n3. **Further evaluation**: Schedule a follow-up appointment to further evaluate the patient's symptoms and determine the underlying cause of their presentation.\n\n### **Monitoring**\n\nThe patient should be monitored closely for any signs of worsening symptoms, such as increased shortness of breath or swelling in the legs. Regular assessment of vital signs and oxygen saturation levels is necessary to ensure timely intervention if needed.\n\n### **Next Steps**\n\nSchedule a follow-up appointment with the patient within 24 hours to reassess their symptoms and determine the next course of action. Consider consulting with a cardiologist or pulmonologist for further evaluation and management.\n\n**Note:** Given the complexity of the patient's presentation, it is essential to consider all potential causes and rule out any underlying conditions that may be contributing to their symptoms. A thorough evaluation and further diagnostic testing are necessary to determine the underlying cause of the patient's symptoms.\n\n### **RAG Context:**\n\nGiven the patient's recent history of abdominal pain and distention, it is crucial to consider the possibility of a gastrointestinal source for their current presentation. Further evaluation with imaging studies (e.g., CT abdomen) may be necessary to rule out any underlying conditions that may be contributing to their symptoms.\n\n### **Lifestyle & Environmental Risks:**\n\n- **Smoking**: Damages lung defenses\n- **Alcohol or drug abuse**: Increases aspiration risk\n- **Hospitalization**: Especially with ventilators\n- **Exposure to infectious agents**: Crowded places, daycare, healthcare facilities\n\n**Note:** The patient's recent history of abdominal pain and distention may have contributed to their current presentation. Further evaluation with imaging studies (e.g., CT abdomen) may be necessary to rule out any underlying conditions that may be contributing to their symptoms.\n\n### **Diagnosis of Pneumonia:**\n\nA healthcare provider will diagnose pneumonia through:\n\n- **Exudative Causes (Protein-Rich Fluid)**:\n  - **Pneumonia**: Bacterial or viral lung infections.\n  - **Tuberculosis**: Can cause chronic pleural effusion.\n  - **Cancer (Lung, Breast, or Lymphoma)**: Can spread to the pleura.\n  - **Autoimmune Diseases (e.g., Lupus, Rheumatoid Arthritis)**.\n  - **Chest Trauma or Surgery**: May lead to fluid accumulation.\n  - **Esophageal Rupture or Pancreatitis**: Rare causes.\n\n- **Exudative Pleural Effusion** (Protein-Rich Fluid):\n  - Caused by inflammation, infection, or cancer, leading to leaky blood vessels.",
+        "xai_report": "### XAI Text Attribution Analysis (Captum Feature Ablation):\n- Target Clinical Query: \"Shortness of breath when lying flat, swelling in legs, and severe nocturnal dyspnea.\"\n- Radiological Findings Considered: Lung Opacity, Lung Lesion, Consolidation, Edema, Pneumonia, Atelectasis\n- Longitudinal History Integrated: Yes\n- Top Key Clinical Predictors: breath, shortness, dyspnea, when, nocturnal\n- Captum Sequence Attribution Plot: Generated (C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\e53fa09e-f9ae-4ffe-a201-25c18bc94a71\\20260730_221741\\captum_query_20260730_221742_seq.png)\n- Captum Token Attribution Plot: Generated (C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\e53fa09e-f9ae-4ffe-a201-25c18bc94a71\\20260730_221741\\captum_query_20260730_221742_tok.png)",
+        "classification_results": [
+          [
+            "Lung Opacity",
+            0.601075291633606
+          ],
+          [
+            "Lung Lesion",
+            0.5324812531471252
+          ],
+          [
+            "Consolidation",
+            0.529543399810791
+          ],
+          [
+            "Edema",
+            0.4687598645687103
+          ],
+          [
+            "Pneumonia",
+            0.44401460886001587
+          ],
+          [
+            "Atelectasis",
+            0.42674577236175537
+          ]
+        ],
+        "original_xray": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\e53fa09e-f9ae-4ffe-a201-25c18bc94a71\\pneumonia_original.png",
+        "gradcam_overlay": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\e53fa09e-f9ae-4ffe-a201-25c18bc94a71\\pneumonia_gradcam_overlay.png",
+        "gradcam_segmented": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\e53fa09e-f9ae-4ffe-a201-25c18bc94a71\\pneumonia_gradcam_segmented.png",
+        "captum_image": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\e53fa09e-f9ae-4ffe-a201-25c18bc94a71\\20260730_221741\\captum_query_20260730_221742_seq.png",
+        "top_words": {
+          "Query": [
+            [
+              "breath",
+              0.854
+            ],
+            [
+              "shortness",
+              0.685
+            ],
+            [
+              "dyspnea",
+              0.681
+            ],
+            [
+              "when",
+              0.581
+            ],
+            [
+              "nocturnal",
+              0.572
+            ]
+          ],
+          "Image Findings": [
+            [
+              "pneumonia",
+              0.919
+            ],
+            [
+              "opacity",
+              0.756
+            ],
+            [
+              "lesion",
+              0.721
+            ],
+            [
+              "edema",
+              0.553
+            ],
+            [
+              "consolidation",
+              0.541
+            ]
+          ],
+          "History": [
+            [
+              "pain",
+              0.924
+            ],
+            [
+              "o2sat",
+              0.645
+            ],
+            [
+              "810",
+              0.62
+            ],
+            [
+              "1000",
+              0.618
+            ],
+            [
+              "throat",
+              0.612
+            ]
+          ]
+        },
+        "history_retrieved": true,
+        "history_text": "Chief Complaint: Throat foreign body sensation\nTriage Vitals: Heartrate: 81.0, Temperature: 97.6, Resprate: 16.0, O2sat: 100.0, Sbp: 148.0, Dbp: 83.0\nDiagnosis: Dysphagia, unspecified (ICD: R1310)\nAdmitted: 2181-11-14 21:51:00 - Discharged: 2181-11-15 02:06:42 (Disposition: ADMITTED)\nChief Complaint: Abd pain, Abdominal distention\nTriage Vitals: Heartrate: 70.0, Temperature: 98.4, Resprate: 16.0, O2sat: 97.0, Sbp: 106.0, Dbp: 63.0\nDiagnosis: OTH SEQUELA, CHR LIV DIS (ICD: 5728)\nAdmitted: 2180-05-06 19:17:00 - Discharged: 2180-05-06 23:30:00 (Disposition: ADMITTED)\nChief Complaint: ANEMIA S/P FALL\nTriage Vitals: Heartrate: 87.0, Temperature: 99.2, Resprate: 18.0, O2sat: 100.0, Sbp: 124.0, Dbp: 75.0\nDiagnosis: CONG FACTOR VIII DIORD (ICD: 2860)\nAdmitted: 2192-11-29 18:44:00 - Discharged: 2192-11-30 03:32:00 (Disposition: ADMITTED)\nChief Complaint: Suture removal\nTriage Vitals: Heartrate: 60.0, Temperature: 98.4, Resprate: 16.0, O2sat: 98.0, Sbp: 143.0, Dbp: 74.0\nDiagnosis: Laceration w/o foreign body of oth part of head, subs encntr (ICD: S0181XD)\nAdmitted: 2154-12-17 16:37:00 - Discharged: 2154-12-17 16:59:00 (Disposition: HOME)\nChief Complaint: L Hip pain\nTriage Vitals: Heartrate: 104.0, Temperature: 97.5, Resprate: 16.0, O2sat: 99.0, Sbp: 130.0, Dbp: 71.0\nDiagnosis: Oth fracture of head and neck of left femur, init (ICD: S72092A)\nAdmitted: 2183-09-18 08:41:00 - Discharged: 2183-09-18 20:20:00 (Disposition: ADMITTED)",
+        "captum_query_seq": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\e53fa09e-f9ae-4ffe-a201-25c18bc94a71\\20260730_221741\\captum_query_20260730_221742_seq.png",
+        "captum_query_tok": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\e53fa09e-f9ae-4ffe-a201-25c18bc94a71\\20260730_221741\\captum_query_20260730_221742_tok.png",
+        "captum_image_seq": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\e53fa09e-f9ae-4ffe-a201-25c18bc94a71\\20260730_221741\\captum_image_20260730_221745_seq.png",
+        "captum_image_tok": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\e53fa09e-f9ae-4ffe-a201-25c18bc94a71\\20260730_221741\\captum_image_20260730_221745_tok.png",
+        "captum_history_seq": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\e53fa09e-f9ae-4ffe-a201-25c18bc94a71\\20260730_221741\\captum_history_20260730_221745_seq.png",
+        "captum_history_tok": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\e53fa09e-f9ae-4ffe-a201-25c18bc94a71\\20260730_221741\\captum_history_20260730_221745_tok.png"
+      }
+    }
+  },
+  {
+    "case": {
+      "id": 4,
+      "title": "Acute Febrile Influenza-Like Illness (ILI)",
+      "symptoms": "Sudden onset of high fever (39.2C), severe muscle aches, body chills, sore throat, and dry cough.",
+      "image_path": null,
+      "patient_id": null
+    },
+    "elapsed": 76.96,
+    "out": {
+      "diagnosis": "**Clinical Assessment**\nThe clinical assessment is based solely on the reported symptoms provided by the patient, which include sudden onset high fever (39.2°C), severe muscle aches, body chills, sore throat, and dry cough.\n\n**Differential Diagnosis**\n\nBased on the patient's presentation, the following differential diagnoses are considered:\n\n1. **Influenza**: Sudden onset of high fever, severe muscle aches, body chills, sore throat, and dry cough are consistent with influenza.\n2. **Acute Bacterial Infections** (e.g., strep throat, pneumonia): The presence of sore throat and dry cough could suggest an acute bacterial infection.\n3. **Viral Pharyngitis**: Sore throat is a common presentation of viral pharyngitis, which can be accompanied by fever and muscle aches.\n4. **Mononucleosis** (Mono): Fever, muscle aches, and sore throat are also seen in mononucleosis, although the dry cough is less typical.\n\n**Final Diagnosis**\n\nBased on the patient's presentation, the final diagnosis is:\n\n**Influenza**\n\n**Diagnostic Rationale & Explanation**\n\nThe clinical presentation of sudden onset high fever, severe muscle aches, body chills, sore throat, and dry cough is most consistent with influenza. The absence of prior patient history makes it difficult to consider other diagnoses that may require additional context. A definitive diagnosis can only be made through laboratory testing (e.g., rapid influenza diagnostic test or PCR) and/or clinical evaluation by a healthcare professional.\n\n**Management & Treatment**\n\nGiven the diagnosis of influenza, management should focus on symptom relief, hydration, and rest. Over-the-counter medications such as acetaminophen or ibuprofen can help alleviate symptoms. In some cases, antiviral medication (e.g., oseltamivir or zanamivir) may be prescribed to shorten the duration of illness.\n\n**Supportive Care & Prevention**\n\nFamilies and caregivers play a key role in recovery. Steps to help include:\n\n* Encouraging rest and hydration\n* Providing over-the-counter pain relievers as needed\n* Using saline nasal sprays or drops to relieve congestion\n* Practicing good hygiene, such as frequent handwashing\n\n**Follow-up & Monitoring**\n\nThe patient should be monitored for signs of worsening symptoms, such as difficulty breathing, chest pain, or severe headache. Follow-up appointments with a healthcare professional may be necessary to assess the patient's recovery and provide additional guidance on management.\n\n**Additional Considerations**\n\n* The patient should avoid close contact with others to prevent transmission of the virus.\n* If the patient experiences any concerning symptoms or has underlying health conditions, further evaluation by a healthcare professional may be necessary.",
+      "xai_report": "### XAI Text Attribution Analysis (Captum Feature Ablation):\n- Target Clinical Query: \"Sudden onset of high fever (39.2C), severe muscle aches, body chills, sore throat, and dry cough.\"\n- Radiological Evaluation: No X-ray provided\n- Longitudinal History Integrated: No\n- Top Key Clinical Predictors: fever, cough, body, severe, onset\n- Captum Sequence Attribution Plot: Generated (C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_221900\\captum_query_20260730_221902_seq.png)\n- Captum Token Attribution Plot: Generated (C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_221900\\captum_query_20260730_221902_tok.png)",
+      "classification_results": [],
+      "classification_labels": [],
+      "original_xray": null,
+      "gradcam_overlay": null,
+      "captum_image": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_221900\\captum_query_20260730_221902_seq.png",
+      "history_retrieved": false,
+      "history_text": null,
+      "captum_query_seq": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_221900\\captum_query_20260730_221902_seq.png",
+      "captum_query_tok": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_221900\\captum_query_20260730_221902_tok.png",
+      "captum_image_seq": null,
+      "captum_image_tok": null,
+      "captum_history_seq": null,
+      "captum_history_tok": null,
+      "top_words": {
+        "Query": [
+          [
+            "fever",
+            0.912
+          ],
+          [
+            "cough",
+            0.832
+          ],
+          [
+            "body",
+            0.616
+          ],
+          [
+            "severe",
+            0.607
+          ],
+          [
+            "onset",
+            0.541
+          ]
+        ]
+      },
+      "elapsed_sec": 76.96,
+      "agent_outcome": {
+        "diagnosis": "**Clinical Assessment**\nThe clinical assessment is based solely on the reported symptoms provided by the patient, which include sudden onset high fever (39.2°C), severe muscle aches, body chills, sore throat, and dry cough.\n\n**Differential Diagnosis**\n\nBased on the patient's presentation, the following differential diagnoses are considered:\n\n1. **Influenza**: Sudden onset of high fever, severe muscle aches, body chills, sore throat, and dry cough are consistent with influenza.\n2. **Acute Bacterial Infections** (e.g., strep throat, pneumonia): The presence of sore throat and dry cough could suggest an acute bacterial infection.\n3. **Viral Pharyngitis**: Sore throat is a common presentation of viral pharyngitis, which can be accompanied by fever and muscle aches.\n4. **Mononucleosis** (Mono): Fever, muscle aches, and sore throat are also seen in mononucleosis, although the dry cough is less typical.\n\n**Final Diagnosis**\n\nBased on the patient's presentation, the final diagnosis is:\n\n**Influenza**\n\n**Diagnostic Rationale & Explanation**\n\nThe clinical presentation of sudden onset high fever, severe muscle aches, body chills, sore throat, and dry cough is most consistent with influenza. The absence of prior patient history makes it difficult to consider other diagnoses that may require additional context. A definitive diagnosis can only be made through laboratory testing (e.g., rapid influenza diagnostic test or PCR) and/or clinical evaluation by a healthcare professional.\n\n**Management & Treatment**\n\nGiven the diagnosis of influenza, management should focus on symptom relief, hydration, and rest. Over-the-counter medications such as acetaminophen or ibuprofen can help alleviate symptoms. In some cases, antiviral medication (e.g., oseltamivir or zanamivir) may be prescribed to shorten the duration of illness.\n\n**Supportive Care & Prevention**\n\nFamilies and caregivers play a key role in recovery. Steps to help include:\n\n* Encouraging rest and hydration\n* Providing over-the-counter pain relievers as needed\n* Using saline nasal sprays or drops to relieve congestion\n* Practicing good hygiene, such as frequent handwashing\n\n**Follow-up & Monitoring**\n\nThe patient should be monitored for signs of worsening symptoms, such as difficulty breathing, chest pain, or severe headache. Follow-up appointments with a healthcare professional may be necessary to assess the patient's recovery and provide additional guidance on management.\n\n**Additional Considerations**\n\n* The patient should avoid close contact with others to prevent transmission of the virus.\n* If the patient experiences any concerning symptoms or has underlying health conditions, further evaluation by a healthcare professional may be necessary.",
+        "xai_report": "### XAI Text Attribution Analysis (Captum Feature Ablation):\n- Target Clinical Query: \"Sudden onset of high fever (39.2C), severe muscle aches, body chills, sore throat, and dry cough.\"\n- Radiological Evaluation: No X-ray provided\n- Longitudinal History Integrated: No\n- Top Key Clinical Predictors: fever, cough, body, severe, onset\n- Captum Sequence Attribution Plot: Generated (C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_221900\\captum_query_20260730_221902_seq.png)\n- Captum Token Attribution Plot: Generated (C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_221900\\captum_query_20260730_221902_tok.png)",
+        "classification_results": [],
+        "original_xray": null,
+        "gradcam_overlay": null,
+        "gradcam_segmented": null,
+        "captum_image": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_221900\\captum_query_20260730_221902_seq.png",
+        "top_words": {
+          "Query": [
+            [
+              "fever",
+              0.912
+            ],
+            [
+              "cough",
+              0.832
+            ],
+            [
+              "body",
+              0.616
+            ],
+            [
+              "severe",
+              0.607
+            ],
+            [
+              "onset",
+              0.541
+            ]
+          ]
+        },
+        "history_retrieved": false,
+        "history_text": null,
+        "captum_query_seq": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_221900\\captum_query_20260730_221902_seq.png",
+        "captum_query_tok": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_221900\\captum_query_20260730_221902_tok.png",
+        "captum_image_seq": null,
+        "captum_image_tok": null,
+        "captum_history_seq": null,
+        "captum_history_tok": null
+      }
+    }
+  },
+  {
+    "case": {
+      "id": 5,
+      "title": "Longitudinal Asthmatic Exacerbation (Graph EHR Integration)",
+      "symptoms": "Wheezing, chest tightness, and dyspnea triggered by cold air exposure.",
+      "image_path": null,
+      "patient_id": "375476b2-b664-4b8b-ade5-fdbc8bf8ceea"
+    },
+    "elapsed": 170.08,
+    "out": {
+      "diagnosis": "### **Clinical Assessment**\nThe patient presents with wheezing, chest tightness, and dyspnea triggered by cold air exposure. The clinical picture is suggestive of an asthma-like reaction or bronchospastic response to cold air. The patient's vital signs are relatively stable, with a heart rate of 81.0 bpm, respiratory rate of 16.0 breaths/min, oxygen saturation of 100.0%, systolic blood pressure of 148.0 mmHg, and diastolic blood pressure of 83.0 mmHg.\n\n### **Differential Diagnosis**\n\nBased on the patient's reported symptoms and medical history, the following differential diagnoses are considered:\n\n1.  **Asthma**: The patient's symptoms of wheezing, chest tightness, and dyspnea triggered by cold air exposure are consistent with an asthma-like reaction.\n2.  **Bronchitis**: The patient's respiratory symptoms could be related to bronchitis, particularly if the patient has a history of smoking or exposure to irritants.\n3.  **Pulmonary Embolism**: Although less likely given the absence of chest pain or other typical symptoms, a pulmonary embolism cannot be ruled out without further evaluation.\n\n### **Final Diagnosis**\n\n**Diagnosis:** Asthma exacerbation\n\n### **Diagnostic Rationale & Explanation:**\nThe patient's symptoms of wheezing, chest tightness, and dyspnea triggered by cold air exposure are consistent with an asthma-like reaction. The absence of a clear history of allergies or atopy does not rule out asthma, as some patients may have asthma without a clear allergic component. Further evaluation is needed to confirm the diagnosis.\n\n### **Management Plan**\n\n*   **Bronchodilators**: Consider administering bronchodilators (e.g., albuterol) to help relieve symptoms.\n*   **Inhaled Corticosteroids**: If asthma is confirmed, consider prescribing inhaled corticosteroids to control inflammation and prevent future exacerbations.\n*   **Avoid Cold Air Exposure**: Advise the patient to avoid cold air exposure until symptoms improve.\n*   **Monitor Oxygen Saturation**: Continuously monitor oxygen saturation levels to ensure the patient's respiratory status remains stable.\n\n### **Follow-up**\n\nSchedule a follow-up appointment with the patient in 24-48 hours to reassess their symptoms and adjust the management plan as needed.",
+      "xai_report": "### XAI Text Attribution Analysis (Captum Feature Ablation):\n- Target Clinical Query: \"Wheezing, chest tightness, and dyspnea triggered by cold air exposure.\"\n- Radiological Evaluation: No X-ray provided\n- Longitudinal History Integrated: Yes\n- Top Key Clinical Predictors: dyspnea, chest, cold, tightness, exposure\n- Captum Sequence Attribution Plot: Generated (C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\375476b2-b664-4b8b-ade5-fdbc8bf8ceea\\20260730_222150\\captum_query_20260730_222151_seq.png)\n- Captum Token Attribution Plot: Generated (C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\375476b2-b664-4b8b-ade5-fdbc8bf8ceea\\20260730_222150\\captum_query_20260730_222151_tok.png)",
+      "classification_results": [],
+      "classification_labels": [],
+      "original_xray": null,
+      "gradcam_overlay": null,
+      "captum_image": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\375476b2-b664-4b8b-ade5-fdbc8bf8ceea\\20260730_222150\\captum_query_20260730_222151_seq.png",
+      "history_retrieved": true,
+      "history_text": "Chief Complaint: Throat foreign body sensation\nTriage Vitals: Heartrate: 81.0, Temperature: 97.6, Resprate: 16.0, O2sat: 100.0, Sbp: 148.0, Dbp: 83.0\nDiagnosis: Dysphagia, unspecified (ICD: R1310)\nAdmitted: 2181-11-14 21:51:00 - Discharged: 2181-11-15 02:06:42 (Disposition: ADMITTED)\nChief Complaint: Abd pain, Abdominal distention\nTriage Vitals: Heartrate: 70.0, Temperature: 98.4, Resprate: 16.0, O2sat: 97.0, Sbp: 106.0, Dbp: 63.0\nDiagnosis: OTH SEQUELA, CHR LIV DIS (ICD: 5728)\nAdmitted: 2180-05-06 19:17:00 - Discharged: 2180-05-06 23:30:00 (Disposition: ADMITTED)\nChief Complaint: ANEMIA S/P FALL\nTriage Vitals: Heartrate: 87.0, Temperature: 99.2, Resprate: 18.0, O2sat: 100.0, Sbp: 124.0, Dbp: 75.0\nDiagnosis: CONG FACTOR VIII DIORD (ICD: 2860)\nAdmitted: 2192-11-29 18:44:00 - Discharged: 2192-11-30 03:32:00 (Disposition: ADMITTED)\nChief Complaint: Suture removal\nTriage Vitals: Heartrate: 60.0, Temperature: 98.4, Resprate: 16.0, O2sat: 98.0, Sbp: 143.0, Dbp: 74.0\nDiagnosis: Laceration w/o foreign body of oth part of head, subs encntr (ICD: S0181XD)\nAdmitted: 2154-12-17 16:37:00 - Discharged: 2154-12-17 16:59:00 (Disposition: HOME)\nChief Complaint: L Hip pain\nTriage Vitals: Heartrate: 104.0, Temperature: 97.5, Resprate: 16.0, O2sat: 99.0, Sbp: 130.0, Dbp: 71.0\nDiagnosis: Oth fracture of head and neck of left femur, init (ICD: S72092A)\nAdmitted: 2183-09-18 08:41:00 - Discharged: 2183-09-18 20:20:00 (Disposition: ADMITTED)",
+      "captum_query_seq": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\375476b2-b664-4b8b-ade5-fdbc8bf8ceea\\20260730_222150\\captum_query_20260730_222151_seq.png",
+      "captum_query_tok": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\375476b2-b664-4b8b-ade5-fdbc8bf8ceea\\20260730_222150\\captum_query_20260730_222151_tok.png",
+      "captum_image_seq": null,
+      "captum_image_tok": null,
+      "captum_history_seq": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\375476b2-b664-4b8b-ade5-fdbc8bf8ceea\\20260730_222150\\captum_history_20260730_222152_seq.png",
+      "captum_history_tok": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\375476b2-b664-4b8b-ade5-fdbc8bf8ceea\\20260730_222150\\captum_history_20260730_222152_tok.png",
+      "top_words": {
+        "Query": [
+          [
+            "dyspnea",
+            0.957
+          ],
+          [
+            "chest",
+            0.729
+          ],
+          [
+            "cold",
+            0.603
+          ],
+          [
+            "tightness",
+            0.592
+          ],
+          [
+            "exposure",
+            0.54
+          ]
+        ],
+        "History": [
+          [
+            "pain",
+            0.736
+          ],
+          [
+            "160",
+            0.648
+          ],
+          [
+            "810",
+            0.647
+          ],
+          [
+            "abdominal",
+            0.647
+          ],
+          [
+            "heartrate",
+            0.642
+          ]
+        ]
+      },
+      "elapsed_sec": 170.08,
+      "agent_outcome": {
+        "diagnosis": "### **Clinical Assessment**\nThe patient presents with wheezing, chest tightness, and dyspnea triggered by cold air exposure. The clinical picture is suggestive of an asthma-like reaction or bronchospastic response to cold air. The patient's vital signs are relatively stable, with a heart rate of 81.0 bpm, respiratory rate of 16.0 breaths/min, oxygen saturation of 100.0%, systolic blood pressure of 148.0 mmHg, and diastolic blood pressure of 83.0 mmHg.\n\n### **Differential Diagnosis**\n\nBased on the patient's reported symptoms and medical history, the following differential diagnoses are considered:\n\n1.  **Asthma**: The patient's symptoms of wheezing, chest tightness, and dyspnea triggered by cold air exposure are consistent with an asthma-like reaction.\n2.  **Bronchitis**: The patient's respiratory symptoms could be related to bronchitis, particularly if the patient has a history of smoking or exposure to irritants.\n3.  **Pulmonary Embolism**: Although less likely given the absence of chest pain or other typical symptoms, a pulmonary embolism cannot be ruled out without further evaluation.\n\n### **Final Diagnosis**\n\n**Diagnosis:** Asthma exacerbation\n\n### **Diagnostic Rationale & Explanation:**\nThe patient's symptoms of wheezing, chest tightness, and dyspnea triggered by cold air exposure are consistent with an asthma-like reaction. The absence of a clear history of allergies or atopy does not rule out asthma, as some patients may have asthma without a clear allergic component. Further evaluation is needed to confirm the diagnosis.\n\n### **Management Plan**\n\n*   **Bronchodilators**: Consider administering bronchodilators (e.g., albuterol) to help relieve symptoms.\n*   **Inhaled Corticosteroids**: If asthma is confirmed, consider prescribing inhaled corticosteroids to control inflammation and prevent future exacerbations.\n*   **Avoid Cold Air Exposure**: Advise the patient to avoid cold air exposure until symptoms improve.\n*   **Monitor Oxygen Saturation**: Continuously monitor oxygen saturation levels to ensure the patient's respiratory status remains stable.\n\n### **Follow-up**\n\nSchedule a follow-up appointment with the patient in 24-48 hours to reassess their symptoms and adjust the management plan as needed.",
+        "xai_report": "### XAI Text Attribution Analysis (Captum Feature Ablation):\n- Target Clinical Query: \"Wheezing, chest tightness, and dyspnea triggered by cold air exposure.\"\n- Radiological Evaluation: No X-ray provided\n- Longitudinal History Integrated: Yes\n- Top Key Clinical Predictors: dyspnea, chest, cold, tightness, exposure\n- Captum Sequence Attribution Plot: Generated (C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\375476b2-b664-4b8b-ade5-fdbc8bf8ceea\\20260730_222150\\captum_query_20260730_222151_seq.png)\n- Captum Token Attribution Plot: Generated (C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\375476b2-b664-4b8b-ade5-fdbc8bf8ceea\\20260730_222150\\captum_query_20260730_222151_tok.png)",
+        "classification_results": [],
+        "original_xray": null,
+        "gradcam_overlay": null,
+        "gradcam_segmented": null,
+        "captum_image": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\375476b2-b664-4b8b-ade5-fdbc8bf8ceea\\20260730_222150\\captum_query_20260730_222151_seq.png",
+        "top_words": {
+          "Query": [
+            [
+              "dyspnea",
+              0.957
+            ],
+            [
+              "chest",
+              0.729
+            ],
+            [
+              "cold",
+              0.603
+            ],
+            [
+              "tightness",
+              0.592
+            ],
+            [
+              "exposure",
+              0.54
+            ]
+          ],
+          "History": [
+            [
+              "pain",
+              0.736
+            ],
+            [
+              "160",
+              0.648
+            ],
+            [
+              "810",
+              0.647
+            ],
+            [
+              "abdominal",
+              0.647
+            ],
+            [
+              "heartrate",
+              0.642
+            ]
+          ]
+        },
+        "history_retrieved": true,
+        "history_text": "Chief Complaint: Throat foreign body sensation\nTriage Vitals: Heartrate: 81.0, Temperature: 97.6, Resprate: 16.0, O2sat: 100.0, Sbp: 148.0, Dbp: 83.0\nDiagnosis: Dysphagia, unspecified (ICD: R1310)\nAdmitted: 2181-11-14 21:51:00 - Discharged: 2181-11-15 02:06:42 (Disposition: ADMITTED)\nChief Complaint: Abd pain, Abdominal distention\nTriage Vitals: Heartrate: 70.0, Temperature: 98.4, Resprate: 16.0, O2sat: 97.0, Sbp: 106.0, Dbp: 63.0\nDiagnosis: OTH SEQUELA, CHR LIV DIS (ICD: 5728)\nAdmitted: 2180-05-06 19:17:00 - Discharged: 2180-05-06 23:30:00 (Disposition: ADMITTED)\nChief Complaint: ANEMIA S/P FALL\nTriage Vitals: Heartrate: 87.0, Temperature: 99.2, Resprate: 18.0, O2sat: 100.0, Sbp: 124.0, Dbp: 75.0\nDiagnosis: CONG FACTOR VIII DIORD (ICD: 2860)\nAdmitted: 2192-11-29 18:44:00 - Discharged: 2192-11-30 03:32:00 (Disposition: ADMITTED)\nChief Complaint: Suture removal\nTriage Vitals: Heartrate: 60.0, Temperature: 98.4, Resprate: 16.0, O2sat: 98.0, Sbp: 143.0, Dbp: 74.0\nDiagnosis: Laceration w/o foreign body of oth part of head, subs encntr (ICD: S0181XD)\nAdmitted: 2154-12-17 16:37:00 - Discharged: 2154-12-17 16:59:00 (Disposition: HOME)\nChief Complaint: L Hip pain\nTriage Vitals: Heartrate: 104.0, Temperature: 97.5, Resprate: 16.0, O2sat: 99.0, Sbp: 130.0, Dbp: 71.0\nDiagnosis: Oth fracture of head and neck of left femur, init (ICD: S72092A)\nAdmitted: 2183-09-18 08:41:00 - Discharged: 2183-09-18 20:20:00 (Disposition: ADMITTED)",
+        "captum_query_seq": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\375476b2-b664-4b8b-ade5-fdbc8bf8ceea\\20260730_222150\\captum_query_20260730_222151_seq.png",
+        "captum_query_tok": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\375476b2-b664-4b8b-ade5-fdbc8bf8ceea\\20260730_222150\\captum_query_20260730_222151_tok.png",
+        "captum_image_seq": null,
+        "captum_image_tok": null,
+        "captum_history_seq": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\375476b2-b664-4b8b-ade5-fdbc8bf8ceea\\20260730_222150\\captum_history_20260730_222152_seq.png",
+        "captum_history_tok": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\375476b2-b664-4b8b-ade5-fdbc8bf8ceea\\20260730_222150\\captum_history_20260730_222152_tok.png"
+      }
+    }
+  },
+  {
+    "case": {
+      "id": 6,
+      "title": "Differential Diagnostic Challenge — Pleural Effusion vs Atelectasis",
+      "symptoms": "Sharp right-sided chest pain on deep inspiration, mild fever, and shortness of breath.",
+      "image_path": "pneumonia.jpeg",
+      "patient_id": null
+    },
+    "elapsed": 144.8,
+    "out": {
+      "diagnosis": "### **Clinical Assessment**\nThe clinical evaluation is based solely on the reported symptoms of sharp right-sided chest pain that worsens with deep inspiration, accompanied by mild fever and shortness of breath.\n\n### **Differential Diagnosis**\n\n1. **Pneumonia**: The presence of sharp chest pain that worsens with deep inspiration, combined with mild fever and shortness of breath, raises suspicion for pneumonia.\n2. **Pulmonary Embolism**: The sudden onset of sharp chest pain, especially on the right side, may indicate pulmonary embolism.\n3. **Costochondritis**: Inflammation of the cartilage that connects the ribs to the breastbone (costal cartilage) could cause sharp chest pain, particularly with deep inspiration.\n4. **Pleurisy**: Inflammation of the pleura, which surrounds the lungs, can cause sharp chest pain, especially on the right side.\n\n### **Final Diagnosis**\n\n**Pneumonia**\n\n### **Diagnostic Rationale & Explanation**\n\nThe clinical presentation of sharp right-sided chest pain that worsens with deep inspiration, accompanied by mild fever and shortness of breath, is consistent with pneumonia. The presence of lung opacity, lung lesion, consolidation, edema, and atelectasis on the chest X-ray further supports this diagnosis.\n\n### **Consideration of Alternative Diagnoses**\n\nGiven the patient's symptoms, it is essential to consider alternative diagnoses that may present similarly. Pulmonary embolism should be suspected in patients with sudden onset of sharp chest pain, especially on the right side. Costochondritis and pleurisy are also possible causes of sharp chest pain, particularly with deep inspiration.\n\n### **Recommendations for Further Evaluation**\n\nA complete blood count (CBC) and basic metabolic panel (BMP) may help identify any underlying infections or inflammatory processes. A follow-up appointment with the physician is recommended to reassess the patient's condition and adjust treatment as necessary.\n\n### **Monitoring and Follow-up**\n\nThe patient should be monitored closely for any signs of worsening symptoms, such as increased shortness of breath, fever, or chest pain. Antibiotic therapy should be initiated promptly based on the results of the CBC and BMP.\n\n**Note:** The presence of lung opacity, lung lesion, consolidation, edema, pneumonia, atelectasis on the chest X-ray significantly supports the diagnosis of pneumonia.",
+      "xai_report": "### XAI Text Attribution Analysis (Captum Feature Ablation):\n- Target Clinical Query: \"Sharp right-sided chest pain on deep inspiration, mild fever, and shortness of breath.\"\n- Radiological Findings Considered: Lung Opacity, Lung Lesion, Consolidation, Edema, Pneumonia, Atelectasis\n- Longitudinal History Integrated: No\n- Top Key Clinical Predictors: pain, fever, chest, shortness, breath\n- Captum Sequence Attribution Plot: Generated (C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_222415\\captum_query_20260730_222416_seq.png)\n- Captum Token Attribution Plot: Generated (C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_222415\\captum_query_20260730_222416_tok.png)",
+      "classification_results": [
+        [
+          "Lung Opacity",
+          0.601075291633606
+        ],
+        [
+          "Lung Lesion",
+          0.5324812531471252
+        ],
+        [
+          "Consolidation",
+          0.529543399810791
+        ],
+        [
+          "Edema",
+          0.4687598645687103
+        ],
+        [
+          "Pneumonia",
+          0.44401460886001587
+        ],
+        [
+          "Atelectasis",
+          0.42674577236175537
+        ]
+      ],
+      "classification_labels": [],
+      "original_xray": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\pneumonia_original.png",
+      "gradcam_overlay": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\pneumonia_gradcam_overlay.png",
+      "captum_image": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_222415\\captum_query_20260730_222416_seq.png",
+      "history_retrieved": false,
+      "history_text": null,
+      "captum_query_seq": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_222415\\captum_query_20260730_222416_seq.png",
+      "captum_query_tok": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_222415\\captum_query_20260730_222416_tok.png",
+      "captum_image_seq": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_222415\\captum_image_20260730_222417_seq.png",
+      "captum_image_tok": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_222415\\captum_image_20260730_222417_tok.png",
+      "captum_history_seq": null,
+      "captum_history_tok": null,
+      "top_words": {
+        "Query": [
+          [
+            "pain",
+            0.826
+          ],
+          [
+            "fever",
+            0.799
+          ],
+          [
+            "chest",
+            0.791
+          ],
+          [
+            "shortness",
+            0.791
+          ],
+          [
+            "breath",
+            0.788
+          ]
+        ],
+        "Image Findings": [
+          [
+            "lesion",
+            0.854
+          ],
+          [
+            "opacity",
+            0.746
+          ],
+          [
+            "pneumonia",
+            0.692
+          ],
+          [
+            "lung",
+            0.646
+          ],
+          [
+            "lung",
+            0.521
+          ]
+        ]
+      },
+      "elapsed_sec": 144.8,
+      "agent_outcome": {
+        "diagnosis": "### **Clinical Assessment**\nThe clinical evaluation is based solely on the reported symptoms of sharp right-sided chest pain that worsens with deep inspiration, accompanied by mild fever and shortness of breath.\n\n### **Differential Diagnosis**\n\n1. **Pneumonia**: The presence of sharp chest pain that worsens with deep inspiration, combined with mild fever and shortness of breath, raises suspicion for pneumonia.\n2. **Pulmonary Embolism**: The sudden onset of sharp chest pain, especially on the right side, may indicate pulmonary embolism.\n3. **Costochondritis**: Inflammation of the cartilage that connects the ribs to the breastbone (costal cartilage) could cause sharp chest pain, particularly with deep inspiration.\n4. **Pleurisy**: Inflammation of the pleura, which surrounds the lungs, can cause sharp chest pain, especially on the right side.\n\n### **Final Diagnosis**\n\n**Pneumonia**\n\n### **Diagnostic Rationale & Explanation**\n\nThe clinical presentation of sharp right-sided chest pain that worsens with deep inspiration, accompanied by mild fever and shortness of breath, is consistent with pneumonia. The presence of lung opacity, lung lesion, consolidation, edema, and atelectasis on the chest X-ray further supports this diagnosis.\n\n### **Consideration of Alternative Diagnoses**\n\nGiven the patient's symptoms, it is essential to consider alternative diagnoses that may present similarly. Pulmonary embolism should be suspected in patients with sudden onset of sharp chest pain, especially on the right side. Costochondritis and pleurisy are also possible causes of sharp chest pain, particularly with deep inspiration.\n\n### **Recommendations for Further Evaluation**\n\nA complete blood count (CBC) and basic metabolic panel (BMP) may help identify any underlying infections or inflammatory processes. A follow-up appointment with the physician is recommended to reassess the patient's condition and adjust treatment as necessary.\n\n### **Monitoring and Follow-up**\n\nThe patient should be monitored closely for any signs of worsening symptoms, such as increased shortness of breath, fever, or chest pain. Antibiotic therapy should be initiated promptly based on the results of the CBC and BMP.\n\n**Note:** The presence of lung opacity, lung lesion, consolidation, edema, pneumonia, atelectasis on the chest X-ray significantly supports the diagnosis of pneumonia.",
+        "xai_report": "### XAI Text Attribution Analysis (Captum Feature Ablation):\n- Target Clinical Query: \"Sharp right-sided chest pain on deep inspiration, mild fever, and shortness of breath.\"\n- Radiological Findings Considered: Lung Opacity, Lung Lesion, Consolidation, Edema, Pneumonia, Atelectasis\n- Longitudinal History Integrated: No\n- Top Key Clinical Predictors: pain, fever, chest, shortness, breath\n- Captum Sequence Attribution Plot: Generated (C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_222415\\captum_query_20260730_222416_seq.png)\n- Captum Token Attribution Plot: Generated (C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_222415\\captum_query_20260730_222416_tok.png)",
+        "classification_results": [
+          [
+            "Lung Opacity",
+            0.601075291633606
+          ],
+          [
+            "Lung Lesion",
+            0.5324812531471252
+          ],
+          [
+            "Consolidation",
+            0.529543399810791
+          ],
+          [
+            "Edema",
+            0.4687598645687103
+          ],
+          [
+            "Pneumonia",
+            0.44401460886001587
+          ],
+          [
+            "Atelectasis",
+            0.42674577236175537
+          ]
+        ],
+        "original_xray": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\pneumonia_original.png",
+        "gradcam_overlay": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\pneumonia_gradcam_overlay.png",
+        "gradcam_segmented": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\pneumonia_gradcam_segmented.png",
+        "captum_image": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_222415\\captum_query_20260730_222416_seq.png",
+        "top_words": {
+          "Query": [
+            [
+              "pain",
+              0.826
+            ],
+            [
+              "fever",
+              0.799
+            ],
+            [
+              "chest",
+              0.791
+            ],
+            [
+              "shortness",
+              0.791
+            ],
+            [
+              "breath",
+              0.788
+            ]
+          ],
+          "Image Findings": [
+            [
+              "lesion",
+              0.854
+            ],
+            [
+              "opacity",
+              0.746
+            ],
+            [
+              "pneumonia",
+              0.692
+            ],
+            [
+              "lung",
+              0.646
+            ],
+            [
+              "lung",
+              0.521
+            ]
+          ]
+        },
+        "history_retrieved": false,
+        "history_text": null,
+        "captum_query_seq": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_222415\\captum_query_20260730_222416_seq.png",
+        "captum_query_tok": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_222415\\captum_query_20260730_222416_tok.png",
+        "captum_image_seq": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_222415\\captum_image_20260730_222417_seq.png",
+        "captum_image_tok": "C:\\Users\\wwefi\\OneDrive\\Υπολογιστής\\diploma-thesis\\ZenithDx_Final\\backend\\outputs\\default\\20260730_222415\\captum_image_20260730_222417_tok.png",
+        "captum_history_seq": null,
+        "captum_history_tok": null
+      }
+    }
+  }
+]

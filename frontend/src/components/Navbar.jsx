@@ -31,25 +31,25 @@ const NavLink = ({ to, icon, children, active, onClick }) => (
       gap: "0.45rem",
       padding: "0.48rem 0.95rem",
       borderRadius: 10,
-      fontSize: "0.86rem",
-      fontWeight: 600,
+      fontSize: "0.88rem",
+      fontWeight: active ? 700 : 600,
       letterSpacing: "0.01em",
       textDecoration: "none",
       transition: "all 0.2s ease",
-      color: active ? "#f0f6ff" : "#94a3b8",
-      background: active ? "rgba(56,189,248,0.14)" : "transparent",
-      border: active ? "1px solid rgba(56,189,248,0.28)" : "1px solid transparent",
+      color: active ? "#1d4ed8" : "#475569",
+      background: active ? "rgba(219, 234, 254, 0.7)" : "transparent",
+      border: active ? "1px solid rgba(147, 197, 253, 0.8)" : "1px solid transparent",
     }}
     onMouseEnter={e => {
       if (!active) {
-        e.currentTarget.style.color = "#e2e8f0";
-        e.currentTarget.style.background = "rgba(255,255,255,0.05)";
-        e.currentTarget.style.border = "1px solid rgba(255,255,255,0.08)";
+        e.currentTarget.style.color = "#0f172a";
+        e.currentTarget.style.background = "#f1f5f9";
+        e.currentTarget.style.border = "1px solid #e2e8f0";
       }
     }}
     onMouseLeave={e => {
       if (!active) {
-        e.currentTarget.style.color = "#94a3b8";
+        e.currentTarget.style.color = "#475569";
         e.currentTarget.style.background = "transparent";
         e.currentTarget.style.border = "1px solid transparent";
       }
@@ -74,22 +74,22 @@ const LogoutBtn = ({ onClick, mobile }) => (
       fontWeight: 700,
       cursor: "pointer",
       letterSpacing: "0.01em",
-      border: "1px solid rgba(239,68,68,0.3)",
-      background: "rgba(239,68,68,0.08)",
-      color: "#f87171",
+      border: "1px solid #fecaca",
+      background: "#fef2f2",
+      color: "#dc2626",
       transition: "all 0.2s ease",
       width: mobile ? "100%" : "auto",
       justifyContent: "center",
     }}
     onMouseEnter={e => {
-      e.currentTarget.style.background = "rgba(239,68,68,0.16)";
-      e.currentTarget.style.borderColor = "rgba(239,68,68,0.5)";
-      e.currentTarget.style.color = "#fca5a5";
+      e.currentTarget.style.background = "#fee2e2";
+      e.currentTarget.style.borderColor = "#fca5a5";
+      e.currentTarget.style.color = "#b91c1c";
     }}
     onMouseLeave={e => {
-      e.currentTarget.style.background = "rgba(239,68,68,0.08)";
-      e.currentTarget.style.borderColor = "rgba(239,68,68,0.3)";
-      e.currentTarget.style.color = "#f87171";
+      e.currentTarget.style.background = "#fef2f2";
+      e.currentTarget.style.borderColor = "#fecaca";
+      e.currentTarget.style.color = "#dc2626";
     }}
   >
     <SVG d={Icons.logout} size={15} />
@@ -167,7 +167,14 @@ const Navbar = () => {
     <>
       <style>{`
         @keyframes slideDown { from { opacity:0; transform: translateY(-12px); } to { opacity:1; transform:none; } }
-        @keyframes fadeIn    { from { opacity:0; } to { opacity:1; } }
+        @keyframes pulse-emerald {
+          0%, 100% { opacity: 1; box-shadow: 0 0 10px #10b981; }
+          50% { opacity: 0.4; box-shadow: 0 0 4px #10b981; }
+        }
+        @media (max-width: 768px) {
+          #hamburger-btn { display: flex !important; }
+          #desktop-nav-links { display: none !important; }
+        }
       `}</style>
 
       <nav
@@ -178,14 +185,12 @@ const Navbar = () => {
           zIndex: 1000,
           width: "100%",
           background: scrolled
-            ? "rgba(2,8,24,0.96)"
-            : "rgba(2,8,24,0.82)",
-          backdropFilter: "blur(24px)",
-          WebkitBackdropFilter: "blur(24px)",
-          borderBottom: scrolled
-            ? "1px solid rgba(56,189,248,0.18)"
-            : "1px solid rgba(255,255,255,0.05)",
-          boxShadow: scrolled ? "0 8px 40px rgba(0,0,0,0.5)" : "none",
+            ? "rgba(255, 255, 255, 0.95)"
+            : "rgba(255, 255, 255, 0.85)",
+          backdropFilter: "blur(20px)",
+          WebkitBackdropFilter: "blur(20px)",
+          borderBottom: "1px solid rgba(226, 232, 240, 0.8)",
+          boxShadow: scrolled ? "0 4px 20px -2px rgba(0, 0, 0, 0.06)" : "0 2px 8px rgba(0,0,0,0.02)",
           transition: "all 0.3s ease",
           fontFamily: "'Inter', -apple-system, sans-serif",
         }}
@@ -208,24 +213,24 @@ const Navbar = () => {
                 <img
                   src="/logo.png"
                   alt="ZenithDx"
-                  style={{ width: 46, height: 46, objectFit: "contain", display: "block" }}
+                  style={{ width: 44, height: 44, objectFit: "contain", display: "block" }}
                 />
                 {/* Live indicator dot */}
                 <span style={{
                   position: "absolute", bottom: 0, right: 0,
                   width: 10, height: 10, borderRadius: "50%",
-                  background: "#38bdf8",
-                  border: "2px solid rgba(2,8,24,0.95)",
-                  boxShadow: "0 0 8px #38bdf8",
-                  animation: "pulse-dot 2.2s ease-in-out infinite",
+                  background: "#10b981",
+                  border: "2px solid #ffffff",
+                  boxShadow: "0 0 6px #10b981",
+                  animation: "pulse-emerald 2.2s ease-in-out infinite",
                 }} />
               </div>
               <div>
                 <div style={{
-                  fontSize: "1.22rem",
+                  fontSize: "1.25rem",
                   fontWeight: 900,
                   letterSpacing: "-0.03em",
-                  background: "linear-gradient(135deg, #ffffff 30%, #7dd3fc 90%)",
+                  background: "linear-gradient(135deg, #0f172a 30%, #2563eb 90%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   lineHeight: 1.1,
@@ -233,30 +238,29 @@ const Navbar = () => {
                   ZenithDx
                 </div>
                 <div style={{
-                  fontSize: "0.62rem",
-                  fontWeight: 600,
-                  color: "#475569",
-                  letterSpacing: "0.04em",
+                  fontSize: "0.65rem",
+                  fontWeight: 700,
+                  color: "#0284c7",
+                  letterSpacing: "0.05em",
                   textTransform: "uppercase",
                   lineHeight: 1.2,
                 }}>
-                  Agentic Clinical AI
+                  Clinical AI Assistant
                 </div>
               </div>
             </div>
           </a>
 
           {/* ── Desktop Links ─────────────────────────────────── */}
-          <div style={{
+          <div id="desktop-nav-links" style={{
             display: "flex",
             alignItems: "center",
-            gap: "0.25rem",
+            gap: "0.35rem",
             flex: 1,
             justifyContent: "center",
           }}>
-            {/* Separator before role links */}
             {userRole && (
-              <div style={{ width: 1, height: 24, background: "rgba(255,255,255,0.08)", margin: "0 0.5rem" }} />
+              <div style={{ width: 1, height: 24, background: "#e2e8f0", margin: "0 0.5rem" }} />
             )}
 
             {roleLinks.map(link => (
@@ -282,16 +286,16 @@ const Navbar = () => {
                   gap: "0.4rem",
                   padding: "0.35rem 0.85rem",
                   borderRadius: 100,
-                  background: userRole === "doctor" ? "rgba(56,189,248,0.1)" : "rgba(129,140,248,0.1)",
-                  border: userRole === "doctor" ? "1px solid rgba(56,189,248,0.25)" : "1px solid rgba(129,140,248,0.25)",
+                  background: userRole === "doctor" ? "#eff6ff" : "#ecfdf5",
+                  border: userRole === "doctor" ? "1px solid #bfdbfe" : "1px solid #a7f3d0",
                   fontSize: "0.75rem",
                   fontWeight: 700,
-                  color: userRole === "doctor" ? "#38bdf8" : "#818cf8",
+                  color: userRole === "doctor" ? "#1d4ed8" : "#047857",
                   letterSpacing: "0.04em",
                   textTransform: "uppercase",
                 }}>
-                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: userRole === "doctor" ? "#38bdf8" : "#818cf8", display: "inline-block" }} />
-                  {userRole === "doctor" ? "Clinician" : "Patient"}
+                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: userRole === "doctor" ? "#2563eb" : "#10b981", display: "inline-block" }} />
+                  {userRole === "doctor" ? "Clinician Portal" : "Patient Portal"}
                 </div>
 
                 <LogoutBtn onClick={handleLogout} />
@@ -303,18 +307,18 @@ const Navbar = () => {
                   display: "inline-flex",
                   alignItems: "center",
                   gap: "0.45rem",
-                  padding: "0.5rem 1.2rem",
+                  padding: "0.55rem 1.3rem",
                   borderRadius: 10,
                   fontSize: "0.88rem",
                   fontWeight: 700,
                   textDecoration: "none",
-                  background: "linear-gradient(135deg, #0ea5e9, #6366f1)",
+                  background: "linear-gradient(135deg, #2563eb, #0284c7)",
                   color: "#fff",
-                  boxShadow: "0 4px 16px rgba(14,165,233,0.28)",
+                  boxShadow: "0 4px 14px rgba(37, 99, 235, 0.25)",
                   transition: "all 0.2s ease",
                   letterSpacing: "0.01em",
                 }}
-                onMouseEnter={e => { e.currentTarget.style.opacity = "0.88"; e.currentTarget.style.transform = "translateY(-1px)"; }}
+                onMouseEnter={e => { e.currentTarget.style.opacity = "0.92"; e.currentTarget.style.transform = "translateY(-1px)"; }}
                 onMouseLeave={e => { e.currentTarget.style.opacity = "1"; e.currentTarget.style.transform = "none"; }}
               >
                 Sign In →
@@ -326,9 +330,9 @@ const Navbar = () => {
               onClick={() => setMenuOpen(o => !o)}
               style={{
                 display: "none",
-                background: "rgba(255,255,255,0.05)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                color: "#94a3b8",
+                background: "#f1f5f9",
+                border: "1px solid #e2e8f0",
+                color: "#475569",
                 borderRadius: 10,
                 width: 40, height: 40,
                 alignItems: "center",
@@ -348,12 +352,13 @@ const Navbar = () => {
         {menuOpen && (
           <div style={{
             animation: "slideDown 0.22s ease",
-            background: "rgba(4,10,28,0.98)",
-            borderTop: "1px solid rgba(56,189,248,0.12)",
+            background: "rgba(255, 255, 255, 0.98)",
+            borderTop: "1px solid #e2e8f0",
             padding: "1.2rem 1.5rem 1.5rem",
             display: "flex",
             flexDirection: "column",
             gap: "0.5rem",
+            boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
           }}>
             {roleLinks.map(link => (
               <Link
@@ -365,11 +370,11 @@ const Navbar = () => {
                   padding: "0.75rem 1rem",
                   borderRadius: 12,
                   fontSize: "0.92rem", fontWeight: 600,
-                  color: isActive(link.to) ? "#f0f6ff" : "#94a3b8",
-                  background: isActive(link.to) ? "rgba(56,189,248,0.1)" : "transparent",
+                  color: isActive(link.to) ? "#1d4ed8" : "#475569",
+                  background: isActive(link.to) ? "#eff6ff" : "transparent",
                   textDecoration: "none",
                   transition: "all 0.18s",
-                  border: isActive(link.to) ? "1px solid rgba(56,189,248,0.2)" : "1px solid transparent",
+                  border: isActive(link.to) ? "1px solid #bfdbfe" : "1px solid transparent",
                 }}
               >
                 <SVG d={link.icon} size={16} />
@@ -382,7 +387,7 @@ const Navbar = () => {
               style={{
                 display: "flex", alignItems: "center", gap: "0.65rem",
                 padding: "0.75rem 1rem", borderRadius: 12, fontSize: "0.92rem",
-                fontWeight: 600, color: "#94a3b8", textDecoration: "none",
+                fontWeight: 600, color: "#475569", textDecoration: "none",
                 border: "1px solid transparent",
               }}
             >
@@ -390,7 +395,7 @@ const Navbar = () => {
               About ZenithDx
             </Link>
 
-            <div style={{ height: 1, background: "rgba(56,189,248,0.1)", margin: "0.5rem 0" }} />
+            <div style={{ height: 1, background: "#e2e8f0", margin: "0.5rem 0" }} />
 
             {userRole ? (
               <LogoutBtn onClick={handleLogout} mobile />
@@ -401,7 +406,7 @@ const Navbar = () => {
                 style={{
                   display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem",
                   padding: "0.75rem", borderRadius: 12, fontSize: "0.92rem", fontWeight: 700,
-                  background: "linear-gradient(135deg,#0ea5e9,#6366f1)",
+                  background: "linear-gradient(135deg, #2563eb, #0284c7)",
                   color: "#fff", textDecoration: "none",
                 }}
               >
@@ -411,16 +416,6 @@ const Navbar = () => {
           </div>
         )}
       </nav>
-
-      <style>{`
-        @keyframes pulse-dot {
-          0%,100% { opacity:1; box-shadow: 0 0 8px #38bdf8; }
-          50% { opacity:0.5; box-shadow: 0 0 4px #38bdf8; }
-        }
-        @media (max-width: 768px) {
-          #hamburger-btn { display: flex !important; }
-        }
-      `}</style>
     </>
   );
 };

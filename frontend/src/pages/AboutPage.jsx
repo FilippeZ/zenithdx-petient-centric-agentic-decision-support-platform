@@ -1,3 +1,4 @@
+import React from "react";
 import Navbar from "../components/Navbar";
 import time from "../assets/time.png";
 import settings from "../assets/setting.png";
@@ -6,77 +7,196 @@ import multimodel from "../assets/multimodel.png";
 import Ai from "../assets/Ai.png";
 import human from "../assets/human.png";
 import { motion } from "framer-motion";
-import "./sphere.css";
+
+const features = [
+  {
+    img: time,
+    title: "Accelerate Diagnosis Time",
+    description: "Rapid multi-modal analysis reduces diagnostic turnaround time from hours to seconds.",
+    badge: "Speed & Agility"
+  },
+  {
+    img: settings,
+    title: "Prevent Errors and Ensure Accuracy",
+    description: "Deep learning models cross-verify radiological & clinical findings to minimize diagnostic missteps.",
+    badge: "Precision AI"
+  },
+  {
+    img: money,
+    title: "Save Costs, Boost Efficiency",
+    description: "Automated workflow triage reduces hospital resource strain and streamlines clinical decision-making.",
+    badge: "Resource Optimization"
+  },
+  {
+    img: multimodel,
+    title: "Multimodal Healthcare Insights",
+    description: "Seamless fusion of X-ray vision analysis, longitudinal EHR records, and literature RAG retrieval.",
+    badge: "360° Data Fusion"
+  },
+  {
+    img: Ai,
+    title: "Explainable AI Transparency",
+    description: "GradCAM visual heatmaps and text saliency attributions ensure full clinician transparency.",
+    badge: "Trust & XAI"
+  },
+  {
+    img: human,
+    title: "Adaptable and Scalable Solutions",
+    description: "Interoperable architecture designed to seamlessly integrate across clinical enterprise workflows.",
+    badge: "Enterprise Ready"
+  },
+];
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.12,
+      delayChildren: 0.2
+    },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 35, scale: 0.96 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
+  },
+};
 
 const AboutUs = () => {
   return (
-    <div className="bg-[#0d2240] w-full min-h-screen flex flex-col items-center p-5 text-white">
+    <div style={{ background: "#f8fafc", minHeight: "100vh", color: "#0f172a", fontFamily: "'Inter', sans-serif" }}>
       <Navbar />
-      <div className="text-center mt-12 px-4 md:px-10">
-        <h1 className="text-3xl md:text-4xl font-bold">About Us</h1>
-        <p className="mt-4 text-lg md:text-xl max-w-3xl mx-auto">
-          Our AI-powered clinical decision support system enhances the accuracy of diagnoses and personalizes patient care.
-        </p>
-      </div>
 
-      {/* Features Section with Interactive Spheres */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mt-12 px-4">
-        {[
-          { img: time, title: "Accelerate Diagnosis Time" },
-          { img: settings, title: "Prevent Errors and Ensure Accuracy" },
-          { img: money, title: "Save Costs, Boost Efficiency" },
-          { img: multimodel, title: "Multimodal Healthcare Insights" },
-          { img: Ai, title: "Explainable AI Transparency" },
-          { img: human, title: "Adaptable and Scalable Solutions" },
-        ].map((feature, index) => (
+      <main style={{ maxWidth: 1200, margin: "0 auto", padding: "3rem 1.5rem 6rem" }}>
+        
+        {/* Animated Hero Header Section */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          style={{ textAlign: "center", marginBottom: "4rem" }}
+        >
+          {/* Animated Badge */}
           <motion.div
-            key={index}
-            className="flex flex-col items-center"
-            whileHover={{ scale: 1.1, rotate: [0, 5, -5, 0] }}
-            whileTap={{ scale: 0.9 }}
-            transition={{ duration: 0.4, ease: "easeInOut" }}
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.1, duration: 0.5 }}
+            style={{
+              display: "inline-flex", alignItems: "center", gap: "0.5rem",
+              background: "#eff6ff", border: "1px solid #bfdbfe",
+              borderRadius: 100, padding: "0.35rem 1.1rem",
+              fontSize: "0.75rem", color: "#2563eb", fontWeight: 700,
+              letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "1rem",
+              boxShadow: "0 2px 10px rgba(37, 99, 235, 0.08)"
+            }}
           >
-            <img src={feature.img} alt={feature.title} className="sphere-image" />
-            <h3 className="mt-4 text-lg font-bold">{feature.title}</h3>
+            <motion.span
+              animate={{ scale: [1, 1.3, 1], opacity: [0.7, 1, 0.7] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              style={{ width: 7, height: 7, borderRadius: "50%", background: "#2563eb", display: "inline-block" }}
+            />
+            NEXT-GEN CLINICAL DECISION SUPPORT
           </motion.div>
-        ))}
-      </div>
 
-      {/* Contact Icons and Info below each icon */}
-      <div className="flex flex-row items-center mt-12 space-x-16">
-        {/* Phone */}
-        <div className="flex flex-col items-center">
-          <a
-            href="tel:+302105876293"
-            className="text-3xl hover:text-gray-400 transition-transform transform hover:scale-125 duration-300"
-            title="Call us"
+          {/* Title */}
+          <motion.h1
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+            style={{ fontSize: "clamp(2.2rem, 4vw, 3.2rem)", fontWeight: 900, letterSpacing: "-0.03em", color: "#0f172a", marginBottom: "1rem" }}
           >
-            📞
-          </a>
-          <div className="text-center text-lg mt-2">
-            <span className="font-semibold">Phone:</span>{" "}
-            <a href="tel:+302105876293" className="hover:underline">
-              +30 210 5876293
-            </a>
-          </div>
-        </div>
-        {/* Email */}
-        <div className="flex flex-col items-center">
-          <a
-            href="mailto:info@medicalreview.com"
-            className="text-4xl hover:text-gray-400 transition-transform transform hover:scale-125 duration-300"
-            title="Email us"
+            About ZenithDx
+          </motion.h1>
+
+          {/* Subtitle */}
+          <motion.p
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+            style={{ color: "#64748b", fontSize: "1.1rem", maxWidth: "680px", margin: "0 auto", lineHeight: 1.7 }}
           >
-            ✉️
-          </a>
-          <div className="text-center text-lg mt-2">
-            <span className="font-semibold">Email:</span>{" "}
-            <a href="mailto:info@medicalreview.com" className="hover:underline">
-              info@medicalreview.com
-            </a>
-          </div>
-        </div>
-      </div>
+            Empowering healthcare clinicians and patients through transparent, explainable, multi-modal AI intelligence designed to accelerate diagnostic decision-making.
+          </motion.p>
+        </motion.div>
+
+        {/* Feature Cards Grid with Stagger & Motion */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+            gap: "2rem",
+          }}
+        >
+          {features.map((feature, index) => (
+            <motion.div
+              key={index}
+              variants={cardVariants}
+              whileHover={{ y: -8, scale: 1.02, boxShadow: "0 16px 35px -5px rgba(37, 99, 235, 0.12)", borderColor: "#93c5fd" }}
+              transition={{ duration: 0.3 }}
+              style={{
+                background: "#ffffff",
+                border: "1px solid #e2e8f0",
+                borderRadius: "20px",
+                padding: "2.2rem",
+                boxShadow: "0 4px 15px -3px rgba(0,0,0,0.03)",
+                display: "flex", flexDirection: "column", justifyContent: "space-between",
+                cursor: "default",
+                transition: "box-shadow 0.3s ease, border-color 0.3s ease"
+              }}
+            >
+              <div>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.5rem" }}>
+                  {/* Animated Icon Container */}
+                  <motion.div
+                    whileHover={{ rotate: 10, scale: 1.15 }}
+                    transition={{ duration: 0.3 }}
+                    style={{
+                      width: 54, height: 54, borderRadius: "14px",
+                      background: "#eff6ff", border: "1px solid #bfdbfe",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      boxShadow: "0 4px 12px rgba(37, 99, 235, 0.1)"
+                    }}
+                  >
+                    <img src={feature.img} alt={feature.title} style={{ width: 32, height: 32, objectFit: "contain" }} />
+                  </motion.div>
+
+                  {/* Badge */}
+                  <motion.span
+                    whileHover={{ scale: 1.08, backgroundColor: "#dbeafe", color: "#1d4ed8" }}
+                    style={{
+                      fontSize: "0.7rem", fontWeight: 800, color: "#2563eb",
+                      background: "#f0f9ff", border: "1px solid #bae6fd",
+                      padding: "0.3rem 0.75rem", borderRadius: "100px", letterSpacing: "0.04em",
+                      transition: "all 0.2s ease"
+                    }}
+                  >
+                    {feature.badge}
+                  </motion.span>
+                </div>
+
+                <h3 style={{ fontSize: "1.2rem", fontWeight: 800, color: "#0f172a", marginBottom: "0.6rem" }}>
+                  {feature.title}
+                </h3>
+
+                <p style={{ color: "#475569", fontSize: "0.92rem", lineHeight: 1.65, margin: 0 }}>
+                  {feature.description}
+                </p>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+
+      </main>
     </div>
   );
 };

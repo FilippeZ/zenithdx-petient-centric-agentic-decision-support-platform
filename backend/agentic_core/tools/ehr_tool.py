@@ -15,11 +15,15 @@ def run_ehr_analysis(
     extra_notes: str = ""
 ) -> Tuple[List[Dict[str, Any]], str, List[str], List[float]]:
     """Runs EHR graph search and patient history workflow."""
-    hs._init_embeddings()
-    emb_model = hs._PRIMARY_EMB
+    try:
+        hs._init_embeddings()
+        emb_model = hs._PRIMARY_EMB
+    except Exception as e:
+        print(f"[EHRTool] Warning initializing embeddings ({e}). Using fallback.", file=sys.stderr)
+        emb_model = hs.FastFallbackEmbeddings()
+
     if emb_model is None:
-        print("[EHRTool] Embeddings model not initialized.", file=sys.stderr)
-        return [], "", [], []
+        emb_model = hs.FastFallbackEmbeddings()
 
     return personalized_patient_history_workflow_with_texts(
         query_text=query_text,

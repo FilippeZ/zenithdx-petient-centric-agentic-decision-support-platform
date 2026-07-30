@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { useParams, useNavigate } from "react-router-dom";
-import { FaFilePdf, FaStar, FaNotesMedical } from "react-icons/fa";
+import { FaFilePdf, FaStar, FaNotesMedical, FaArrowLeft } from "react-icons/fa";
 import Navbar from "../components/Navbar";
 import ladydoc from "../assets/ladydoc.png";
+import { motion } from "framer-motion";
 
 const ResultPatient = () => {
   const { reportId } = useParams();
@@ -33,7 +34,6 @@ const ResultPatient = () => {
         }
         setReport(data);
 
-        // Εμφάνισε το αποθηκευμένο rating αν υπάρχει
         if (data.rating && data.rating >= 1 && data.rating <= 5) {
           setRating(data.rating);
           setSubmitted(true);
@@ -93,17 +93,17 @@ const ResultPatient = () => {
   };
 
   const handleStarClick = (index) => {
-    if (submitted) return; // Αποτρέπει αλλαγή rating αν υπάρχει ήδη
+    if (submitted) return;
     setRating(index + 1);
     submitFeedback(index + 1);
   };
 
   if (loading) {
     return (
-      <div className="bg-[#0D2240] w-full min-h-screen flex flex-col items-center p-5 text-white">
+      <div style={{ background: "#f8fafc", minHeight: "100vh", color: "#0f172a", fontFamily: "'Inter', sans-serif" }}>
         <Navbar />
-        <div className="mt-6 w-full max-w-6xl text-center">
-          <p>Loading report details...</p>
+        <div style={{ maxWidth: 800, margin: "4rem auto", textAlign: "center", color: "#64748b" }}>
+          Loading your approved diagnostic report...
         </div>
       </div>
     );
@@ -111,140 +111,167 @@ const ResultPatient = () => {
 
   if (error) {
     return (
-      <div className="bg-[#0D2240] w-full min-h-screen flex flex-col items-center p-5 text-white">
+      <div style={{ background: "#f8fafc", minHeight: "100vh", color: "#0f172a", fontFamily: "'Inter', sans-serif" }}>
         <Navbar />
-        <div className="mt-6 w-full max-w-6xl text-center text-red-300">
-          <p>{error}</p>
+        <div style={{ maxWidth: 600, margin: "4rem auto", textAlign: "center", padding: "2rem", background: "#ffffff", borderRadius: "20px", border: "1px solid #fecaca", boxShadow: "0 4px 20px rgba(0,0,0,0.04)" }}>
+          <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>⚠️</div>
+          <p style={{ color: "#dc2626", fontWeight: 700, marginBottom: "1.5rem" }}>{error}</p>
           <button
             onClick={() => navigate(-1)}
-            className="mt-4 bg-blue-500/20 text-blue-300 px-4 py-2 rounded-md hover:bg-blue-500/30"
+            style={{
+              background: "#eff6ff", border: "1px solid #bfdbfe", color: "#2563eb",
+              borderRadius: "10px", padding: "0.6rem 1.4rem", fontWeight: 700, cursor: "pointer",
+            }}
           >
-            Go Back
+            ← Go Back
           </button>
         </div>
       </div>
     );
   }
 
-  if (!report) {
-    return (
-      <div className="bg-[#0D2240] w-full min-h-screen flex flex-col items-center p-5 text-white">
-        <Navbar />
-        <div className="mt-6 w-full max-w-6xl text-center">
-          <p>No report found.</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="bg-[#0D2240] w-full min-h-screen flex flex-col items-center p-5 text-white">
+    <div style={{ background: "#f8fafc", minHeight: "100vh", color: "#0f172a", fontFamily: "'Inter', sans-serif", display: "flex", flexDirection: "column" }}>
       <Navbar />
-      <div className="mt-6 w-full max-w-4xl relative">
-        {/* Diagnosis Report */}
-        <div className="relative bg-gradient-to-br from-white via-gray-100 to-purple-100 text-black w-full p-12 rounded-3xl shadow-xl min-h-[420px]">
-          <span className="absolute top-[-12px] left-6 bg-purple-700 text-white px-6 py-2 text-lg rounded-full shadow-lg flex items-center gap-3 font-bold">
-            <FaNotesMedical /> Diagnosis Report
-          </span>
-          <div className="mt-14 text-2xl font-semibold overflow-auto max-h-[600px] prose prose-lg text-center">
+
+      <main style={{ maxWidth: 900, margin: "0 auto", padding: "3rem 1.5rem 6rem", width: "100%" }}>
+        
+        {/* Back button */}
+        <button
+          onClick={() => navigate(-1)}
+          style={{
+            display: "inline-flex", alignItems: "center", gap: "0.5rem",
+            background: "#ffffff", border: "1px solid #cbd5e1", borderRadius: "10px",
+            padding: "0.5rem 1rem", fontSize: "0.85rem", fontWeight: 700, color: "#475569",
+            cursor: "pointer", marginBottom: "1.5rem", boxShadow: "0 2px 5px rgba(0,0,0,0.03)"
+          }}
+        >
+          <FaArrowLeft /> Back to Dashboard
+        </button>
+
+        {/* Diagnosis Report Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          style={{
+            background: "#ffffff",
+            border: "1px solid #e2e8f0",
+            borderRadius: "24px",
+            padding: "2.5rem",
+            boxShadow: "0 10px 30px -5px rgba(0,0,0,0.05)",
+            marginBottom: "2rem",
+            position: "relative",
+          }}
+        >
+          <div style={{
+            display: "inline-flex", alignItems: "center", gap: "0.5rem",
+            background: "#eff6ff", border: "1px solid #bfdbfe",
+            borderRadius: "100px", padding: "0.4rem 1.2rem",
+            color: "#2563eb", fontWeight: 800, fontSize: "0.85rem",
+            marginBottom: "1.5rem"
+          }}>
+            <FaNotesMedical /> Approved AI Diagnostic Report
+          </div>
+
+          <div style={{ fontSize: "1.05rem", lineHeight: 1.8, color: "#334155" }}>
             <ReactMarkdown>{report.diagnosis?.trim()}</ReactMarkdown>
+          </div>
+        </motion.div>
+
+        {/* Doctor's Note */}
+        <div style={{
+          background: "linear-gradient(135deg, #eff6ff 0%, #ffffff 100%)",
+          border: "1px solid #bfdbfe",
+          borderRadius: "24px",
+          padding: "2rem",
+          boxShadow: "0 4px 20px -3px rgba(37,99,235,0.08)",
+          marginBottom: "2rem",
+          display: "flex", alignItems: "center", gap: "1.5rem", flexWrap: "wrap",
+        }}>
+          <img
+            src={ladydoc}
+            alt="Doctor"
+            style={{ width: 80, height: 80, borderRadius: "50%", objectFit: "cover", objectPosition: "top", border: "3px solid #ffffff", boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
+          />
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: "0.75rem", fontWeight: 800, color: "#2563eb", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.3rem" }}>
+              Attending Clinician Note
+            </div>
+            <div style={{ fontSize: "0.95rem", color: "#0f172a", fontWeight: 600, lineHeight: 1.6 }}>
+              {report.doctor_message ? (
+                <ReactMarkdown>{report.doctor_message.trim()}</ReactMarkdown>
+              ) : (
+                <span style={{ color: "#64748b", fontStyle: "italic" }}>No specific clinician notes added.</span>
+              )}
+            </div>
           </div>
         </div>
 
         {/* Review & Rating Section */}
-        <div className="relative bg-white/90 text-black w-full p-6 rounded-3xl min-h-[180px] flex flex-col justify-center items-center shadow-xl border-2 border-blue-100 mt-10">
-          <span className="absolute top-[-12px] left-4 bg-blue-900 text-white px-4 py-1 text-sm rounded-full shadow-lg font-bold">
-            Rate the Report
-          </span>
-          <div className="flex flex-col items-center justify-center w-full mt-4">
-            {submitted ? (
-              <div className="text-green-600 font-bold text-lg text-center">
+        <div style={{
+          background: "#ffffff", border: "1px solid #e2e8f0",
+          borderRadius: "20px", padding: "1.8rem", textAlign: "center",
+          boxShadow: "0 4px 15px rgba(0,0,0,0.02)", marginBottom: "2.5rem",
+        }}>
+          <div style={{ fontSize: "0.95rem", fontWeight: 800, color: "#0f172a", marginBottom: "0.8rem" }}>
+            Rate Your Report Experience
+          </div>
+          {submitted ? (
+            <div>
+              <div style={{ color: "#059669", fontWeight: 700, marginBottom: "0.5rem" }}>
                 Thank you for your feedback!
-                <div className="flex gap-1 justify-center mt-2">
-                  {[...Array(5)].map((_, idx) => (
-                    <FaStar
-                      key={idx}
-                      className={
-                        idx < rating
-                          ? "text-yellow-400 text-3xl"
-                          : "text-gray-300 text-3xl"
-                      }
-                    />
-                  ))}
-                </div>
-                <p className="text-gray-700 mt-2 text-sm">
-                  You rated this report with {rating} star{rating !== 1 && "s"}.
-                </p>
               </div>
-            ) : (
-              <>
-                <div className="flex gap-1 text-yellow-400 text-3xl mt-2">
-                  {[...Array(5)].map((_, index) => (
-                    <FaStar
-                      key={index}
-                      onClick={() => handleStarClick(index)}
-                      className={`cursor-pointer transition-transform ${
-                        index < rating ? "text-yellow-400 scale-125" : "text-gray-300"
-                      }`}
-                    />
-                  ))}
-                </div>
-                <p className="text-gray-700 mt-2 text-sm">
-                  Click to rate your experience!
-                </p>
-              </>
-            )}
-          </div>
-        </div>
-
-        {/* Doctor's Message & Image */}
-        <div className="relative flex flex-row items-center gap-8 w-full min-h-60 mt-10 md:mt-0">
-          <div className="bg-white rounded-3xl shadow-2xl flex items-center justify-center w-[180px] h-[230px] border-4 border-white z-20">
-            <img
-              src={ladydoc}
-              alt="Doctor"
-              className="w-[145px] h-[200px] object-cover rounded-2xl"
-              style={{ objectPosition: "top" }}
-            />
-          </div>
-          <div
-            className="relative bg-gradient-to-tr from-blue-50 via-white to-[#f3f7ff] text-black rounded-3xl px-10 py-8 shadow-2xl text-base font-medium min-w-[200px] max-w-[430px] border border-blue-100 flex flex-col justify-center"
-          >
-            <span className="absolute -top-4 left-8 bg-purple-700 text-white px-4 py-1 text-xs rounded-full shadow-lg font-bold flex items-center gap-2 select-none"
-              style={{ letterSpacing: ".5px" }}>
-              Doctor's Message
-            </span>
-            <div className="mt-7 text-base leading-relaxed min-h-[36px]">
-              {report.doctor_message ? (
-                <ReactMarkdown>{report.doctor_message.trim()}</ReactMarkdown>
-              ) : (
-                <span className="italic text-gray-400">No message provided.</span>
-              )}
+              <div style={{ display: "flex", gap: "0.4rem", justifyContent: "center" }}>
+                {[...Array(5)].map((_, idx) => (
+                  <FaStar
+                    key={idx}
+                    style={{ fontSize: "1.5rem", color: idx < rating ? "#f59e0b" : "#cbd5e1" }}
+                  />
+                ))}
+              </div>
             </div>
-            <div
-              className="absolute left-[-23px] top-1/2 -translate-y-1/2"
-              style={{
-                width: "0",
-                height: "0",
-                borderTop: "22px solid transparent",
-                borderBottom: "22px solid transparent",
-                borderRight: "23px solid #f3f7ff",
-                filter: "drop-shadow(0 0 3px #d1d5db)",
-              }}
-            ></div>
-          </div>
+          ) : (
+            <div>
+              <div style={{ display: "flex", gap: "0.5rem", justifyContent: "center", cursor: "pointer" }}>
+                {[...Array(5)].map((_, index) => (
+                  <FaStar
+                    key={index}
+                    onClick={() => handleStarClick(index)}
+                    style={{
+                      fontSize: "1.8rem",
+                      color: index < rating ? "#f59e0b" : "#cbd5e1",
+                      transition: "transform 0.15s",
+                    }}
+                  />
+                ))}
+              </div>
+              <div style={{ fontSize: "0.82rem", color: "#64748b", marginTop: "0.6rem" }}>
+                Click a star to submit your review
+              </div>
+            </div>
+          )}
         </div>
-      </div>
 
-      {/* Download Button */}
-      <div className="flex justify-center mt-10">
-        <button
-          onClick={downloadPDF}
-          className="flex items-center gap-2 bg-red-600 text-white px-8 py-3 rounded-xl shadow-lg text-lg font-semibold hover:bg-red-700 transition-all"
-        >
-          <FaFilePdf className="text-2xl" /> Download PDF
-        </button>
-      </div>
+        {/* Download PDF Button */}
+        <div style={{ textAlign: "center" }}>
+          <button
+            onClick={downloadPDF}
+            style={{
+              background: "#dc2626", color: "#ffffff", border: "none",
+              borderRadius: "14px", padding: "0.9rem 2.2rem",
+              fontSize: "1.05rem", fontWeight: 800, cursor: "pointer",
+              boxShadow: "0 4px 16px rgba(220, 38, 38, 0.28)",
+              display: "inline-flex", alignItems: "center", gap: "0.6rem",
+              transition: "all 0.2s ease",
+            }}
+            onMouseEnter={e => e.currentTarget.style.opacity = "0.9"}
+            onMouseLeave={e => e.currentTarget.style.opacity = "1"}
+          >
+            <FaFilePdf style={{ fontSize: "1.3rem" }} /> Download Official PDF Report
+          </button>
+        </div>
+
+      </main>
     </div>
   );
 };

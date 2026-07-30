@@ -1,0 +1,12 @@
+combo,combo_weight
+Lung Opacity,0.14699423468727654
+Atelectasis,0.2660921367517894
+Pneumonia,0.4761917483379962
+Edema,0.4822058280592293
+Atelectasis|Lung Opacity,0.5771517817643232
+Lung Opacity|Pneumonia,0.6756132472112036
+Lung Lesion,1.092480995184611
+Edema|Lung Opacity,1.3673568376140945
+Lung Lesion|Lung Opacity,1.5608507295264729
+Consolidation,1.7518254067968007
+Atelectasis|Lung Opacity|Pneumonia,2.6032370540662044

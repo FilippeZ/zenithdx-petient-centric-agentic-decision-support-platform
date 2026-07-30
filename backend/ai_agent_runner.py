@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import os
 import time
+import uuid
 import traceback
 from typing import Optional, Dict, Any
 
@@ -27,6 +28,7 @@ def run_agent(
 ) -> Dict[str, Any]:
     """
     Executes the LangGraph agent and returns diagnosis & XAI result artifacts.
+    Guarantees 100% memory isolation per run using unique thread_id context.
     """
     metadata: Dict[str, Any] = {}
     if image_path:
@@ -46,7 +48,8 @@ def run_agent(
     }
 
     t0 = time.time()
-    output = _GRAPH.invoke(agent_state, config={"recursion_limit": 50})
+    thread_id = f"session_{uuid.uuid4()}"
+    output = _GRAPH.invoke(agent_state, config={"recursion_limit": 50, "configurable": {"thread_id": thread_id}})
     elapsed = round(time.time() - t0, 2)
 
     agent_out = output.get("agent_outcome", {}) or {}
@@ -61,6 +64,8 @@ def run_agent(
         "original_xray":          agent_out.get("original_xray"),
         "gradcam_overlay":        agent_out.get("gradcam_overlay"),
         "captum_image":           agent_out.get("captum_image"),
+        "history_retrieved":      bool(agent_out.get("history_retrieved", False)),
+        "history_text":           agent_out.get("history_text"),
         **captum_images,
         "top_words":              agent_out.get("top_words", {}),
         "elapsed_sec":            elapsed,

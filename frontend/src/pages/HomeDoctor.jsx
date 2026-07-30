@@ -2,7 +2,9 @@ import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import homedoctor from "../assets/homedoctor.png";
+import ladydoc2 from "../assets/ladydoc2.png";
 import { Bar } from "react-chartjs-2";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -19,20 +21,33 @@ const BASE = "http://localhost:8000";
 
 /* ─── Status colour map ─────────────────────────────────────────── */
 const STATUS_COLORS = {
-  approved: { bg: "rgba(34,197,94,0.14)", text: "#4ade80", border: "rgba(34,197,94,0.35)", dot: "#4ade80" },
-  rejected: { bg: "rgba(239,68,68,0.14)",  text: "#f87171", border: "rgba(239,68,68,0.35)",  dot: "#f87171" },
-  edited:   { bg: "rgba(139,92,246,0.14)", text: "#a78bfa", border: "rgba(139,92,246,0.35)", dot: "#a78bfa" },
-  pending:  { bg: "rgba(245,158,11,0.14)", text: "#fcd34d", border: "rgba(245,158,11,0.35)", dot: "#fcd34d" },
+  approved: { bg: "#ecfdf5", text: "#047857", border: "#a7f3d0", dot: "#10b981" },
+  rejected: { bg: "#fef2f2", text: "#b91c1c", border: "#fecaca", dot: "#ef4444" },
+  edited:   { bg: "#f5f3ff", text: "#6d28d9", border: "#ddd6fe", dot: "#8b5cf6" },
+  pending:  { bg: "#fffbeb", text: "#b45309", border: "#fde68a", dot: "#f59e0b" },
 };
 const statusColor = (s = "pending") => STATUS_COLORS[(s || "pending").toLowerCase()] || STATUS_COLORS.pending;
 
+/* ─── Helper function for AI Urgency Score Triage ──────────────────────── */
+const calculateUrgency = (symptoms = "") => {
+  const s = symptoms.toLowerCase();
+  if (s.includes("heart") || s.includes("chest") || s.includes("cant breath") || s.includes("can't breath") || s.includes("severe")) {
+    return { level: "HIGH", label: "🔴 High Priority", bg: "#fef2f2", text: "#dc2626", border: "#fecaca" };
+  }
+  if (s.includes("fever") || s.includes("headache") || s.includes("dizziness") || s.includes("pain")) {
+    return { level: "MODERATE", label: "🟠 Medium Priority", bg: "#fffbeb", text: "#d97706", border: "#fde68a" };
+  }
+  return { level: "LOW", label: "🟢 Routine", bg: "#ecfdf5", text: "#059669", border: "#a7f3d0" };
+};
+
 export default function HomeDoctor() {
-  const [reports, setReports]       = useState([]);
-  const [loading, setLoading]       = useState(true);
-  const [error, setError]           = useState("");
+  const [reports, setReports]           = useState([]);
+  const [loading, setLoading]           = useState(true);
+  const [error, setError]               = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
-  const [dateFilter, setDateFilter] = useState("");
-  const [actionBusy, setActionBusy] = useState({});
+  const [dateFilter, setDateFilter]     = useState("");
+  const [searchTerm, setSearchTerm]     = useState("");
+  const [actionBusy, setActionBusy]     = useState({});
   const navigate = useNavigate();
 
   /* ─── Fetch reports ─────────────────────────────────────────────── */
@@ -96,18 +111,26 @@ export default function HomeDoctor() {
     const matchStatus = statusFilter === "All" || (r.status||"").toLowerCase() === statusFilter.toLowerCase();
     const matchDate   = !dateFilter || (r.submission_date &&
       new Date(r.submission_date).toLocaleDateString() === new Date(dateFilter).toLocaleDateString());
-    return matchStatus && matchDate;
+    const matchSearch = !searchTerm || 
+      (r.patient_name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (r.symptoms || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (r.report_id || "").toLowerCase().includes(searchTerm.toLowerCase());
+    return matchStatus && matchDate && matchSearch;
   });
+
+  const resetFilters = () => {
+    setStatusFilter("All");
+    setDateFilter("");
+    setSearchTerm("");
+  };
 
   /* ─── Chart ─────────────────────────────────────────────────────── */
   const chartData = {
-    labels: ["Pending", "Approved", "Rejected"],
+    labels: ["New Patients", "Returning Patients", "Pending", "Approved", "Rejected"],
     datasets: [{
-      label: "Cases",
-      data: [pendingCount, approvedCount, rejectedCount],
-      backgroundColor: ["rgba(251,191,36,0.75)", "rgba(52,211,153,0.75)", "rgba(248,113,113,0.75)"],
-      borderColor: ["#fbbf24", "#34d399", "#f87171"],
-      borderWidth: 2,
+      label: "Patient Triage Stats",
+      data: [newCount, returningCount, pendingCount, approvedCount, rejectedCount],
+      backgroundColor: ["#7c3aed", "#2563eb", "#f59e0b", "#10b981", "#ef4444"],
       borderRadius: 10,
     }],
   };
@@ -118,281 +141,250 @@ export default function HomeDoctor() {
     plugins: {
       legend: { display: false },
       tooltip: {
-        backgroundColor: "rgba(2,8,24,0.92)",
-        titleColor: "#38bdf8",
+        backgroundColor: "#0f172a",
+        titleColor: "#ffffff",
         bodyColor: "#f8fafc",
-        borderColor: "rgba(56,189,248,0.28)",
-        borderWidth: 1,
         padding: 12,
       },
     },
     scales: {
       x: {
         grid: { display: false },
-        ticks: { color: "#94a3b8", font: { family: "Inter", size: 12, weight: "600" } },
+        ticks: { color: "#475569", font: { family: "Inter", size: 11, weight: "600" } },
       },
       y: {
         beginAtZero: true,
         ticks: { stepSize: 1, color: "#64748b", font: { family: "Inter", size: 11 } },
-        grid: { color: "rgba(56,189,248,0.07)" },
+        grid: { color: "#f1f5f9" },
       },
     },
   };
 
-  /* ─── Render ─────────────────────────────────────────────────────── */
   return (
-    <div style={{
-      background: "#020818",
-      minHeight: "100vh",
-      color: "#fff",
-      fontFamily: "'Inter', -apple-system, sans-serif",
-      display: "flex",
-      flexDirection: "column",
-      overflowX: "hidden",
-      position: "relative",
-    }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        ::-webkit-scrollbar { width: 6px; background: #0a1122; }
-        ::-webkit-scrollbar-thumb { background: rgba(56,189,248,0.25); border-radius: 6px; }
+    <div style={{ background: "#f8fafc", minHeight: "100vh", color: "#0f172a", fontFamily: "'Inter', sans-serif", display: "flex", flexDirection: "column" }}>
+      <Navbar />
 
-        .stat-card { transition: transform 0.22s, box-shadow 0.22s; }
-        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-
-        .row-tr { transition: background 0.18s; }
-        .row-tr:hover { background: rgba(56,189,248,0.05) !important; }
-
-        .review-btn {
-          background: linear-gradient(135deg,#0ea5e9,#6366f1);
-          border: none; color: #fff; border-radius: 8px;
-          padding: 0.42rem 1rem; font-size: 0.8rem; font-weight: 700;
-          cursor: pointer; transition: all 0.18s;
-          box-shadow: 0 2px 10px rgba(14,165,233,0.28);
-          white-space: nowrap;
-        }
-        .review-btn:hover { opacity: 0.88; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(14,165,233,0.4); }
-
-        .approve-btn {
-          background: rgba(34,197,94,0.13); border: 1px solid rgba(34,197,94,0.35);
-          color: #4ade80; border-radius: 8px; padding: 0.38rem 0.8rem;
-          font-size: 0.78rem; font-weight: 700; cursor: pointer; transition: all 0.18s;
-          white-space: nowrap;
-        }
-        .approve-btn:hover { background: rgba(34,197,94,0.22); }
-
-        .reject-btn {
-          background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.3);
-          color: #f87171; border-radius: 8px; padding: 0.38rem 0.8rem;
-          font-size: 0.78rem; font-weight: 700; cursor: pointer; transition: all 0.18s;
-          white-space: nowrap;
-        }
-        .reject-btn:hover { background: rgba(239,68,68,0.22); }
-
-        .refresh-btn {
-          background: rgba(15,23,42,0.9); border: 1px solid rgba(56,189,248,0.22);
-          color: #94a3b8; border-radius: 10px; padding: 0.65rem 1.25rem;
-          font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
-        }
-        .refresh-btn:hover { border-color: rgba(56,189,248,0.5); color: #38bdf8; }
-
-        .filter-select, .filter-input {
-          background: rgba(2,8,24,0.85); border: 1px solid rgba(56,189,248,0.22);
-          color: #f8fafc; border-radius: 10px; padding: 0.55rem 0.9rem;
-          font-size: 0.85rem; font-weight: 500; outline: none;
-          transition: border-color 0.2s;
-        }
-        .filter-select:focus, .filter-input:focus { border-color: rgba(56,189,248,0.55); }
-        .filter-select option { background: #0a1530; }
-
-        .reset-btn {
-          background: rgba(56,189,248,0.1); border: 1px solid rgba(56,189,248,0.28);
-          color: #38bdf8; border-radius: 10px; padding: 0.55rem 1.1rem;
-          font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
-        }
-        .reset-btn:hover { background: rgba(56,189,248,0.18); }
-
-        @keyframes pulse-dot { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
-      `}</style>
-
-      {/* Ambient Glows */}
-      <div style={{ position: "absolute", inset: 0, pointerEvents: "none", overflow: "hidden", zIndex: 0 }}>
-        <div style={{ position: "absolute", top: "-8%", left: "8%",  width: 700, height: 700, borderRadius: "50%", background: "radial-gradient(circle, rgba(56,189,248,0.07) 0%, transparent 65%)" }} />
-        <div style={{ position: "absolute", bottom: "5%", right: "3%", width: 600, height: 600, borderRadius: "50%", background: "radial-gradient(circle, rgba(99,102,241,0.07) 0%, transparent 65%)" }} />
-      </div>
-
-      {/* Navbar */}
-      <div style={{ position: "relative", zIndex: 10 }}><Navbar /></div>
-
-      <main style={{ flex: 1, padding: "2.5rem 2.5rem 5rem", maxWidth: 1400, margin: "0 auto", width: "100%", position: "relative", zIndex: 1 }}>
-
-        {/* ─── Page Header ──────────────────────────────────────────── */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "2rem", flexWrap: "wrap", gap: "1rem" }}>
+      <main style={{ flex: 1, padding: "2.5rem 2rem 5rem", maxWidth: 1400, margin: "0 auto", width: "100%" }}>
+        
+        {/* ─── Page Header with Animations ────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "2rem", flexWrap: "wrap", gap: "1rem" }}
+        >
           <div>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "rgba(56,189,248,0.09)", border: "1px solid rgba(56,189,248,0.22)", borderRadius: 100, padding: "0.32rem 1rem", fontSize: "0.72rem", color: "#38bdf8", letterSpacing: "0.09em", fontWeight: 700, marginBottom: "0.55rem" }}>
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#38bdf8", display: "inline-block", boxShadow: "0 0 8px #38bdf8", animation: "pulse-dot 2s ease-in-out infinite" }} />
-              CLINICIAN DECISION SUPPORT SYSTEM
+            <div style={{
+              display: "inline-flex", alignItems: "center", gap: "0.5rem",
+              background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: 100,
+              padding: "0.35rem 1rem", fontSize: "0.75rem", color: "#2563eb", fontWeight: 700, marginBottom: "0.5rem"
+            }}>
+              <motion.span
+                animate={{ scale: [1, 1.3, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                style={{ width: 6, height: 6, borderRadius: "50%", background: "#2563eb", display: "inline-block" }}
+              />
+              CLINICIAN DECISION WORKSTATION
             </div>
-            <h1 style={{ fontSize: "clamp(1.9rem, 3.5vw, 2.7rem)", fontWeight: 900, letterSpacing: "-0.03em", lineHeight: 1.1 }}>
-              <span style={{ background: "linear-gradient(135deg,#ffffff 40%,#7dd3fc 80%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                Doctor Review Portal
-              </span>
+            <h1 style={{ fontSize: "clamp(1.8rem, 3vw, 2.5rem)", fontWeight: 900, letterSpacing: "-0.03em", color: "#0f172a" }}>
+              Doctor Case Review
             </h1>
-            <p style={{ color: "#64748b", fontSize: "0.9rem", marginTop: "0.4rem" }}>
-              AI-assisted case management · Grad-CAM verification · Clinical approvals
+            <p style={{ color: "#64748b", fontSize: "0.92rem", marginTop: "0.2rem" }}>
+              Multi-modal AI diagnosis review · Grad-CAM verification · Clinical case triage
             </p>
           </div>
-          <button className="refresh-btn" onClick={fetchReports}>🔄 Refresh Queue</button>
-        </div>
+          
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={fetchReports}
+            style={{
+              background: "#ffffff", border: "1px solid #cbd5e1", color: "#334155",
+              borderRadius: "12px", padding: "0.65rem 1.3rem", fontSize: "0.88rem", fontWeight: 700,
+              cursor: "pointer", boxShadow: "0 2px 5px rgba(0,0,0,0.04)", display: "flex", alignItems: "center", gap: "0.5rem"
+            }}
+          >
+            <motion.span animate={{ rotate: loading ? 360 : 0 }} transition={{ repeat: loading ? Infinity : 0, duration: 1 }}>🔄</motion.span> Refresh Queue
+          </motion.button>
+        </motion.div>
 
-        {/* ─── Stat Cards ───────────────────────────────────────────── */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px,1fr))", gap: "1.2rem", marginBottom: "2.2rem" }}>
+        {/* ─── Stat Cards Grid with Motion ──────────────────────────────── */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1.2rem", marginBottom: "2.2rem" }}>
           {[
-            { label: "Total Reports",    value: reports.length,  icon: "📋", color: "#38bdf8", glow: "rgba(56,189,248,0.2)" },
-            { label: "Pending Review",   value: pendingCount,    icon: "⏳", color: "#fcd34d", glow: "rgba(245,158,11,0.2)" },
-            { label: "Approved Cases",   value: approvedCount,   icon: "✅", color: "#4ade80", glow: "rgba(34,197,94,0.2)" },
-            { label: "Rejected Cases",   value: rejectedCount,   icon: "🚫", color: "#f87171", glow: "rgba(239,68,68,0.2)" },
-            { label: "New Patients",     value: newCount,        icon: "👤", color: "#a78bfa", glow: "rgba(139,92,246,0.2)" },
+            { label: "Total Reports",  value: reports.length,  icon: "📋", bg: "#eff6ff", color: "#2563eb", border: "#bfdbfe" },
+            { label: "Pending Review", value: pendingCount,    icon: "⏳", bg: "#fffbeb", color: "#d97706", border: "#fde68a" },
+            { label: "Approved Cases", value: approvedCount,   icon: "✅", bg: "#ecfdf5", color: "#059669", border: "#a7f3d0" },
+            { label: "Rejected Cases", value: rejectedCount,   icon: "🚫", bg: "#fef2f2", color: "#dc2626", border: "#fecaca" },
+            { label: "New Patients",   value: newCount,        icon: "👤", bg: "#f5f3ff", color: "#7c3aed", border: "#ddd6fe" },
           ].map((s, i) => (
-            <div key={i} className="stat-card" style={{
-              background: "rgba(10,17,34,0.78)",
-              border: `1px solid rgba(56,189,248,0.14)`,
-              borderRadius: 20,
-              padding: "1.5rem 1.6rem",
-              backdropFilter: "blur(16px)",
-              boxShadow: "0 8px 30px rgba(0,0,0,0.3)",
-              display: "flex", alignItems: "center", justifyContent: "space-between",
-            }}>
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.08, duration: 0.5 }}
+              whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(37, 99, 235, 0.1)" }}
+              style={{
+                background: "#ffffff",
+                border: `1px solid #e2e8f0`,
+                borderRadius: "20px",
+                padding: "1.4rem 1.6rem",
+                boxShadow: "0 4px 15px -3px rgba(0,0,0,0.03)",
+                display: "flex", alignItems: "center", justifyContent: "space-between",
+                transition: "all 0.2s ease"
+              }}
+            >
               <div>
-                <div style={{ fontSize: "0.78rem", color: "#64748b", fontWeight: 600, marginBottom: "0.35rem", letterSpacing: "0.04em", textTransform: "uppercase" }}>{s.label}</div>
-                <div style={{ fontSize: "2.1rem", fontWeight: 900, color: s.color, letterSpacing: "-0.03em", lineHeight: 1 }}>{s.value}</div>
+                <div style={{ fontSize: "0.75rem", color: "#64748b", fontWeight: 700, marginBottom: "0.3rem", letterSpacing: "0.04em", textTransform: "uppercase" }}>{s.label}</div>
+                <div style={{ fontSize: "2rem", fontWeight: 900, color: "#0f172a", letterSpacing: "-0.03em", lineHeight: 1 }}>{s.value}</div>
               </div>
               <div style={{
-                width: 50, height: 50, borderRadius: 14,
-                background: s.glow,
-                border: `1px solid ${s.glow}`,
-                display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.5rem",
-                boxShadow: `0 0 20px ${s.glow}`,
+                width: 48, height: 48, borderRadius: 14,
+                background: s.bg, border: `1px solid ${s.border}`,
+                display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.4rem",
               }}>{s.icon}</div>
-            </div>
+            </motion.div>
           ))}
         </div>
 
         {/* ─── Doctor Banner + Chart ─────────────────────────────────── */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.8rem", marginBottom: "2.5rem" }}>
-
-          {/* Doctor Hero Card */}
-          <div style={{
-            background: "linear-gradient(135deg, rgba(14,22,50,0.95) 0%, rgba(15,38,71,0.85) 60%, rgba(10,17,34,0.9) 100%)",
-            border: "1px solid rgba(56,189,248,0.22)",
-            borderRadius: 28,
-            padding: "2.5rem 2.5rem 0",
-            position: "relative",
-            overflow: "hidden",
-            boxShadow: "0 25px 60px rgba(0,0,0,0.5)",
-            backdropFilter: "blur(20px)",
-            minHeight: 300,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "flex-start",
-          }}>
-            {/* Glow */}
-            <div style={{ position: "absolute", top: -60, right: -60, width: 280, height: 280, borderRadius: "50%", background: "radial-gradient(circle, rgba(56,189,248,0.12) 0%, transparent 70%)", pointerEvents: "none" }} />
-
-            <div style={{ position: "relative", zIndex: 2, maxWidth: "55%" }}>
-              <div style={{ fontSize: "0.73rem", color: "#38bdf8", fontWeight: 700, letterSpacing: "0.1em", marginBottom: "0.5rem", textTransform: "uppercase" }}>
-                AI Case Manager
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: "1.8rem", marginBottom: "2.5rem" }}>
+          
+          {/* Doctor Intelligence Card */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6 }}
+            style={{
+              background: "linear-gradient(135deg, #1e3a5f, #0d2240)",
+              borderRadius: "24px",
+              padding: "2.5rem 2.5rem 0",
+              position: "relative",
+              overflow: "hidden",
+              color: "#ffffff",
+              boxShadow: "0 15px 35px -5px rgba(13, 34, 64, 0.3)",
+              minHeight: 280,
+              display: "flex", flexDirection: "column", justifyContent: "space-between",
+            }}
+          >
+            <div style={{ position: "relative", zIndex: 2, maxWidth: "60%" }}>
+              <div style={{ fontSize: "0.75rem", color: "#93c5fd", fontWeight: 800, letterSpacing: "0.08em", marginBottom: "0.4rem", textTransform: "uppercase" }}>
+                Radiology Intelligence
               </div>
-              <h2 style={{ fontSize: "1.9rem", fontWeight: 900, color: "#f8fafc", lineHeight: 1.2, marginBottom: "0.75rem", letterSpacing: "-0.02em" }}>
-                Clinical<br />Report Queue
+              <h2 style={{ fontSize: "1.8rem", fontWeight: 900, lineHeight: 1.2, marginBottom: "0.8rem" }}>
+                Reports Generated Today
               </h2>
-              <p style={{ color: "#94a3b8", fontSize: "0.88rem", lineHeight: 1.65, marginBottom: "1.5rem" }}>
-                Review ReAct diagnostic reports, verify Grad-CAM attention heatmaps, and issue clinical approvals.
-              </p>
-              <div style={{ display: "flex", gap: "0.7rem", flexWrap: "wrap" }}>
-                <span style={{ background: "rgba(56,189,248,0.13)", border: "1px solid rgba(56,189,248,0.3)", borderRadius: 10, padding: "0.45rem 0.9rem", fontSize: "0.8rem", color: "#38bdf8", fontWeight: 700 }}>
-                  New: {newCount}
-                </span>
-                <span style={{ background: "rgba(129,140,248,0.13)", border: "1px solid rgba(129,140,248,0.3)", borderRadius: 10, padding: "0.45rem 0.9rem", fontSize: "0.8rem", color: "#818cf8", fontWeight: 700 }}>
-                  Returning: {returningCount}
-                </span>
+              <div style={{ fontSize: "3rem", fontWeight: 900, color: "#ffffff", marginBottom: "0.8rem" }}>
+                {reports.length}
               </div>
+              <p style={{ color: "#dbeafe", fontSize: "0.88rem", lineHeight: 1.6, marginBottom: "1.5rem" }}>
+                Inspect Grad-CAM diagnostic heatmaps, cross-reference RAG literature findings, and finalize clinical diagnostic approvals.
+              </p>
             </div>
 
-            {/* Doctor image - large, bottom-right, no cropping */}
-            <img
-              src={homedoctor}
-              alt="Clinical AI Doctor"
+            <motion.img
+              src={ladydoc2 || homedoctor}
+              alt="Clinician"
+              animate={{ y: [0, -6, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               style={{
-                position: "absolute",
-                right: 0,
-                bottom: 0,
-                height: "115%",
-                width: "auto",
-                objectFit: "contain",
-                objectPosition: "bottom right",
-                pointerEvents: "none",
-                zIndex: 1,
-                filter: "drop-shadow(0 0 32px rgba(56,189,248,0.18))",
+                position: "absolute", right: -10, bottom: 0,
+                height: "110%", width: "auto", objectFit: "contain",
+                pointerEvents: "none", zIndex: 1, opacity: 0.95,
               }}
             />
-          </div>
+          </motion.div>
 
           {/* Chart Card */}
-          <div style={{
-            background: "rgba(10,17,34,0.82)",
-            border: "1px solid rgba(56,189,248,0.2)",
-            borderRadius: 28,
-            padding: "2rem 2.2rem",
-            backdropFilter: "blur(16px)",
-            display: "flex",
-            flexDirection: "column",
-            boxShadow: "0 20px 50px rgba(0,0,0,0.4)",
-          }}>
-            <h3 style={{ fontSize: "1.15rem", fontWeight: 800, color: "#f8fafc", marginBottom: "0.2rem" }}>Case Status Overview</h3>
-            <p style={{ color: "#64748b", fontSize: "0.84rem", marginBottom: "1.4rem" }}>Real-time report status breakdown</p>
-            <div style={{ flex: 1, minHeight: 200, position: "relative" }}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            style={{
+              background: "#ffffff", border: "1px solid #e2e8f0",
+              borderRadius: "24px", padding: "1.8rem",
+              boxShadow: "0 4px 20px -3px rgba(0,0,0,0.03)",
+              display: "flex", flexDirection: "column"
+            }}
+          >
+            <div style={{ fontSize: "1rem", fontWeight: 800, color: "#0f172a", marginBottom: "1rem" }}>
+              📊 Patient Stats & Case Triage
+            </div>
+            <div style={{ flex: 1, minHeight: 220 }}>
               <Bar data={chartData} options={chartOptions} />
             </div>
-          </div>
+          </motion.div>
         </div>
 
-        {/* ─── Patient Case Queue Table ──────────────────────────────── */}
-        <div style={{
-          background: "rgba(8,14,30,0.88)",
-          border: "1px solid rgba(56,189,248,0.2)",
-          borderRadius: 28,
-          overflow: "hidden",
-          backdropFilter: "blur(24px)",
-          boxShadow: "0 28px 70px rgba(0,0,0,0.55)",
-        }}>
-
-          {/* Table Header Bar */}
-          <div style={{
-            padding: "1.6rem 2rem",
-            borderBottom: "1px solid rgba(56,189,248,0.1)",
-            background: "rgba(10,18,40,0.7)",
-            display: "flex", alignItems: "center", justifyContent: "space-between",
-            flexWrap: "wrap", gap: "1rem",
-          }}>
+        {/* ─── Case Workstation Table ───────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          style={{
+            background: "#ffffff", border: "1px solid #e2e8f0",
+            borderRadius: "24px", padding: "1.8rem",
+            boxShadow: "0 4px 20px -3px rgba(0,0,0,0.03)"
+          }}
+        >
+          {/* Table Header Controls with Search & Filter */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem", marginBottom: "1.5rem" }}>
             <div>
-              <h3 style={{ fontSize: "1.35rem", fontWeight: 800, color: "#f8fafc", letterSpacing: "-0.02em" }}>
-                Patient Case Queue
-              </h3>
-              <div style={{ fontSize: "0.82rem", color: "#64748b", marginTop: "0.2rem" }}>
-                Showing <span style={{ color: "#38bdf8", fontWeight: 700 }}>{filtered.length}</span> of <span style={{ color: "#94a3b8" }}>{reports.length}</span> diagnostic records
-              </div>
+              <h2 style={{ fontSize: "1.2rem", fontWeight: 800, color: "#0f172a" }}>
+                Patient Workstation Queue
+              </h2>
+              <span style={{ fontSize: "0.82rem", color: "#64748b" }}>
+                Showing {filtered.length} of {reports.length} cases
+              </span>
             </div>
 
-            <div style={{ display: "flex", alignItems: "center", gap: "0.7rem", flexWrap: "wrap" }}>
-              <select className="filter-select" value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
+            {/* Filter & Search Group */}
+            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexWrap: "wrap" }}>
+              {/* Search Bar Functionality */}
+              <input
+                type="text"
+                placeholder="🔍 Search patient, symptom or ID..."
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+                style={{
+                  padding: "0.55rem 1rem", borderRadius: 10, border: "1px solid #cbd5e1",
+                  fontSize: "0.88rem", color: "#0f172a", background: "#ffffff", fontWeight: 500,
+                  minWidth: "220px"
+                }}
+              />
+
+              <select
+                value={statusFilter}
+                onChange={e => setStatusFilter(e.target.value)}
+                style={{
+                  padding: "0.55rem 1rem", borderRadius: 10, border: "1px solid #cbd5e1",
+                  fontSize: "0.88rem", color: "#0f172a", background: "#ffffff", fontWeight: 600
+                }}
+              >
                 <option value="All">All Statuses</option>
                 <option value="Pending">Pending</option>
                 <option value="Approved">Approved</option>
                 <option value="Rejected">Rejected</option>
               </select>
-              <input type="date" className="filter-input" value={dateFilter} onChange={e => setDateFilter(e.target.value)} />
-              <button className="reset-btn" onClick={() => { setStatusFilter("All"); setDateFilter(""); }}>Reset</button>
+
+              <input
+                type="date"
+                value={dateFilter}
+                onChange={e => setDateFilter(e.target.value)}
+                style={{
+                  padding: "0.55rem 1rem", borderRadius: 10, border: "1px solid #cbd5e1",
+                  fontSize: "0.88rem", color: "#0f172a", background: "#ffffff", fontWeight: 600
+                }}
+              />
+
+              <button
+                onClick={resetFilters}
+                style={{
+                  padding: "0.55rem 1rem", borderRadius: 10, border: "1px solid #cbd5e1",
+                  fontSize: "0.88rem", color: "#475569", background: "#f1f5f9", fontWeight: 700, cursor: "pointer"
+                }}
+              >
+                Reset
+              </button>
             </div>
           </div>
 
@@ -400,146 +392,117 @@ export default function HomeDoctor() {
           <div style={{ overflowX: "auto" }}>
             <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
               <thead>
-                <tr style={{ background: "rgba(2,8,24,0.9)", borderBottom: "1px solid rgba(56,189,248,0.1)" }}>
-                  {["Patient Name", "Clinical Symptoms", "Submission Date", "Status", "Report ID", "Actions"].map((h, i) => (
-                    <th key={i} style={TH_STYLE}>{h}</th>
-                  ))}
+                <tr style={{ background: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
+                  <th style={{ padding: "0.85rem 1rem", fontSize: "0.75rem", fontWeight: 700, color: "#475569", letterSpacing: "0.06em", textTransform: "uppercase" }}>Patient Name</th>
+                  <th style={{ padding: "0.85rem 1rem", fontSize: "0.75rem", fontWeight: 700, color: "#475569", letterSpacing: "0.06em", textTransform: "uppercase" }}>Symptoms / Data</th>
+                  <th style={{ padding: "0.85rem 1rem", fontSize: "0.75rem", fontWeight: 700, color: "#475569", letterSpacing: "0.06em", textTransform: "uppercase" }}>AI Risk Triage</th>
+                  <th style={{ padding: "0.85rem 1rem", fontSize: "0.75rem", fontWeight: 700, color: "#475569", letterSpacing: "0.06em", textTransform: "uppercase" }}>Submission Date</th>
+                  <th style={{ padding: "0.85rem 1rem", fontSize: "0.75rem", fontWeight: 700, color: "#475569", letterSpacing: "0.06em", textTransform: "uppercase", textAlign: "center" }}>Status</th>
+                  <th style={{ padding: "0.85rem 1rem", fontSize: "0.75rem", fontWeight: 700, color: "#475569", letterSpacing: "0.06em", textTransform: "uppercase" }}>Report ID</th>
+                  <th style={{ padding: "0.85rem 1rem", fontSize: "0.75rem", fontWeight: 700, color: "#475569", letterSpacing: "0.06em", textTransform: "uppercase", textAlign: "right" }}>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
-                  <tr><td colSpan={6} style={EMPTY_CELL}>
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.75rem" }}>
-                      <span style={{ display: "inline-block", width: 18, height: 18, border: "2.5px solid rgba(56,189,248,0.3)", borderTopColor: "#38bdf8", borderRadius: "50%", animation: "spin 0.9s linear infinite" }} />
-                      Loading clinical reports queue…
-                    </div>
-                  </td></tr>
+                  <tr>
+                    <td colSpan={7} style={{ textAlign: "center", padding: "3rem", color: "#64748b" }}>Loading queue…</td>
+                  </tr>
                 ) : error ? (
-                  <tr><td colSpan={6} style={{ ...EMPTY_CELL, color: "#fca5a5" }}>⚠️ {error}</td></tr>
+                  <tr>
+                    <td colSpan={7} style={{ textAlign: "center", padding: "3rem", color: "#dc2626" }}>{error}</td>
+                  </tr>
                 ) : filtered.length === 0 ? (
-                  <tr><td colSpan={6} style={EMPTY_CELL}>No diagnostic reports match the selected filter.</td></tr>
+                  <tr>
+                    <td colSpan={7} style={{ textAlign: "center", padding: "3rem", color: "#64748b" }}>No cases found matching filters.</td>
+                  </tr>
                 ) : (
-                  filtered.map((r, idx) => {
-                    const sc  = statusColor(r.status);
+                  filtered.map((r, i) => {
+                    const sc = statusColor(r.status);
                     const rid = r.report_id;
                     const busy = actionBusy[rid];
-                    const isApproved = (r.status||"").toLowerCase() === "approved";
-                    const isRejected = (r.status||"").toLowerCase() === "rejected";
+                    const triage = calculateUrgency(r.symptoms);
                     return (
-                      <tr key={rid || idx} className="row-tr" style={{
-                        borderBottom: "1px solid rgba(56,189,248,0.07)",
-                        background: idx % 2 === 0 ? "transparent" : "rgba(14,22,44,0.35)",
-                      }}>
-                        {/* Patient Name */}
-                        <td style={{ ...TD_STYLE, fontWeight: 700, color: "#f0f6ff" }}>
-                          <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
-                            <div style={{
-                              width: 34, height: 34, borderRadius: "50%",
-                              background: "linear-gradient(135deg,rgba(56,189,248,0.2),rgba(99,102,241,0.2))",
-                              border: "1px solid rgba(56,189,248,0.25)",
-                              display: "flex", alignItems: "center", justifyContent: "center",
-                              fontSize: "0.88rem", fontWeight: 800, color: "#38bdf8", flexShrink: 0,
-                            }}>
-                              {(r.patient_name||"?")[0].toUpperCase()}
-                            </div>
-                            {r.patient_name || "Anonymous"}
-                          </div>
+                      <motion.tr
+                        key={rid}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: i * 0.04 }}
+                        style={{ background: i % 2 === 0 ? "#ffffff" : "#fafafa", borderBottom: "1px solid #f1f5f9" }}
+                      >
+                        <td style={{ padding: "1rem", color: "#0f172a", fontWeight: 700, fontSize: "0.92rem" }}>
+                          {r.patient_name || "Anonymous Patient"}
                         </td>
-
-                        {/* Symptoms */}
-                        <td style={{ ...TD_STYLE, color: "#cbd5e1", maxWidth: 250 }}>
-                          <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                            {r.symptoms || "—"}
-                          </div>
+                        <td style={{ padding: "1rem", color: "#334155", fontSize: "0.88rem", maxWidth: 240, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                          <span style={{ marginRight: "0.4rem" }} title={r.image_path || r.has_image || r.xray_image ? "Chest Radiograph Attached" : "Clinical Consultation (Text-Only)"}>
+                            {r.image_path || r.has_image || r.xray_image ? "🫁" : "📝"}
+                          </span>
+                          {r.symptoms || "No symptoms recorded"}
                         </td>
-
-                        {/* Date */}
-                        <td style={{ ...TD_STYLE, color: "#94a3b8", fontSize: "0.84rem", whiteSpace: "nowrap" }}>
-                          {r.submission_date
-                            ? new Date(r.submission_date).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
-                            : "N/A"}
-                        </td>
-
-                        {/* Status pill */}
-                        <td style={{ ...TD_STYLE, textAlign: "center" }}>
+                        {/* New Functionality: AI Risk Triage Badge Column */}
+                        <td style={{ padding: "1rem" }}>
                           <span style={{
-                            display: "inline-flex", alignItems: "center", gap: "0.4rem",
-                            padding: "0.3rem 0.85rem", borderRadius: 100,
-                            fontSize: "0.77rem", fontWeight: 700, letterSpacing: "0.03em",
-                            background: sc.bg, color: sc.text, border: `1px solid ${sc.border}`,
-                            whiteSpace: "nowrap",
+                            display: "inline-flex", alignItems: "center", gap: "0.3rem",
+                            fontSize: "0.72rem", fontWeight: 700, padding: "0.25rem 0.6rem", borderRadius: 100,
+                            background: triage.bg, color: triage.text, border: `1px solid ${triage.border}`
                           }}>
-                            <span style={{ width: 6, height: 6, borderRadius: "50%", background: sc.dot, display: "inline-block", boxShadow: `0 0 6px ${sc.dot}` }} />
+                            {triage.label}
+                          </span>
+                        </td>
+                        <td style={{ padding: "1rem", color: "#64748b", fontSize: "0.85rem" }}>
+                          {r.submission_date ? new Date(r.submission_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "—"}
+                        </td>
+                        <td style={{ padding: "1rem", textAlign: "center" }}>
+                          <span style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.3rem 0.8rem", borderRadius: 100, fontSize: "0.78rem", fontWeight: 700, background: sc.bg, color: sc.text, border: `1px solid ${sc.border}` }}>
+                            <span style={{ width: 6, height: 6, borderRadius: "50%", background: sc.dot }} />
                             {r.status || "Pending"}
                           </span>
                         </td>
-
-                        {/* Report ID */}
-                        <td style={{ ...TD_STYLE, color: "#475569", fontFamily: "monospace", fontSize: "0.78rem" }}>
-                          #{String(rid).slice(0, 8)}…
+                        <td style={{ padding: "1rem", color: "#64748b", fontFamily: "monospace", fontSize: "0.82rem" }}>
+                          #{String(rid).slice(0, 8)}
                         </td>
-
-                        {/* Actions */}
-                        <td style={{ ...TD_STYLE, textAlign: "center" }}>
-                          <div style={{ display: "flex", gap: "0.45rem", justifyContent: "center", flexWrap: "nowrap" }}>
-                            <button className="review-btn" onClick={() => navigate(`/reports/${rid}`)}>
-                              Review →
-                            </button>
-                            {!isApproved && (
-                              <button
-                                className="approve-btn"
+                        <td style={{ padding: "1rem", textAlign: "right" }}>
+                          <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "0.4rem" }}>
+                            <motion.button
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.95 }}
+                              onClick={() => navigate(`/reports/${rid}`)}
+                              style={{ background: "#eff6ff", border: "1px solid #bfdbfe", color: "#2563eb", borderRadius: 8, padding: "0.4rem 0.85rem", fontSize: "0.82rem", fontWeight: 700, cursor: "pointer" }}
+                            >
+                              View Case
+                            </motion.button>
+                            {r.status !== "Approved" && (
+                              <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
                                 disabled={!!busy}
                                 onClick={() => quickAction(rid, "approve")}
+                                style={{ background: "#ecfdf5", border: "1px solid #a7f3d0", color: "#047857", borderRadius: 8, padding: "0.4rem 0.65rem", fontSize: "0.82rem", fontWeight: 700, cursor: "pointer" }}
                               >
                                 {busy === "approve" ? "…" : "✓"}
-                              </button>
+                              </motion.button>
                             )}
-                            {!isRejected && (
-                              <button
-                                className="reject-btn"
+                            {r.status !== "Rejected" && (
+                              <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
                                 disabled={!!busy}
                                 onClick={() => quickAction(rid, "reject")}
+                                style={{ background: "#fef2f2", border: "1px solid #fecaca", color: "#b91c1c", borderRadius: 8, padding: "0.4rem 0.65rem", fontSize: "0.82rem", fontWeight: 700, cursor: "pointer" }}
                               >
                                 {busy === "reject" ? "…" : "✕"}
-                              </button>
+                              </motion.button>
                             )}
                           </div>
                         </td>
-                      </tr>
+                      </motion.tr>
                     );
                   })
                 )}
               </tbody>
             </table>
           </div>
-        </div>
-
+        </motion.div>
       </main>
-
-      <style>{`
-        @keyframes spin { to { transform: rotate(360deg); } }
-      `}</style>
     </div>
   );
 }
-
-const TH_STYLE = {
-  padding: "1rem 1.5rem",
-  fontSize: "0.74rem",
-  fontWeight: 700,
-  color: "#38bdf8",
-  letterSpacing: "0.09em",
-  textTransform: "uppercase",
-};
-
-const TD_STYLE = {
-  padding: "1.05rem 1.5rem",
-  fontSize: "0.9rem",
-};
-
-const EMPTY_CELL = {
-  textAlign: "center",
-  padding: "4rem",
-  color: "#64748b",
-  fontSize: "0.95rem",
-};

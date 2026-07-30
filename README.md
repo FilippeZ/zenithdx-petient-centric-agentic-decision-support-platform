@@ -63,27 +63,47 @@ The ZenithDx ReAct agent was evaluated live across 6 comprehensive synthetic cli
 
 ---
 
-## 🖼️ Application Screenshots & Workstation Interface
+## 🖼️ Application Screenshots & Workstation Interface (Real Live Captures)
 
-### 1. Clinician Decision Workstation (`HomeDoctor.jsx`)
-*High-end clinical triage queue featuring live status indicators, AI Risk Triage badges (High/Medium/Routine), search filtering, and quick actions.*
+### 1. Landing Page & Clinical Platform (`LandingPage.jsx`)
+*Crisp white clinical landing page featuring Framer Motion hero animations, dynamic rotating AI analysis card, and role portal entry points.*
+
+![Landing Page](docs/images/landing_page.png)
+
+### 2. Clinician Decision Workstation Queue (`HomeDoctor.jsx`)
+*Hospital clinical triage queue featuring live status indicators, dynamic AI Risk Triage badges (High Priority 🔴 / Medium 🟠 / Routine 🟢), search filtering, and quick action approvals.*
 
 ![Clinician Workstation](docs/images/doctor_workstation.png)
 
-### 2. Diagnosis Report & Clinical Summary (`HowToUseDoctor.jsx`)
-*Comprehensive AI diagnosis summary displaying ResNet-50 multi-label probabilities, Youden's J thresholding, and decision approvals.*
+### 3. Step-by-Step Diagnosis Wizard (`Detect.jsx`)
+*Interactive patient scan submission interface supporting drag & drop X-ray upload, DICOM encryption, symptom description, and live processing overlay.*
 
-![Diagnosis Report](docs/images/diagnosis_report.png)
+![Diagnosis Wizard](docs/images/diagnosis_wizard.png)
 
-### 3. Patient Health Guide (`HowToUsePatient.jsx`)
-*Step-by-step patient walkthrough explaining X-ray upload, plain-language symptom description, and secure privacy protection.*
+### 4. Split-Screen Sign In / Auth Portal (`AuthPage.jsx`)
+*Role-specific login portal featuring medical illustration banners, dynamic patient/doctor image switching (`patient.png` / `doctor.png`), and role toggles.*
 
-![Patient User Guide](docs/images/patient_guide.png)
+![Auth Portal](docs/images/auth_portal.png)
 
-### 4. Interactive X-Ray Diagnostic Scan Analysis
-*Visual demonstration of S²A-UNet lung segmentation and multi-label pathology classification.*
+### 5. Clinician Diagnostic User Guide (`HowToUseDoctor.jsx`)
+*Step-by-step clinician walkthrough explaining ResNet-50 classification, Decision Hub governance, and Grad-CAM explainability.*
 
-![X-Ray Analysis](docs/images/xray_analysis.png)
+![Doctor Guide](docs/images/doctor_guide.png)
+
+### 6. Patient Diagnostic User Guide (`HowToUsePatient.jsx`)
+*3-step patient walkthrough explaining X-ray upload, plain-language symptom matching, and MIMIC-IV patient record integration.*
+
+![Patient Guide](docs/images/patient_guide.png)
+
+### 7. About ZenithDx Platform (`AboutPage.jsx`)
+*Interactive feature grid highlighting speed & agility, precision AI, resource optimization, 360° data fusion, trust & XAI, and enterprise readiness.*
+
+![About ZenithDx](docs/images/about_zenithdx.png)
+
+### 8. Patient Diagnostic Dashboard (`HomePatient.jsx`)
+*Patient health portal featuring diagnostic submission tracking, interactive clinician note modal drawer, and report status overview.*
+
+![Patient Dashboard](docs/images/patient_dashboard.png)
 
 ---
 

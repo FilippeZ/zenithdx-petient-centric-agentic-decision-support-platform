@@ -10,7 +10,11 @@
 ### Key Capabilities & Architectural Pillars
 - **🤖 Autonomous LangGraph ReAct Orchestration**: Dynamic plan adaptation that routes execution between vision, EHR history, and RAG literature pipelines.
 - **🫁 Deep Vision & Spatial Explainability (XAI)**: Dual-stage S²A-UNet anatomical lung segmentation, multi-label ResNet-50 classification (trained with Focal BCE Loss and Youden's J decision thresholding), and PyTorch Grad-CAM attention heatmaps.
-- **🕸️ Longitudinal EHR History Graph Integration**: MIMIC-IV patient record integration using FAISS dense vector clustering to cross-reference historical hospitalizations.
+- **🕸️ Advanced Longitudinal Graph EHR Engine**:
+  - **SciBERT 768-dim Semantic Node Inputs**: Dense medical concept embeddings replacing word-level TF-IDF/PCA.
+  - **Non-Linear Multimodal Fusion MLP**: Projection head $\mathbf{q} = \text{MLP}(\mathbf{v}_{symp} \oplus \mathbf{v}_{img})$ mapping text and vision logits onto a unified latent hyper-sphere.
+  - **Sinusoidal Edge Temporal Encoding**: Harmonic positional encoding $\mathbf{e}_t^{(i)} = \sin(\omega_i \Delta t + \phi_i)$ on `Patient -> Visit` edges for recency-aware attention message passing.
+  - **Graph Contrastive Learning (InfoNCE Loss)**: Intra-patient alignment and inter-patient negative sampling for crystalline FAISS cluster separation.
 - **📚 Evidence-Based RAG & Text Saliency**: SciBERT dense retrieval over medical literature coupled with PyTorch Captum Feature Ablation for text token attributions.
 - **⚡ Graceful Degradation & Text-Only Triage**: Guaranteed non-refusal clinical symptom triage for consultations lacking X-ray scans or EHR history.
 - **💻 Dual-Audience Modern Web Interfaces**: Hospital dark-glassmorphism workstation for clinicians and intuitive plain-language portals for patients built with React, Vite, and Framer Motion.

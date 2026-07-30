@@ -48,19 +48,6 @@ graph TD
 
 ---
 
-## 📊 Live Empirical Evaluation (6 Synthetic Clinical Use Cases)
-
-The ZenithDx ReAct agent was evaluated live across 6 comprehensive synthetic clinical scenarios using Ollama `doctor2`:
-
-| Case | Scenario & Symptoms | Data Modalities | Diagnosis & Primary Differential | Execution Time | Evaluation Status |
-| :--- | :--- | :--- | :--- | :---: | :---: |
-| **Case 1** | Acute Bacterial Pneumonia (Fever 38.8°C, Cough, Chest Pain) | X-Ray + Patient History | **Community-Acquired Pneumonia (CAP)**, Atelectasis | 414.8s | ✅ **PASSED** (Full Fusion) |
-| **Case 2** | Pure Text Consultation (Tension/Migraine Headache, Dizziness) | Text-Only (No Image/ID) | **Tension / Migraine Headache**, Cervicogenic Headache | 83.8s | ✅ **PASSED** (Text-Only Triage) |
-| **Case 3** | Congestive Heart Failure & Pulmonary Edema (Swelling, Dyspnea) | X-Ray + Patient History | **Acute Congestive Heart Failure (CHF)**, Pulmonary Edema | 414.3s | ✅ **PASSED** (Multi-Label XAI) |
-| **Case 4** | Acute Febrile Influenza-Like Illness (Fever 39.2°C, Myalgia) | Text-Only (No Image/ID) | **Influenza-Like Illness (ILI)**, Viral Bronchitis | 76.9s | ✅ **PASSED** (Graceful Degradation) |
-| **Case 5** | Asthmatic Exacerbation (Wheezing, Cold Air Exposure) | Text + Patient History | **Acute Asthma Exacerbation**, Reactive Airway Disease | 170.0s | ✅ **PASSED** (EHR Graph Traverse) |
-| **Case 6** | Pleural Effusion vs Atelectasis (Sharp Pleuritic Pain) | X-Ray (No Patient ID) | **Right Pleurisy / Pleural Effusion**, Atelectasis | 144.8s | ✅ **PASSED** (Vision + RAG) |
-
 ---
 
 ## 🖼️ Application Screenshots & Workstation Interface (Real Live Captures)

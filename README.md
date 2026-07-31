@@ -1,11 +1,11 @@
 <p align="center">
-  <img src="backend/assets/logo.png" width="340" alt="ZenithDx Clinical AI Platform Logo" />
+  <img src="backend/assets/logo.png" width="350" alt="ZenithDx Clinical AI Workstation Logo" />
 </p>
 
 <h1 align="center">ZenithDx: Patient-Centric Multi-Modal Agentic AI Clinical Workstation</h1>
 
 <p align="center">
-  <b>Diploma Thesis Architecture</b>: Multi-Modal Autonomous ReAct Decision Support System for Chest Radiography, Heterogeneous Graph EHR Traversal, and Explainable Clinical Triage.
+  <b>Diploma Thesis Architecture</b>: Multi-Modal Autonomous ReAct Decision Support System for Chest Radiography, Heterogeneous Graph EHR Traversal, ColBERT RAG, and Explainable Clinical Triage.
 </p>
 
 <p align="center">
@@ -20,13 +20,13 @@
 ---
 
 ## 📋 Table of Contents
-1. [🌟 Executive Summary & Key Pillar Innovations](#-executive-summary--key-pillar-innovations)
-2. [📐 System Architecture & Agentic Workflow](#-system-architecture--agentic-workflow)
-3. [🫁 Multi-Modal Vision Pipeline (S²A-UNet & ResNet-50)](#-multi-modal-vision-pipeline-s²a-unet--resnet-50)
-4. [🕸️ Longitudinal EHR Knowledge Graph Engine (HGT & PyVis Timeline)](#-longitudinal-ehr-knowledge-graph-engine-hgt--pyvis-timeline)
-5. [📚 Evidence-Based RAG & SciBERT NLP Engine](#-evidence-based-rag--scibert-nlp-engine)
-6. [🛡️ Agentic Safety, Infinite Loop Defense & Anti-Hallucination](#-agentic-safety-infinite-loop-defense--anti-hallucination)
-7. [📄 Publication-Quality ReportLab PDF Engine](#-publication-quality-reportlab-pdf-engine)
+1. [🌟 Executive Summary & Theoretical Innovations](#-executive-summary--theoretical-innovations)
+2. [🧠 1. Cognitive Core & Agentic AI (LangGraph & Llama 3.2 3B SFT)](#-1-cognitive-core--agentic-ai-langgraph--llama-32-3b-sft)
+3. [🫁 2. Computer Vision Pipeline (S²A-UNet & ResNet-50)](#-2-computer-vision-pipeline-s²a-unet--resnet-50)
+4. [📚 3. Advanced RAG & SciBERT NLP Engine](#-3-advanced-rag--scibert-nlp-engine)
+5. [🕸️ 4. Longitudinal EHR Graph ML Pipeline (HGT & MIMIC-IV-ED)](#-4-longitudinal-ehr-graph-ml-pipeline-hgt--mimic-iv-ed)
+6. [🔍 5. Explainable AI Layers (XAI: Grad-CAM & PyTorch Captum)](#-5-explainable-ai-layers-xai-grad-cam--pytorch-captum)
+7. [💻 6. Full-Stack Application Architecture (React, FastAPI, Postgres, Nginx)](#-6-full-stack-application-architecture-react-fastapi-postgres-nginx)
 8. [🖼️ Application Screenshots & Live User Interfaces](#-application-screenshots--live-user-interfaces)
 9. [📂 Project Directory Structure](#-project-directory-structure)
 10. [🧪 Automated Testing & Verification Suite](#-automated-testing--verification-suite)
@@ -34,179 +34,174 @@
 
 ---
 
-## 🌟 Executive Summary & Key Pillar Innovations
+## 🌟 Executive Summary & Theoretical Innovations
 
-**ZenithDx** is a state-of-the-art multi-modal clinical decision support workstation designed to bridge complex deep learning diagnostic models with human clinical reasoning. Built around a state-machine **LangGraph ReAct Autonomous Agent**, ZenithDx harmonizes multi-label chest radiography classification, longitudinal EHR history graph traversal, and peer-reviewed clinical RAG literature retrieval into transparent, explainable diagnostic summaries.
+**ZenithDx** is a state-of-the-art multi-modal clinical decision support workstation designed to bridge deep learning diagnostic models with human clinical reasoning. Grounded in a state-machine **LangGraph ReAct Autonomous Agent**, ZenithDx harmonizes multi-label chest radiography classification, longitudinal EHR history graph traversal, and peer-reviewed clinical RAG literature retrieval into transparent, explainable diagnostic summaries.
 
-> [!NOTE]
-> **Compliance & Alignment**: Engineered in strict compliance with the **EU AI Act** and **HIPAA AI Clinical Governance standards**, mandating full explainability (XAI), human-in-the-loop oversight, and zero artificial context hallucination.
-
-### Key Technical Pillars
-
-```
-+-----------------------------------------------------------------------------------+
-|                                 ZENITHDX PLATFORM                                 |
-+--------------------------+--------------------------+-----------------------------+
-|    1. VISION PIPELINE    |   2. EMR/EHR GRAPH ENGINE|     3. HYBRID RAG & XAI     |
-|  - S²A-UNet Segmentation |  - Heterogeneous Graph   |  - SciBERT + BM25 Fusion    |
-|  - ResNet-50 Classifier  |    Transformers (HGT)    |  - ColBERT Late Interaction |
-|  - Mask Gated Grad-CAM   |  - Sinusoidal Δt Edges   |  - Captum Feature Ablation  |
-+--------------------------+--------------------------+-----------------------------+
-|               4. LANGGRAPH REACT AUTONOMOUS AGENT STATE-MACHINE                   |
-+-----------------------------------------------------------------------------------+
-```
+> [!IMPORTANT]
+> **EU AI Act & GDPR Compliance**: Built with local GGUF inference via Ollama (`llama3.2:3b`), ZenithDx ensures **zero data leakage**, zero external API call costs, and strict compliance with EU AI Act transparency and HIPAA privacy mandates.
 
 ---
 
-## 📐 System Architecture & Agentic Workflow
+## 🧠 1. Cognitive Core & Agentic AI (LangGraph & Llama 3.2 3B SFT)
 
-ZenithDx executes diagnosis through an autonomous **LangGraph ReAct (Reasoning + Acting) StateMachine**. The agent dynamically determines execution paths based on available data modalities (Image, Patient ID, Clinical Text).
+The cognitive engine is designed to execute multi-step clinical workflows autonomously with self-correction and proactive reasoning.
 
 ```mermaid
 graph TD
-    A["👤 User Input (Symptoms, X-Ray Image, Patient ID)"] --> B["⚙️ FastAPI Backend /upload"]
-    B --> C["🧠 LangGraph ReAct StateMachine (StateGraph)"]
+    A["👤 User Input (Symptoms, X-Ray, Patient ID)"] --> B["⚙️ FastAPI Backend /upload"]
+    B --> C["🧠 LangGraph ReAct State Machine (StateGraph)"]
     
-    subgraph "Multi-Modal Execution Tools"
-        C --> D{"📷 X-Ray Image Present?"}
-        D -- Yes --> E["🫁 Vision Tool\n(S²A-UNet + ResNet-50 + Grad-CAM)"]
-        D -- No --> F["⏩ Bypass Vision (Text-Only Triage)"]
-        
-        C --> G{"📋 Patient ID Present?"}
-        G -- Yes --> H["🕸️ EHR Tool\n(HGT Model + MIMIC-IV Graph Traversal)"]
-        G -- No --> I["⏩ Bypass EHR History"]
-        
-        C --> J["📚 Hybrid RAG Tool\n(FAISS + BM25 + ColBERT Re-Ranker)"]
+    subgraph "State Graph Nodes & Routing"
+        C --> D["📋 planner\n(Formulates initial clinical plan)"]
+        D --> E["🔄 react_agent\n(Reasoning + Acting Loop)"]
+        E --> F["🛠️ run_tool\n(Executes Vision, RAG, EHR pipelines)"]
+        F --> E
+        E --> G["🔍 reflector\n(Self-Refine Critique Node)"]
+        G -- Deficiencies Found --> D
+        G -- Approved (Score >= 8/10) --> H["📄 final_answer\n(Synthesizes 4-section report)"]
     end
     
-    E --> K["🧠 Reflector & Self-Refine Node\n(Ollama 'doctor2' Llama 3.2 3B LLM)"]
-    F --> K
-    H --> K
-    I --> K
-    J --> K
-    
-    K --> L{"Quality Score >= 8/10?"}
-    L -- No (Loop Count < 2) --> C
-    L -- Yes --> M["📄 Final Answer Node & ReportLab PDF Generator"]
-    M --> N["💻 Frontend Workstation (React + Vite + Framer Motion)"]
+    H --> I["📄 ReportLab PDF Generator Engine"]
+    I --> J["💻 Frontend Workstation (React + Vite + Framer Motion)"]
 ```
+
+### State Machine Node Architecture
+- **`planner`**: Formulates the initial clinical action plan based on user symptoms, image metadata, and patient history.
+- **`react_agent`**: Executes the ReAct (Reasoning + Acting) loop, explicitly alternating between thought/planning phases and tool invocation steps.
+- **`run_tool`**: Wraps external execution pipelines (`vision_tool`, `rag_tool`, `ehr_tool`).
+- **`reflector`**: Performs **Self-Refine** critique. If omissions or ambiguities are detected, it autonomously loops back to `planner` for revision.
+- **`final_answer`**: Synthesizes the final structured 4-section clinical report (*Assessment, Differential Diagnosis, Final Diagnosis, Explanation*).
+
+### Hierarchical Memory Architecture
+- **Short-Term Memory**: Maintains `AgentState` and conversation history in `context_cache` operating as a shared scratchpad.
+- **Long-Term Memory**: Implemented via `CustomMemorySaver`, persisting state to JSON format for longitudinal patient continuity.
+
+### LLM Supervised Fine-Tuning (SFT) & Quantization
+- **Dataset**: Distilled from `ruslanmv/ai-medical-chatbot` (~257k doctor-patient dialogues) into structured 4-section diagnostic reports formatted under the Alpaca standard.
+- **Unsloth & LoRA Optimization**: Applied LoRA with $r=32$, 4-bit quantization, and max sequence length of 2048 tokens, reducing VRAM footprint by **80%**.
+- **Hyperparameters**: Hugging Face `SFTTrainer` for 2000 steps, learning rate $2 \times 10^{-4}$ (linear decay), 8-bit AdamW optimizer, and gradient accumulation = 4 (effective batch size 16).
+- **Deployment**: Exported to GGUF format and served locally via Ollama (`llama.cpp`).
 
 ---
 
-## 🫁 Multi-Modal Vision Pipeline (S²A-UNet & ResNet-50)
+## 🫁 2. Computer Vision Pipeline (S²A-UNet & ResNet-50)
 
-The vision pipeline implements a 4-stage linear execution sequence designed to eliminate non-lung background noise and constrain activations strictly within pulmonary parenchymal boundaries.
+Trained on **MIMIC-CXR-JPG** and **CXLSeg** datasets to analyze chest radiographs (CXR) via a 2-stage hybrid architecture.
 
 ```
 [Raw Chest Radiograph (H x W x 3)]
                 │
                 ▼
 1. S²A-UNet Dual-Lobe Segmentation (`sa_unet_predict`)
-   └── Extracts true left & right pulmonary parenchymal lobes situated strictly
-       in anatomical chest cavity (x_left ∈ [0.08W, 0.46W], x_right ∈ [0.54W, 0.92W]).
+   └── Preprocesses image (Grayscale 256x256x1), passes through S²A-UNet.
+       Dice Coefficient = 0.9718 on test set.
                 │
                 ▼
 2. Segmented ROI Extraction (`extract_segmented_roi`)
-   ├── Computes bounding box (x, y, w, h) of pulmonary mask M_lung.
-   ├── Crops raw image and mask strictly to lung region of interest.
-   ├── Applies element-wise mask gating: I_segmented_crop = I_crop × M_crop.
-   └── Resizes segmented ROI to 224x224 input tensor `input_tensor_224`.
+   ├── Bounding box crop around lung parenchyma.
+   ├── Element-wise mask gating: I_segmented_crop = I_crop × M_crop.
+   └── Resizes segmented ROI to 224x224x3 ImageNet tensor.
                 │
                 ▼
 3. ResNet-50 Multi-Label Classification (`resnet_predict`)
-   ├── Passes `input_tensor_224` (clean segmented lung fields ONLY) into ResNet-50 backbone.
-   └── Evaluates 6 pathology logits -> Sigmoid probabilities (Pneumonia, Atelectasis, etc.).
+   ├── Evaluates 6 clinical pathology logits.
+   └── Macro-AUROC = 0.78 on test set (Focal BCE Loss γ=1.5).
                 │
                 ▼
 4. ResNet-50 Layer4 Grad-CAM & Lung Mask Gating (`grad_cam_torch`)
    ├── Evaluates gradients of predicted class logit w.r.t. `layer4` feature maps.
-   ├── Multiplies 224x224 Grad-CAM map with 224x224 lung mask: cam_224_gated = cam_224 × M_crop_224.
-   ├── Resizes `cam_224_gated` back to ROI crop size (w, h) and embeds onto full canvas (H, W).
-   └── Zeroes out non-lung background pixels: heatmap_masked = heatmap_rgb × M_lung.
+   └── Element-wise gated by S²A-UNet lung mask: cam_224_gated = cam_224 × M_crop_224.
 ```
 
-### Stage 1: S²A-UNet Lung Segmentation
-- **Skip-Spatial Attention (S²A-Block)**: Applied to each skip connection tensor before decoder concatenation:
+### Stage A: S²A-UNet Lung Segmentation
+- **Skip-Spatial Attention (S²A-Block)**: Introduced on skip connections to suppress non-pulmonary background noise:
   $$\text{avg\_pool} = \text{reduce\_mean}(X, \text{axis}=-1), \quad \text{max\_pool} = \text{reduce\_max}(X, \text{axis}=-1)$$
-  $$\text{attn\_map} = \sigma\left(\text{Conv2D}_{7 \times 7}\left([\text{avg\_pool} \parallel \text{max\_pool}]\right)\right)$$
-  $$Y_{\text{skip}} = X \odot \text{attn\_map}$$
-- **Output**: $256 \times 256 \times 1$ binary probability mask $M_{\text{lung}} \in [0, 1]^{256 \times 256 \times 1}$.
+  $$\text{attn\_map} = \sigma\left(\text{Conv2D}_{3 \times 3}\left([\text{avg\_pool} \parallel \text{max\_pool}]\right)\right) \implies Y_{\text{skip}} = X \odot \text{attn\_map}$$
+- **Architecture**: 4 Encoder levels (64->128->256->512), 1024-filter Bottleneck at 16x16, 4 Decoder levels (Conv2DTranspose), 1x1 Conv output ($256 \times 256 \times 1$).
+- **Performance**: Evaluated with BCE Loss and Adam optimizer. Achieved **Dice Similarity Coefficient = 0.9718** on independent test set.
 
-### Stage 2: ResNet-50 Multi-Label Classification
-- **Loss Function**: Trained with **Focal BCE Loss** ($\gamma = 1.5$) to address severe class imbalance.
-- **Decision Cut-offs (Youden's J Optimization)**:
-  | Pathology Finding | Decision Cutoff (Youden's J) | Primary Clinical Indicator |
-  | :--- | :---: | :--- |
-  | **Atelectasis** | **0.35** | Sub-segmental volume collapse |
-  | **Consolidation** | **0.40** | Alveolar air-space opacification |
-  | **Edema** | **0.35** | Vascular congestion & Kerley B-lines |
-  | **Lung Lesion** | **0.30** | Pulmonary nodule / focal opacity |
-  | **Lung Opacity** | **0.45** | Increased parenchymal attenuation |
-  | **Pneumonia** | **0.35** | Infectious focal pulmonary infiltrate |
+### Stage B: ResNet-50 Multi-Label Classification
+- **Segmented ROI Input Gating**: ResNet-50 receives **only the segmented pulmonary parenchyma** ($I_{segmented\_crop} = I_{crop} \odot M_{crop}$), eliminating background artifacts (ECG leads, buttons).
+- **Training Strategy**: Trained with **Focal BCE Loss** ($\gamma = 1.5$), class weights, label smoothing (0.05), multi-label batch sampler, and discriminative learning rates with `CosineAnnealingLR` (25-epoch cycles).
+- **Decision Thresholding (Youden's J Optimization)**:
+  | Pathology Finding | Decision Cutoff (Youden's J) | Test Metric |
+  | :--- | :---: | :---: |
+  | **Atelectasis** | **0.35** | **macro-AUROC: 0.78** |
+  | **Consolidation** | **0.40** | *(Independent Test Set)* |
+  | **Edema** | **0.35** | |
+  | **Lung Lesion** | **0.30** | |
+  | **Lung Opacity** | **0.45** | |
+  | **Pneumonia** | **0.35** | |
 
 ---
 
-## 🕸️ Longitudinal EHR Knowledge Graph Engine (HGT & PyVis Timeline)
+## 📚 3. Advanced RAG & SciBERT NLP Engine
 
-### Heterogeneous Graph Transformer (HGT)
-The EHR pipeline structures longitudinal patient history from MIMIC-IV-ED as a heterogeneous graph $\mathcal{G} = (\mathcal{V}, \mathcal{E}, \mathcal{T}_v, \mathcal{T}_e)$ with 5 node types (`Patient`, `Visit`, `Diagnosis`, `VitalSign`, `Procedure`).
+Real-time clinical literature retrieval pipeline to enrich LLM context:
+1. **Web Gating**: Extracts clinical keywords, performs DuckDuckGo web search, and filters results strictly from **NIH**, **WHO**, and **CDC** domains.
+2. **SciBERT Preprocessing**: Cleans input text (lowercase, lemmatization, stopword removal) via SciBERT tokenizer.
+3. **Parallel Embeddings**: Computes dual embeddings by combining `BAAI/bge-large-en-v1.5` and specialized clinical models, cosine-normalizing the averaged vector.
+4. **Hybrid Search (Early Fusion)**: Simultaneous dense FAISS vector search and sparse BM25 keyword retrieval merged via:
+   $$fused\_score = -dist_{\text{faiss}} + score_{\text{bm25}}$$
+5. **Late Interaction Re-ranking (ColBERT)**: Evaluates Top-N candidate documents using ColBERT token-to-token MaxSim inner products to select final LLM context passages.
 
-$$\mathbf{h}_i^{(l+1)} = \text{Aggregate}\left( \sum_{j \in \mathcal{N}(i)} \text{Attention}(i, j) \cdot \text{Message}(j) \right)$$
+---
+
+## 🕸️ 4. Longitudinal EHR Graph ML Pipeline (HGT & MIMIC-IV-ED)
+
+Models clinical data from MIMIC-IV-ED (`edstays`, `diagnosis`, `triage`, `vitalsign`) as a heterogeneous knowledge graph $\mathcal{G} = (\mathcal{V}, \mathcal{E})$.
 
 ```
-[Patient Node] ──(has_visit)──► [Visit #1] ──(has_diagnosis)──► [Diagnosis: Pneumonia (ICD-10 J18.9)]
+[Patient Node] ──(has_visit)──► [Visit #1] ──(has_diagnosis)──► [Diagnosis: ICD-10]
                                      │
                              (next_visit: Δt)
                                      ▼
-                                [Visit #2] ──(has_vitalsign)──► [VitalSign: SpO2 88%, Hypotension]
+                                [Visit #2] ──(has_vitalsign)──► [VitalSign: SpO2, BP]
 ```
 
-### Sinusoidal Edge Temporal Encoding ($\Delta t$)
-Time gaps ($\Delta t$) between consecutive hospital visits are encoded using harmonic positional encodings on `("Visit", "next_visit", "Visit")` edges:
-$$\mathbf{e}_t^{(2i)} = \sin\left(\frac{\Delta t}{10000^{2i/d}}\right), \quad \mathbf{e}_t^{(2i+1)} = \cos\left(\frac{\Delta t}{10000^{2i/d}}\right)$$
-
-### Interactive Hierarchical Timeline Visualizer (`direction: "LR"`)
-Integrated into `backend/pipelines/graph_ehr/graph_visualizer.py` and rendered dynamically via `<LongitudinalGraphViewer />`:
-- **Left-to-Right Chronological Flow**: Patient nodes are organized horizontally from **Left to Right**.
-- **Physician Color Token Scheme**:
-  - 👤 **Patient Node (Cyan Box)**: `#0284c7`
-  - 🏥 **Visits (Royal Blue Box)**: `#1d4ed8`
-  - 🩺 **Diagnoses ICD-10 (Crimson Red Box)**: `#b91c1c`
-  - 📊 **Vital Signs (Emerald Green Box)**: `#047857`
-  - ⏳ **Temporal Flow (Neon-Purple Arrow)**: `#a855f7` (dashed line with $\Delta t$ days badge)
+- **Preprocessing & Cleaning**: Applied Interquartile Range (IQR) filtering on vital signs to purge invalid physiological values.
+- **Node Representations**: Features (TF-IDF for text, categorical variables zero-padded) reduced to 64 dimensions via PCA and projected to 1024 dimensions via shallow FNN encoders.
+- **Heterogeneous Graph Transformer (HGT)**: Metapath-aware multi-head attention over node and relation triplets.
+- **Relative Temporal Encoding ($\Delta t$)**: Hour gaps between consecutive hospital visits are transformed into time embeddings via an FNN layer onto `Patient` nodes.
+- **Self-Supervised Pretraining**: Reconstruction of `Visit` node features using MSE Loss (peaked at epoch 15 with **22.4x validation loss improvement**).
+- **Clinical Phenotyping & FAISS Index**: Visit embeddings clustered via K-Means into **7 clinical phenotypes** (**Silhouette Index = 0.4707**). Queries dynamically retrieve nearest historical visits via FAISS.
 
 ---
 
-## 📚 Evidence-Based RAG & SciBERT NLP Engine
+## 🔍 5. Explainable AI Layers (XAI: Grad-CAM & PyTorch Captum)
 
-### 1. Score-Level Min-Max Normalization
-Fuses dense FAISS vector distance and sparse BM25 scores on a normalized $[0, 1]$ scale:
-$$\text{norm\_faiss} = \frac{-d_{\text{faiss}} - (-d_{\max})}{-d_{\min} - (-d_{\max})}, \quad \text{norm\_bm25} = \frac{s_{\text{bm25}} - s_{\min}}{s_{\max} - s_{\min}}$$
-$$\text{Score}_{\text{fused}} = 0.5 \cdot \text{norm\_faiss} + 0.5 \cdot \text{norm\_bm25}$$
+### A. Visual Explainability (Grad-CAM)
+- Hooks placed on `layer4` of ResNet-50.
+- Gradients of predicted class logit w.r.t. `layer4` feature maps are Global Average Pooled to produce channel weights.
+- **Lung Mask Gating**: Normalized 224x224 Grad-CAM heatmap is element-wise multiplied with S²A-UNet binary lung mask ($cam_{224\_gated} = cam_{224} \odot M_{crop\_224}$), constraining heatmaps strictly inside lung boundaries.
 
-### 2. ColBERT Late Interaction Re-Ranking & Anti-RAG-Bleed Gating
-- Filters out non-relevant procedural documents (e.g. G-tube insertion guidelines) when handling pure symptom queries (e.g. `abdominal pain`), enforcing a similarity cutoff threshold ($\ge 0.25$).
-
-### 3. PyTorch Captum Feature Ablation
-Evaluates text token importance scores for clinical query attribution, visualizing key symptom influences in the XAI viewer.
-
----
-
-## 🛡️ Agentic Safety, Infinite Loop Defense & Anti-Hallucination
-
-1. **Recursion Limit Enforcement**: `recursion_limit = 7` compiled into LangGraph runtime.
-2. **Identical Tool Call Intercept**: Detects identical tool calls ($\ge 2$ consecutive repetitions) and forces routing to the `reflector` or `final_answer` node.
-3. **Anti-Hallucination Directive**: Strictly prohibits the model from inferring unmeasured physical examination findings (e.g., abdominal palpation) when only text symptoms are provided.
+### B. Textual Explainability (PyTorch Captum)
+- **Feature Ablation**: Perturbation-based ablation systematically disables input tokens and measures output logit variance.
+- **Visualizations**: Generates **Sequence Attribution bar charts** and **Token-Level Heatmaps** (blue for positive attribution, red for negative).
+- **CPU Offloading & Fault Tolerance**: Executed asynchronously with CPU offloading (3 to 9 minutes execution when active vs ~5 sec normal inference), backed by automatic fallback if memory limits are reached.
 
 ---
 
-## 📄 Publication-Quality ReportLab PDF Engine
+## 💻 6. Full-Stack Application Architecture (React, FastAPI, Postgres, Nginx)
 
-Implemented in `backend/pipelines/pdf_generator.py`:
-- **Preserved Logo Aspect Ratio**: Calculates source dimensions using Pillow (`PILImage.open`) to scale without compression distortion.
-- **Top-Right QR Code**: Embeds a $75 \times 75\text{px}$ high-resolution QR code in the document header.
-- **ResNet-50 Multi-Label Table**: Color-coded probability scores (`#059669` green / `#d97706` orange).
-- **2-Column XAI Gallery Grid**: Displays Original Radiograph, Grad-CAM Overlay, Segmented S²A-UNet ROI, Captum Attribution Map, and Token Importance Plot.
+```
+[Client Browser] ──(HTTP/HTTPS)──► [Nginx Reverse Proxy]
+                                          │
+                                          ▼
+                             [FastAPI ASGI Web Server]
+                                    │        │
+                   ┌────────────────┘        └────────────────┐
+                   ▼                                          ▼
+        [PostgreSQL RDBMS]                           [Ollama Local LLM]
+      (Users, Reports, JSONB)                        (llama3.2:3b GGUF)
+```
+
+- **Frontend (React 18 & Vite)**: Built with React, Vite bundler, Tailwind CSS, and Framer Motion animations. Client-side `ProtectedRoute` decodes JWT claims for role gating.
+- **Backend (FastAPI & Uvicorn)**: Asynchronous ASGI execution with Pydantic schemas.
+- **Database (PostgreSQL RDBMS)**: Stores users and diagnostic reports with JSONB columns for XAI data. Passwords hashed via `bcrypt`. Uses connection pooling and parameterized queries against SQL injection.
+- **Security (OAuth2 & JWT)**: Authentication via OAuth2 issuing time-limited JSON Web Tokens.
+- **Production Proxy (Nginx)**: Handles TLS termination, caching, and Gzip compression.
 
 ---
 

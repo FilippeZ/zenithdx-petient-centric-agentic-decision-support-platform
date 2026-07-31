@@ -70,6 +70,54 @@ graph TD
 
 ---
 
+## 🖼️ Application Screenshots & Live User Interfaces
+
+### 1. Landing Page (`LandingPage.jsx`)
+*Crisp clinical landing page featuring Framer Motion hero animations, dynamic rotating AI analysis card, and role portal entry points.*
+
+![Landing Page](screenshots/landing_page.jpg)
+
+### 2. Clinician Decision Workstation (`HomeDoctor.jsx`)
+*Hospital clinical triage queue featuring live status indicators, search filtering, and quick action approvals.*
+
+![Doctor Dashboard](screenshots/doctor_dashboard.jpg)
+
+### 3. Patient Health Dashboard (`HomePatient.jsx`)
+*Patient health portal featuring diagnostic submission tracking, clinician notes drawer, and report status overview.*
+
+![Patient Dashboard](screenshots/patient_dashboard.jpg)
+
+### 4. Interactive Patient Submission Wizard (`Detect.jsx`)
+*Step-by-step patient scan submission interface supporting X-ray upload, DICOM encryption, and symptom description.*
+
+![Patient Submission Wizard](screenshots/patient_submission_wizard.jpg)
+
+### 5. Clinician Diagnostic Report View (`Reports.jsx`)
+*Comprehensive multi-modal diagnostic report view featuring structured assessment, Grad-CAM heatmaps, S²A-UNet ROI segmentation, and PyTorch Captum text saliency plots.*
+
+![Doctor Report Overview](screenshots/doctor_report_view_overview.jpg)
+![Doctor Report XAI Heatmaps](screenshots/doctor_report_view_xai_plots.jpg)
+![Doctor Report Conclusions & PDF Download](screenshots/doctor_report_view_conclusions.jpg)
+
+### 6. Role-Based Login Portals (`AuthPage.jsx`)
+*Patient and Doctor authentication portals featuring split-screen illustrations and JWT authorization.*
+
+![Patient Login](screenshots/patient_login.jpg)
+![Doctor Login](screenshots/doctor_login.jpg)
+
+### 7. Interactive Clinician & Patient User Guides (`HowToUseDoctor.jsx` & `HowToUsePatient.jsx`)
+*Step-by-step interactive walkthroughs explaining AI classification, decision hub governance, and XAI maps.*
+
+![Doctor User Guide](screenshots/how_to_use_doctor.jpg)
+![Patient User Guide](screenshots/how_to_use_patient.jpg)
+
+### 8. Platform Overview (`AboutPage.jsx`)
+*Interactive feature grid highlighting speed, precision AI, 360° data fusion, trust & XAI, and enterprise readiness.*
+
+![About ZenithDx](screenshots/about_page.jpg)
+
+---
+
 ## 🫁 Multi-Modal Vision Pipeline
 
 ```

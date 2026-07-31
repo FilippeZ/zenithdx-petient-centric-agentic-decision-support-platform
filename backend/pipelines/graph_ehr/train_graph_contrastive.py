@@ -61,8 +61,8 @@ def train_contrastive_hgt(epochs: int = 15, lr: float = 1e-3, num_samples: int =
         # Generate positive pairs (same patient visits with perturbation)
         visit_pos = visit_emb + torch.randn_like(visit_emb) * 0.05
         
-        # InfoNCE Loss computation
-        loss = loss_fn(visit_emb, visit_pos)
+        # InfoNCE Loss computation with phenotype cluster labels
+        loss = loss_fn(visit_emb, visit_pos, labels=patient_classes)
         loss.backward()
         optimizer.step()
         
@@ -89,7 +89,7 @@ def train_contrastive_hgt(epochs: int = 15, lr: float = 1e-3, num_samples: int =
         print("  * [OK] Contrastive clustering optimization converged.")
 
     print("=" * 70)
-    return final_silhouette
+    return model, final_silhouette
 
 if __name__ == "__main__":
     train_contrastive_hgt()

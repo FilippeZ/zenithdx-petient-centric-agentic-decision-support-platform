@@ -8,6 +8,7 @@ import {
   FaArrowsAlt, FaSyncAlt, FaArrowLeft, FaStethoscope, FaBrain,
 } from "react-icons/fa";
 import Navbar from "../components/Navbar";
+import LongitudinalGraphViewer from "../components/LongitudinalGraphViewer";
 
 const BASE = "http://localhost:8000/";
 
@@ -15,10 +16,10 @@ const BASE = "http://localhost:8000/";
 const STATUS_STYLES = {
   approved: { bg: "#ecfdf5", text: "#047857", border: "#a7f3d0", dot: "#10b981" },
   rejected: { bg: "#fef2f2", text: "#b91c1c", border: "#fecaca", dot: "#ef4444" },
-  edited:   { bg: "#f5f3ff", text: "#6d28d9", border: "#ddd6fe", dot: "#8b5cf6" },
-  pending:  { bg: "#fffbeb", text: "#b45309", border: "#fde68a", dot: "#f59e0b" },
+  edited: { bg: "#f5f3ff", text: "#6d28d9", border: "#ddd6fe", dot: "#8b5cf6" },
+  pending: { bg: "#fffbeb", text: "#b45309", border: "#fde68a", dot: "#f59e0b" },
 };
-const statusStyle = (s = "") => STATUS_STYLES[(s||"pending").toLowerCase()] || STATUS_STYLES.pending;
+const statusStyle = (s = "") => STATUS_STYLES[(s || "pending").toLowerCase()] || STATUS_STYLES.pending;
 
 /* ─── White Card Surface ───────────────────────────────────────────── */
 const Card = ({ children, style = {} }) => (
@@ -87,7 +88,7 @@ const ImageViewer = ({ src, alt, scrollable = false, viewportHeight = 320, enabl
   const [showMag, setShowMag] = useState(false);
   const [scale, setScale] = useState(1);
   const isPanning = useRef(false);
-  const startRef  = useRef({ x: 0, y: 0, sl: 0, st: 0 });
+  const startRef = useRef({ x: 0, y: 0, sl: 0, st: 0 });
 
   const MZW = 150, MZH = 150, ZOOM = 2.2;
 
@@ -110,7 +111,7 @@ const ImageViewer = ({ src, alt, scrollable = false, viewportHeight = 320, enabl
           </span>
           <div style={{ display: "flex", gap: 6 }}>
             {[FaSearchMinus, FaSyncAlt, FaSearchPlus].map((Icon, i) => (
-              <button key={i} onClick={() => i === 0 ? setScale(s => Math.max(0.5, s/1.25)) : i === 1 ? setScale(1) : setScale(s => Math.min(6, s*1.25))}
+              <button key={i} onClick={() => i === 0 ? setScale(s => Math.max(0.5, s / 1.25)) : i === 1 ? setScale(1) : setScale(s => Math.min(6, s * 1.25))}
                 style={{ background: "#ffffff", border: "1px solid #cbd5e1", color: "#475569", borderRadius: 8, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: "0.85rem" }}>
                 <Icon />
               </button>
@@ -128,9 +129,9 @@ const ImageViewer = ({ src, alt, scrollable = false, viewportHeight = 320, enabl
         }}
         onMouseDown={scrollable ? e => { isPanning.current = true; startRef.current = { x: e.clientX, y: e.clientY, sl: containerRef.current.scrollLeft, st: containerRef.current.scrollTop }; containerRef.current.style.cursor = "grabbing"; e.preventDefault(); } : undefined}
         onMouseMove={scrollable ? e => { if (!isPanning.current) return; containerRef.current.scrollLeft = startRef.current.sl - (e.clientX - startRef.current.x); containerRef.current.scrollTop = startRef.current.st - (e.clientY - startRef.current.y); } : undefined}
-        onMouseUp={scrollable ? () => { isPanning.current = false; if(containerRef.current) containerRef.current.style.cursor = "grab"; } : undefined}
-        onMouseLeave={scrollable ? () => { isPanning.current = false; if(containerRef.current) containerRef.current.style.cursor = "grab"; } : undefined}
-        onWheel={scrollable ? e => { if(e.shiftKey) { containerRef.current.scrollLeft += e.deltaY; e.preventDefault(); } } : undefined}
+        onMouseUp={scrollable ? () => { isPanning.current = false; if (containerRef.current) containerRef.current.style.cursor = "grab"; } : undefined}
+        onMouseLeave={scrollable ? () => { isPanning.current = false; if (containerRef.current) containerRef.current.style.cursor = "grab"; } : undefined}
+        onWheel={scrollable ? e => { if (e.shiftKey) { containerRef.current.scrollLeft += e.deltaY; e.preventDefault(); } } : undefined}
       >
         <img
           src={src} alt={alt}
@@ -180,15 +181,15 @@ const ImageViewer = ({ src, alt, scrollable = false, viewportHeight = 320, enabl
 export default function Reports() {
   const { reportId } = useParams();
   const navigate = useNavigate();
-  const [report, setReport]           = useState(null);
-  const [loading, setLoading]         = useState(true);
-  const [error, setError]             = useState("");
-  const [isEditing, setIsEditing]     = useState(false);
-  const [editFields, setEditFields]   = useState({});
-  const [saving, setSaving]           = useState(false);
-  const [statusBusy, setStatusBusy]   = useState(false);
+  const [report, setReport] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [editFields, setEditFields] = useState({});
+  const [saving, setSaving] = useState(false);
+  const [statusBusy, setStatusBusy] = useState(false);
   const [xaiStructured, setXaiStructured] = useState(null);
-  const [successMsg, setSuccessMsg]   = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
 
   /* ─── Fetch ─────────────────────────────────────────────────────── */
   useEffect(() => {
@@ -196,7 +197,7 @@ export default function Reports() {
     (async () => {
       try {
         const token = localStorage.getItem("token");
-        const res   = await fetch(`${BASE}doctor/reports/${reportId}`, {
+        const res = await fetch(`${BASE}doctor/reports/${reportId}`, {
           headers: { Authorization: `Bearer ${token}` },
           signal: controller.signal,
         });
@@ -220,7 +221,7 @@ export default function Reports() {
     setSaving(true);
     try {
       const token = localStorage.getItem("token");
-      const res   = await fetch(`${BASE}doctor/reports/${reportId}`, {
+      const res = await fetch(`${BASE}doctor/reports/${reportId}`, {
         method: "PUT",
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
         body: JSON.stringify({ diagnosis: editFields.diagnosis, doctor_message: editFields.doctor_message }),
@@ -243,7 +244,7 @@ export default function Reports() {
     setStatusBusy(true);
     try {
       const token = localStorage.getItem("token");
-      const res   = await fetch(`${BASE}doctor/reports/${reportId}/${action}`, {
+      const res = await fetch(`${BASE}doctor/reports/${reportId}/${action}`, {
         method: "PATCH",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -260,12 +261,12 @@ export default function Reports() {
   const downloadPDF = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res   = await fetch(`${BASE}doctor/reports/${reportId}/pdf`, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${BASE}doctor/reports/${reportId}/pdf`, { headers: { Authorization: `Bearer ${token}` } });
       if (!res.ok) throw new Error("PDF unavailable");
       const blob = await res.blob();
-      const url  = window.URL.createObjectURL(blob);
-      const a    = document.createElement("a");
-      a.href     = url; a.download = `report_${String(reportId).slice(0, 8)}.pdf`; document.body.appendChild(a); a.click(); a.remove();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = `report_${String(reportId).slice(0, 8)}.pdf`; document.body.appendChild(a); a.click(); a.remove();
     } catch (e) { alert("PDF download: " + e.message); }
   };
 
@@ -303,7 +304,7 @@ export default function Reports() {
     if (!path) return null;
     const str = String(path);
     if (str.startsWith("data:image") || str.startsWith("http://") || str.startsWith("https://")) return str;
-    
+
     let rel = str;
     if (rel.includes("outputs/")) {
       rel = "/outputs/" + rel.split("outputs/")[1];
@@ -312,7 +313,7 @@ export default function Reports() {
     } else if (!rel.startsWith("/")) {
       rel = "/outputs/" + rel;
     }
-    
+
     return BASE.replace(/\/$/, "") + rel;
   };
 
@@ -333,7 +334,7 @@ export default function Reports() {
 
   const imagesToShow = [];
   const seen = new Set();
-  
+
   const rawImages = [
     { label: "Original Chest X-ray", path: original_xray || structured.original_xray },
     { label: "Grad-CAM Overlay", path: gradcam_overlay || structured.gradcam_overlay },
@@ -403,15 +404,15 @@ export default function Reports() {
   }
   const topWordsMap = (top_words && Object.keys(top_words).length ? top_words : structured.top_words) || {};
 
-  const diagnosisText  = (diagnosis_report || "").trim() || null;
-  const xaiText        = (xai_report || "").trim() || null;
+  const diagnosisText = (diagnosis_report || "").trim() || null;
+  const xaiText = (xai_report || "").trim() || null;
 
   const isApproved = status.toLowerCase() === "approved";
   const isRejected = status.toLowerCase() === "rejected";
 
   return (
     <div style={{ background: "#f8fafc", minHeight: "100vh", color: "#0f172a", fontFamily: "'Inter', sans-serif" }}>
-      
+
       <Navbar />
 
       <main style={{ maxWidth: 960, margin: "0 auto", padding: "2rem 1.5rem 5rem" }}>
@@ -455,8 +456,8 @@ export default function Reports() {
                     📅 {new Date(patient_overview.submission_date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
                   </span>
                 )}
-                <span style={{ fontSize: "0.8rem", color: "#94a3b8", fontFamily: "monospace" }}>
-                  #{String(reportId).slice(0, 12)}…
+                <span style={{ fontSize: "0.85rem", color: "#2563eb", fontFamily: "monospace", fontWeight: 700, background: "#eff6ff", padding: "0.2rem 0.6rem", borderRadius: "6px", border: "1px solid #bfdbfe" }}>
+                  Patient ID: {report.patient_id || patient_overview?.patient_id || structured?.patient_id || String(reportId).slice(0, 8)}
                 </span>
               </div>
             </div>
@@ -542,6 +543,17 @@ export default function Reports() {
           </div>
         </Card>
 
+        {/* ─── Longitudinal Patient EHR Graph (PyVis / NetworkX) ──────── */}
+        <Card style={{ borderLeft: "5px solid #00d2ff" }}>
+          <SectionTitle icon={<FaBrain style={{ color: "#00d2ff" }} />} hint="Interactive PyVis / NetworkX Heterogeneous EHR Graph Subgraph">
+            Longitudinal Patient EHR Knowledge Graph
+          </SectionTitle>
+          <LongitudinalGraphViewer
+            patientId={report.patient_id || patient_overview?.patient_id || structured?.patient_id || "10000032"}
+            height="550px"
+          />
+        </Card>
+
         {/* ─── Structured Bold Diagnosis Report ─────────────────────── */}
         <Card style={{ borderLeft: "5px solid #7c3aed" }}>
           <SectionTitle icon={<FaStethoscope style={{ color: "#7c3aed" }} />} hint="Structured Clinician Diagnostic Conclusion">
@@ -610,9 +622,9 @@ export default function Reports() {
                     <ImageViewer src={img.src} alt={img.label} enableMagnifier />
                     <div style={{ fontSize: "0.78rem", color: "#64748b", textAlign: "center" }}>
                       {img.label.includes("Original") ? "Raw chest radiograph scan." :
-                       img.label.includes("Overlay") ? "Grad-CAM visual heatmap highlighting region of interest." :
-                       img.label.includes("Segmented") ? "Mask-Gated Grad-CAM computed strictly on S²A-UNet lung ROI classification." :
-                       "PyTorch Captum Feature Ablation sequence attribution plot."}
+                        img.label.includes("Overlay") ? "Grad-CAM visual heatmap highlighting region of interest." :
+                          img.label.includes("Segmented") ? "Mask-Gated Grad-CAM computed strictly on S²A-UNet lung ROI classification." :
+                            "PyTorch Captum Feature Ablation sequence attribution plot."}
                     </div>
                   </div>
                 ))}
@@ -664,7 +676,7 @@ export default function Reports() {
                 {captumToShow.map(({ section, mode, label, src }, i) => {
                   let sectionTokens = [];
                   let raw = topWordsMap[section] || topWordsMap[section.toLowerCase()] || topWordsMap[section.replace(" ", "")] || topWordsMap[section.replace(" Findings", "")];
-                  
+
                   if (!raw || !Array.isArray(raw) || raw.length === 0) {
                     if (section === "Query") {
                       const text = patient_overview.symptoms || "chest pain shortness breath fever";
@@ -681,18 +693,34 @@ export default function Reports() {
                   if (Array.isArray(raw)) {
                     sectionTokens = raw.map((item) => {
                       let word = "";
-                      let score = 0.85;
+                      let score = null;
                       if (Array.isArray(item)) {
                         word = item[0];
                         score = item[1];
                       } else if (item && typeof item === "object") {
                         word = item.word || item.token || item[0];
                         score = item.score || item.attribution || item[1];
+                      } else if (typeof item === "string") {
+                        const parts = item.trim().split(/\s+/);
+                        if (parts.length >= 2 && !isNaN(parseFloat(parts[parts.length - 1]))) {
+                          word = parts.slice(0, -1).join(" ");
+                          const parsedVal = parseFloat(parts[parts.length - 1]);
+                          score = parsedVal > 1.0 ? parsedVal / 10000.0 : parsedVal;
+                        } else {
+                          word = item;
+                        }
                       } else {
                         word = String(item);
                       }
+
+                      if (score === null || score === undefined || isNaN(parseFloat(score))) {
+                        score = 0.75;
+                      } else {
+                        score = parseFloat(score);
+                      }
+
                       const cleanWord = String(word || "").replace(/[^\w\s-]/g, "").trim();
-                      return { word: cleanWord, score: typeof score === "number" ? score : parseFloat(score) || 0.82 };
+                      return { word: cleanWord, score: score };
                     }).filter(x => x.word.length > 1 && !["the", "and", "for", "with", "have", "this"].includes(x.word.toLowerCase())).slice(0, 5);
                   }
 
@@ -702,7 +730,7 @@ export default function Reports() {
                         <FaBrain style={{ color: mode === "seq" ? "#7c3aed" : "#d97706" }} /> {label}
                       </div>
                       <ImageViewer src={src} alt={label} scrollable={mode === "tok"} viewportHeight={mode === "tok" ? 280 : 360} enableMagnifier={mode !== "tok"} />
-                      
+
                       {/* Top 5 Attribution Words Table for Section */}
                       {sectionTokens.length > 0 && (
                         <div style={{ marginTop: "1rem" }}>

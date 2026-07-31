@@ -8,10 +8,11 @@ from typing import Tuple, List, Optional
 import numpy as np
 import faiss
 from rank_bm25 import BM25Okapi
+from sklearn.preprocessing import MinMaxScaler
 
 from config import settings
 from pipelines.nlp_rag.text_prep import clean_query
-from pipelines.nlp_rag.reranker import rerank_documents
+from pipelines.nlp_rag.reranker import rerank_documents, SIMILARITY_THRESHOLD
 
 _PRIMARY_EMB = None
 _ALT_EMB = None
@@ -81,19 +82,29 @@ def _create_dynamic_indices():
         print(f"[HybridSearch] Dynamic index fallback error: {e}", file=sys.stderr)
 
 def compute_query_embedding(query_text: str) -> np.ndarray:
-    """Computes dual dense embeddings and averages them."""
+    """Computes dense embeddings."""
     _init_embeddings()
     emb1 = np.asarray(_PRIMARY_EMB.embed_query(query_text), dtype="float32")
     return emb1.reshape(1, -1)
 
-def search(query: str, embedding: Optional[np.ndarray] = None, k_faiss: int = 15, k_final: int = 8) -> Tuple[str, List[str]]:
-    """Hybrid early-fusion dense (FAISS) + sparse (BM25) search with ColBERT re-ranking."""
+def search(
+    query: str,
+    embedding: Optional[np.ndarray] = None,
+    k_faiss: int = 15,
+    k_final: int = 8,
+    alpha: float = 0.5,
+    similarity_threshold: float = SIMILARITY_THRESHOLD
+) -> Tuple[str, List[str]]:
+    """
+    Hybrid search combining Dense FAISS similarity + Sparse BM25 scores
+    using Min-Max Normalization late fusion and Defensive Gating (ColBERT thresholding).
+    """
     _init_indices()
     if _FAISS_INDEX is None or _CHUNKS is None or _BM25 is None:
         print("[HybridSearch] Warning: FAISS/BM25 indices not loaded.", file=sys.stderr)
         return "", []
 
-    # Query relevance filter to prevent RAG Context Bleed (e.g. pneumonia docs for headache queries)
+    # Query relevance pre-filter to prevent RAG Context Bleed
     query_lower = query.lower()
     non_respiratory_terms = ["headache", "aheadache", "migraine", "dizziness", "cephalea", "back pain", "knee pain", "skin rash"]
     respiratory_terms = ["cough", "fever", "breath", "dyspnea", "chest", "sputum", "hemoptysis", "xray", "lung", "pneumonia", "edema", "atelectasis", "pleurisy", "effusion", "wheezing", "asthma"]
@@ -124,27 +135,59 @@ def search(query: str, embedding: Optional[np.ndarray] = None, k_faiss: int = 15
         print(f"[HybridSearch] FAISS search error ({e}). Using BM25 sparse fallback.", file=sys.stderr)
         distances, indices = np.zeros((1, min(k_faiss, len(_CHUNKS)))), np.array([list(range(min(k_faiss, len(_CHUNKS))))])
 
-    bm25_scores = _BM25.get_scores(cleaned.split())
+    raw_indices = indices[0]
+    raw_distances = distances[0]
+    bm25_scores_all = _BM25.get_scores(cleaned.split())
 
-    fused: List[Tuple[int, float]] = []
-    for idx, faiss_dist in zip(indices[0], distances[0]):
+    # Collect valid candidates
+    valid_candidates = []
+    faiss_sims_list = []
+    bm25_scores_list = []
+
+    for idx, dist in zip(raw_indices, raw_distances):
         if 0 <= idx < len(_CHUNKS):
-            bm25_sc = float(bm25_scores[idx]) if idx < len(bm25_scores) else 0.0
-            score = -float(faiss_dist) + bm25_sc
-            # Strict Similarity Thresholding (Filter out low relevance matches)
-            if bm25_sc > 0.05 or faiss_dist < 1.8:
-                fused.append((idx, score))
+            # Convert FAISS L2 distance to similarity score in (0, 1]
+            sim = 1.0 / (1.0 + float(dist))
+            bm25_sc = float(bm25_scores_all[idx]) if idx < len(bm25_scores_all) else 0.0
 
-    if not fused:
-        print(f"[HybridSearch] No RAG documents passed similarity threshold for query '{query[:50]}'. Returning empty context.", file=sys.stderr)
+            valid_candidates.append(idx)
+            faiss_sims_list.append(sim)
+            bm25_scores_list.append(bm25_sc)
+
+    if not valid_candidates:
+        print(f"[HybridSearch] No candidate chunks retrieved for query '{query[:50]}'.", file=sys.stderr)
         return "", []
 
-    fused = sorted(fused, key=lambda x: x[1], reverse=True)[:k_final * 2]
+    # 1. Min-Max Normalization for Score-Level (Late) Fusion
+    faiss_arr = np.array(faiss_sims_list, dtype=np.float32).reshape(-1, 1)
+    bm25_arr = np.array(bm25_scores_list, dtype=np.float32).reshape(-1, 1)
+
+    scaler_faiss = MinMaxScaler()
+    scaler_bm25 = MinMaxScaler()
+
+    faiss_norm = scaler_faiss.fit_transform(faiss_arr).flatten()
+    bm25_norm = scaler_bm25.fit_transform(bm25_arr).flatten()
+
+    # 2. Weighted Late Fusion Score Calculation (50% FAISS Dense + 50% BM25 Sparse)
+    fused_scores = alpha * faiss_norm + (1.0 - alpha) * bm25_norm
+
+    ranked_pairs = sorted(
+        zip(valid_candidates, fused_scores),
+        key=lambda x: x[1],
+        reverse=True
+    )[:k_final * 2]
+
     candidate_texts = [
         _CHUNKS[idx].page_content if hasattr(_CHUNKS[idx], 'page_content') else str(_CHUNKS[idx])
-        for idx, _ in fused
+        for idx, _ in ranked_pairs
     ]
 
-    top_docs = rerank_documents(query, candidate_texts, k=k_final)
+    # 3. Defensive Gating (ColBERT Similarity Thresholding)
+    top_docs = rerank_documents(query, candidate_texts, k=k_final, similarity_threshold=similarity_threshold)
+
+    if not top_docs:
+        print(f"[HybridSearch] All documents rejected by Defensive Gating for query '{query[:50]}'. Returning empty context.", file=sys.stderr)
+        return "", []
+
     joined_context = "\n".join(top_docs)
     return joined_context, top_docs

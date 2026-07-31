@@ -4,23 +4,24 @@ from __future__ import annotations
 import os
 import json
 from typing import List, Dict, Optional, Union, Any
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 class AgentAction(BaseModel):
     tool_name: str
-    tool_input: dict
+    tool_input: dict = Field(default_factory=dict)
     tool_output: Optional[Union[str, dict]] = None
     reasoning: Optional[str] = None
 
 class AgentState(BaseModel):
     input: str
-    chat_history: List[dict]
-    intermediate_steps: List[AgentAction]
+    chat_history: List[dict] = Field(default_factory=list)
+    intermediate_steps: List[AgentAction] = Field(default_factory=list)
     agent_outcome: Union[str, dict, None] = None
-    plan: List[str]
-    metadata: Dict[str, Union[str, int, float]]
-    self_refine_iter: int
-    context_cache: Dict[str, Any]
+    plan: List[str] = Field(default_factory=list)
+    metadata: Dict[str, Union[str, int, float]] = Field(default_factory=dict)
+    self_refine_iter: int = 0
+    step_count: int = 0  # Infinite loop protection guard
+    context_cache: Dict[str, Any] = Field(default_factory=dict)
     reflect_decision: Optional[str] = None
 
 class CustomMemorySaver:

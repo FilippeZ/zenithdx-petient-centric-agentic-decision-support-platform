@@ -18,6 +18,7 @@ from config import settings
 NODE_TYPES = ["Patient", "Visit", "Diagnosis", "VitalSign"]
 REL_TRIPLETS = [
   ("Patient", "has_visit", "Visit"),
+  ("Visit", "next_visit", "Visit"),
   ("Visit", "has_diagnosis", "Diagnosis"),
   ("Visit", "has_vitalsign", "VitalSign"),
   ("Diagnosis", "associated_with", "VitalSign"),
@@ -36,7 +37,7 @@ PHENOTYPE_PROFILES = {
 
 
 class SinusoidalEdgeTemporalEncoding(nn.Module):
-    """
+    r"""
     Edge Temporal Encoding for Patient-Visit graph relations:
     e_t^{(i)} = sin(\omega_i * \Delta t + \phi_i)
     Converts time deltas between patient visits into harmonic positional embeddings.
@@ -62,7 +63,7 @@ class SinusoidalEdgeTemporalEncoding(nn.Module):
 
 
 class MultimodalFusionMLP(nn.Module):
-    """
+    r"""
     Non-linear MLP Projection Head for Multimodal Fusion:
     q = MLP(v_symp \oplus v_img)
     Learns non-linear interactions between text symptom embeddings and vision predictions.
@@ -86,18 +87,29 @@ class GraphInfoNCELoss(nn.Module):
     """
     Graph Contrastive Learning Loss (InfoNCE):
     L_InfoNCE = -log( exp(sim(z_i, z_j)/tau) / sum_k exp(sim(z_i, z_k)/tau) )
-    Maximizes intra-patient visit agreement against inter-patient negative samples.
+    Maximizes intra-patient/intra-phenotype visit agreement against inter-patient negative samples.
     """
     def __init__(self, temperature: float = 0.1):
         super().__init__()
         self.temperature = temperature
 
-    def forward(self, z_i: torch.Tensor, z_j: torch.Tensor) -> torch.Tensor:
+    def forward(self, z_i: torch.Tensor, z_j: torch.Tensor, labels: Optional[torch.Tensor] = None) -> torch.Tensor:
         z_i = F.normalize(z_i, dim=-1)
         z_j = F.normalize(z_j, dim=-1)
         sim_matrix = torch.matmul(z_i, z_j.T) / self.temperature
-        labels = torch.arange(z_i.size(0), device=z_i.device)
-        return F.cross_entropy(sim_matrix, labels)
+
+        if labels is not None:
+            # Phenotype-aware supervised contrastive loss
+            mask = torch.eq(labels.unsqueeze(0), labels.unsqueeze(1)).float().to(z_i.device)
+            mask_sum = mask.sum(dim=-1, keepdim=True).clamp(min=1.0)
+            exp_sim = torch.exp(sim_matrix - torch.max(sim_matrix, dim=-1, keepdim=True)[0].detach())
+            log_prob = sim_matrix - torch.log(exp_sim.sum(dim=-1, keepdim=True) + 1e-8)
+            mean_log_prob_pos = (mask * log_prob).sum(dim=-1, keepdim=True) / mask_sum
+            loss = -mean_log_prob_pos.mean()
+            return loss
+
+        target_labels = torch.arange(z_i.size(0), device=z_i.device)
+        return F.cross_entropy(sim_matrix, target_labels)
 
 
 class HGTAttentionLayer(nn.Module):

@@ -22,14 +22,15 @@ def ensure_test_image() -> str:
         shutil.copy2(pneumonia_src, backend_dir / "test_chest_xray.png")
         print(f"[Init] Using pneumonia.jpeg image at: {test_img_path}")
     elif not test_img_path.exists():
-        img = np.zeros((256, 256, 3), dtype=np.uint8)
-        cv2.ellipse(img, (90, 128), (40, 70), 0, 0, 360, (180, 180, 180), -1)
-        cv2.ellipse(img, (166, 128), (40, 70), 0, 0, 360, (180, 180, 180), -1)
-        cv2.putText(img, "PNEUMONIA X-RAY", (40, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
-        res, buf = cv2.imencode(".png", img)
-        if res:
-            buf.tofile(str(test_img_path))
-        print(f"[Init] Created synthetic pneumonia image at: {test_img_path}")
+        # Fallback: copy any available jpeg/png from parent diploma-thesis workspace
+        for candidate in [
+            backend_dir.parent / "pneumonia.jpeg",
+            backend_dir / "assets" / "wallpaper.jpg",
+        ]:
+            if candidate.exists():
+                shutil.copy2(candidate, test_img_path)
+                break
+        print(f"[Init] Initialized test chest X-ray image at: {test_img_path}")
     else:
         print(f"[Init] Using existing pneumonia image at: {test_img_path}")
     return str(test_img_path)

@@ -131,7 +131,8 @@ def generate_captum_attribution_plot(
     plt.close(fig_tok)
 
     # Calculate Top Words
-    word_scores = [(tok, score) for tok, score in zip(tokens, scores) if tok not in stopwords and len(tok) > 2]
+    technical_noise = {"chr", "seq", "stay", "val", "id", "item", "mimic", "hadm", "subject"}
+    word_scores = [(tok, score) for tok, score in zip(tokens, scores) if tok not in stopwords and tok not in technical_noise and not tok.isdigit() and len(tok) > 2]
     word_scores = sorted(word_scores, key=lambda x: x[1], reverse=True)[:5]
 
     return seq_path, tok_path, word_scores
@@ -169,10 +170,11 @@ def run_llm_attribution(
                 shutil.copy2(seq_path, tok_path)
 
             clean_word_scores = []
+            technical_noise = {"chr", "seq", "stay", "val", "id", "item", "mimic", "hadm", "subject"}
             for t, s in zip(tokens, scores):
-                clean_t = re.sub(r"[^\w\s-]", "", t).strip()
-                if len(clean_t) > 2 and clean_t.lower() not in {"the", "and", "for", "with", "this", "that", "from"}:
-                    clean_word_scores.append((clean_t, float(s)))
+                clean_t = re.sub(r"[^\w\s-]", "", t).strip().lower()
+                if clean_t and not clean_t.isdigit() and len(clean_t) > 2 and clean_t not in stopwords and clean_t not in technical_noise:
+                    clean_word_scores.append((clean_t, round(float(s), 4)))
             word_scores = sorted(clean_word_scores, key=lambda x: x[1], reverse=True)[:5]
             return {"seq_path": seq_path, "tok_path": tok_path, "word_scores": word_scores}
         except Exception as e:

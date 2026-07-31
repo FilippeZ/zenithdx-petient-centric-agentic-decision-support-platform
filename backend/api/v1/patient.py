@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import os
+import sys
 import io
 import json
 import shutil
@@ -259,35 +260,29 @@ class FeedbackPayload(BaseModel):
 
 @router.get("/patient/reports/{report_id}")
 def get_patient_report_detail(report_id: str, curr: dict = Depends(get_current_user)):
-    role = curr.get("user_type") or curr.get("role") or ""
-    if role != "patient":
-        raise HTTPException(403, "Forbidden")
     user_id = curr.get("id") or curr.get("user_id")
+    role = (curr.get("user_type") or curr.get("role") or "").lower()
     conn = get_db_connection()
     try:
         with conn.cursor() as cur:
-            cur.execute(
-                """SELECT p.id::text AS report_id,
-                          p.id,
-                          u.full_name AS patient_name,
-                          p.user_id::text AS patient_id,
-                          p.image_path,
-                          p.symptoms,
-                          p.submission_date,
-                          p.status,
-                          p.diagnosis,
-                          p.xai_structured,
-                          p.doctor_message,
-                          p.rating,
-                          p.original_xray,
-                          p.gradcam_overlay,
-                          p.captum_image,
-                          p.classification_results
-                   FROM patients p
-                   JOIN users u ON p.user_id=u.id
-                   WHERE p.id::text=%s AND p.user_id=%s""",
-                (str(report_id), user_id)
-            )
+            if role == "doctor":
+                query = """SELECT p.id::text AS report_id, p.id, u.full_name AS patient_name,
+                                  p.user_id::text AS patient_id, p.image_path, p.symptoms,
+                                  p.submission_date, p.status, p.diagnosis, p.xai_structured,
+                                  p.doctor_message, p.rating, p.original_xray, p.gradcam_overlay,
+                                  p.captum_image, p.classification_results
+                           FROM patients p JOIN users u ON p.user_id=u.id
+                           WHERE p.id::text=%s"""
+                cur.execute(query, (str(report_id),))
+            else:
+                query = """SELECT p.id::text AS report_id, p.id, u.full_name AS patient_name,
+                                  p.user_id::text AS patient_id, p.image_path, p.symptoms,
+                                  p.submission_date, p.status, p.diagnosis, p.xai_structured,
+                                  p.doctor_message, p.rating, p.original_xray, p.gradcam_overlay,
+                                  p.captum_image, p.classification_results
+                           FROM patients p JOIN users u ON p.user_id=u.id
+                           WHERE p.id::text=%s AND p.user_id=%s"""
+                cur.execute(query, (str(report_id), user_id))
             row = cur.fetchone()
             if not row:
                 raise HTTPException(404, "Report not found")
@@ -304,17 +299,21 @@ def get_patient_report_detail(report_id: str, curr: dict = Depends(get_current_u
 
 @router.post("/patient/reports/{report_id}/feedback")
 def submit_patient_feedback(report_id: str, payload: FeedbackPayload, curr: dict = Depends(get_current_user)):
-    role = curr.get("user_type") or curr.get("role") or ""
-    if role != "patient":
-        raise HTTPException(403, "Forbidden")
     user_id = curr.get("id") or curr.get("user_id")
+    role = (curr.get("user_type") or curr.get("role") or "").lower()
     conn = get_db_connection()
     try:
         with conn.cursor() as cur:
-            cur.execute(
-                "UPDATE patients SET rating = %s WHERE id::text = %s AND user_id = %s RETURNING id;",
-                (payload.rating, str(report_id), user_id)
-            )
+            if role == "doctor":
+                cur.execute(
+                    "UPDATE patients SET rating = %s WHERE id::text = %s RETURNING id;",
+                    (payload.rating, str(report_id))
+                )
+            else:
+                cur.execute(
+                    "UPDATE patients SET rating = %s WHERE id::text = %s AND user_id = %s RETURNING id;",
+                    (payload.rating, str(report_id), user_id)
+                )
             if not cur.fetchone():
                 raise HTTPException(404, "Report not found or permission denied")
             conn.commit()
@@ -322,31 +321,33 @@ def submit_patient_feedback(report_id: str, payload: FeedbackPayload, curr: dict
     finally:
         conn.close()
 
+from pipelines.pdf_generator import generate_pdf_report_bytes
+
 @router.get("/patient/reports/{report_id}/pdf")
 def export_patient_report_pdf(report_id: str, curr: dict = Depends(get_current_user)):
     user_id = curr.get("id") or curr.get("user_id")
+    role = (curr.get("user_type") or curr.get("role") or "").lower()
     conn = get_db_connection()
     try:
         with conn.cursor() as cur:
-            cur.execute(
-                """SELECT p.id::text AS report_id,
-                          u.full_name  AS patient_name,
-                          p.user_id::text AS patient_id,
-                          p.symptoms,
-                          p.submission_date,
-                          p.status,
-                          p.diagnosis,
-                          p.doctor_message,
-                          p.original_xray,
-                          p.gradcam_overlay,
-                          p.captum_image,
-                          p.xai_structured,
-                          p.classification_results
-                   FROM patients p
-                   JOIN users u ON p.user_id=u.id
-                   WHERE p.id::text=%s AND p.user_id=%s""",
-                (str(report_id), user_id)
-            )
+            if role == "doctor":
+                query = """SELECT p.id::text AS report_id, u.full_name AS patient_name,
+                                  p.user_id::text AS patient_id, p.symptoms, p.submission_date,
+                                  p.status, p.diagnosis, p.doctor_message, p.original_xray,
+                                  p.gradcam_overlay, p.captum_image, p.xai_structured,
+                                  p.classification_results
+                           FROM patients p JOIN users u ON p.user_id=u.id
+                           WHERE p.id::text=%s"""
+                cur.execute(query, (str(report_id),))
+            else:
+                query = """SELECT p.id::text AS report_id, u.full_name AS patient_name,
+                                  p.user_id::text AS patient_id, p.symptoms, p.submission_date,
+                                  p.status, p.diagnosis, p.doctor_message, p.original_xray,
+                                  p.gradcam_overlay, p.captum_image, p.xai_structured,
+                                  p.classification_results
+                           FROM patients p JOIN users u ON p.user_id=u.id
+                           WHERE p.id::text=%s AND p.user_id=%s"""
+                cur.execute(query, (str(report_id), user_id))
             row = cur.fetchone()
             if not row:
                 raise HTTPException(404, "Report not found")
@@ -355,122 +356,13 @@ def export_patient_report_pdf(report_id: str, curr: dict = Depends(get_current_u
         conn.close()
 
     try:
-        from reportlab.lib.pagesizes import letter
-        from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image as RLImage, PageBreak
-        from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-        from reportlab.lib import colors
-
-        buffer = io.BytesIO()
-        doc = SimpleDocTemplate(buffer, pagesize=letter, rightMargin=36, leftMargin=36, topMargin=40, bottomMargin=40)
-        styles = getSampleStyleSheet()
-        story = []
-
-        wallpaper_path = str(settings.BASE_DIR / "assets" / "wallpaper.jpg")
-        logo_path = str(settings.BASE_DIR / "assets" / "logo.png")
-
-        def draw_background(canvas, doc_obj):
-            canvas.saveState()
-            if os.path.exists(wallpaper_path):
-                try:
-                    canvas.drawImage(wallpaper_path, 0, 0, width=612, height=792, preserveAspectRatio=False)
-                except Exception:
-                    pass
-            canvas.restoreState()
-
-        title_style = ParagraphStyle('TitleStyle', parent=styles['Heading1'], fontSize=18, textColor=colors.HexColor('#0f172a'), leading=22, spaceAfter=4)
-        subtitle_style = ParagraphStyle('SubTitleStyle', parent=styles['Normal'], fontSize=9, textColor=colors.HexColor('#2563eb'), leading=12)
-        heading_style = ParagraphStyle('HeadingStyle', parent=styles['Heading2'], fontSize=12, textColor=colors.HexColor('#1e1b4b'), leading=16, spaceBefore=10, spaceAfter=4)
-        bold_body_style = ParagraphStyle('BoldBodyStyle', parent=styles['Normal'], fontSize=9.5, textColor=colors.HexColor('#0f172a'), leading=14)
-        body_style = ParagraphStyle('BodyStyle', parent=styles['Normal'], fontSize=9, textColor=colors.HexColor('#334155'), leading=13)
-
-        brand_flow = []
-        if os.path.exists(logo_path):
-            try:
-                brand_flow.append(RLImage(logo_path, width=100, height=32))
-            except Exception:
-                pass
-        brand_flow.append(Paragraph("<b>ZenithDx</b>", title_style))
-        brand_flow.append(Paragraph("Patient Diagnostic Clinical Report", subtitle_style))
-
-        date_str = str(row['submission_date'])[:10] if row.get('submission_date') else "Today"
-        right_flow = [
-            Paragraph(f"<b>Report ID:</b> #{str(row['report_id'])[:8]}", body_style),
-            Paragraph(f"<b>Date:</b> {date_str}", body_style),
-            Paragraph(f"<b>Status:</b> {row['status']}", body_style)
-        ]
-
-        header_table = Table([[brand_flow, right_flow]], colWidths=[360, 180])
-        header_table.setStyle(TableStyle([
-            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-            ('ALIGN', (1,0), (1,0), 'RIGHT'),
-        ]))
-        story.append(header_table)
-        story.append(Spacer(1, 10))
-
-        meta_data = [
-            [Paragraph("<b>Patient Name</b>", bold_body_style), Paragraph(str(row['patient_name']), body_style),
-             Paragraph("<b>Patient ID</b>", bold_body_style), Paragraph(str(row['patient_id']), body_style)],
-            [Paragraph("<b>Reported Symptoms</b>", bold_body_style), Paragraph(str(row['symptoms'] or "—"), body_style),
-             Paragraph("<b>Current Status</b>", bold_body_style), Paragraph(str(row['status']), body_style)]
-        ]
-        meta_table = Table(meta_data, colWidths=[110, 160, 90, 180])
-        meta_table.setStyle(TableStyle([
-            ('BACKGROUND', (0,0), (-1,-1), colors.HexColor('#f8fafc')),
-            ('BOX', (0,0), (-1,-1), 1, colors.HexColor('#cbd5e1')),
-            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.HexColor('#e2e8f0')),
-            ('TOPPADDING', (0,0), (-1,-1), 6),
-            ('BOTTOMPADDING', (0,0), (-1,-1), 6),
-        ]))
-        story.append(meta_table)
-        story.append(Spacer(1, 10))
-
-        story.append(Paragraph("<b>Structured Multi-Modal Diagnosis Report</b>", heading_style))
-        diag_raw = row['diagnosis'] or "No diagnosis report generated."
-        diag_lines = diag_raw.split("\n")
-        for line in diag_lines:
-            line_str = line.strip()
-            if not line_str:
-                story.append(Spacer(1, 3))
-            elif line_str.startswith("#"):
-                clean_h = line_str.replace("#", "").strip()
-                story.append(Paragraph(f"<b>{clean_h}</b>", heading_style))
-            elif line_str.startswith("- ") or line_str.startswith("* ") or line_str.startswith("1.") or line_str.startswith("2."):
-                formatted_l = line_str.replace("**", "<b>").replace("**", "</b>")
-                story.append(Paragraph(f"• {formatted_l}", body_style))
-            else:
-                formatted_l = line_str.replace("**", "<b>").replace("**", "</b>")
-                story.append(Paragraph(formatted_l, body_style))
-        story.append(Spacer(1, 10))
-
-        if row.get('doctor_message'):
-            story.append(Paragraph("<b>Doctor's Message to Patient</b>", heading_style))
-            story.append(Paragraph(str(row['doctor_message']), body_style))
-            story.append(Spacer(1, 10))
-
-        qr = qrcode.QRCode(error_correction=qrcode.constants.ERROR_CORRECT_M, box_size=3, border=0)
-        qr.add_data(f"ZenithDx Patient Report #{row['report_id']}")
-        qr.make(fit=True)
-        qr_buf = io.BytesIO()
-        qr.make_image(fill_color="black", back_color="white").save(qr_buf, "PNG")
-        qr_buf.seek(0)
-        
-        story.append(Spacer(1, 10))
-        qr_img = RLImage(qr_buf, width=50, height=50)
-        footer_table = Table([[qr_img, Paragraph("<i>Confidential Medical Report — ZenithDx Clinical AI Suite</i>", body_style)]], colWidths=[60, 480])
-        footer_table.setStyle(TableStyle([('VALIGN', (0,0), (-1,-1), 'MIDDLE')]))
-        story.append(footer_table)
-
-        doc.build(story, onFirstPage=draw_background, onLaterPages=draw_background)
-        pdf_data = buffer.getvalue()
-        buffer.close()
-
+        pdf_bytes = generate_pdf_report_bytes(row)
         return Response(
-            content=pdf_data,
+            content=pdf_bytes,
             media_type="application/pdf",
             headers={"Content-Disposition": f"attachment; filename=ZenithDx_Report_{str(report_id)[:8]}.pdf"}
         )
     except Exception as e:
-        import traceback
         tb = traceback.format_exc()
         print(f"[PDF Error] {e}\n{tb}", file=sys.stderr)
         raise HTTPException(500, f"PDF generation error: {e}")

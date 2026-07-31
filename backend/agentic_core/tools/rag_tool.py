@@ -167,6 +167,11 @@ from ollama import Client
 
 SYSTEM_CLINICAL_PROMPT = (
     "You are a board-certified physician acting as an expert AI clinical decision support agent.\n\n"
+    "CRITICAL ANTI-HALLUCINATION INSTRUCTION:\n"
+    "If no prior patient history or physical examination data is provided (Text-Only / Consultation without physical exam), "
+    "YOU ARE STRICTLY FORBIDDEN from fabricating physical examination findings (such as auscultation, bilateral crackles, "
+    "wheezing, breath sounds, or O2 saturation) that were not reported in the patient's query! Record: "
+    "'Physical Examination: Unreported / Not performed in consultation'.\n\n"
     "CRITICAL INSTRUCTION FOR TEXT-ONLY CONSULTATIONS:\n"
     "If no chest X-ray or prior patient history is provided (Text-Only Consultation), YOU ARE STRICTLY FORBIDDEN "
     "from refusing to answer, outputting N/A, or stating that clinical evaluation is impossible without imaging. "
@@ -192,15 +197,36 @@ SYSTEM_CLINICAL_PROMPT = (
 )
 
 def _clean_report_output(text: str) -> str:
-    """Strips any unapproved trailing section headers or raw data dumps appended by LLM."""
+    """Strips any unapproved trailing section headers, RAG dumps, or duplicate text appended by LLM."""
     if not text:
         return text
-    # Cut off unapproved appended sections like ### RAG Context:, ### Diagnosis of Pneumonia:, etc.
-    unapproved = [r"\n###\s*RAG\s*Context.*", r"\n###\s*Diagnosis\s*of\s*Pneumonia.*", r"\n###\s*Consensus\s*Guideline.*", r"\n###\s*Raw\s*Data.*"]
+    # Cut off unapproved appended sections like ### Medical Literature Context:, ### Additional Considerations:, etc.
+    unapproved = [
+        r"\n###\s*Medical\s*Literature\s*Context.*",
+        r"\n###\s*Additional\s*Considerations.*",
+        r"\n###\s*Future\s*Directions.*",
+        r"\n###\s*Conclusion.*",
+        r"\n###\s*Clinical\s*Implications.*",
+        r"\n###\s*RAG\s*Context.*",
+        r"\n###\s*Diagnosis\s*of.*",
+        r"\n###\s*Consensus\s*Guideline.*",
+        r"\n###\s*Raw\s*Data.*"
+    ]
     for pat in unapproved:
         text = re.sub(pat, "", text, flags=re.DOTALL | re.IGNORECASE)
+
     # Remove phrases like 'Consensus Guideline 1', 'Clinical Reference 2'
     text = re.sub(r"(Consensus Guideline|Clinical Reference|Systematic Review)\s*\d+:?", "", text)
+
+    # Strip unneeded device insertion fluff if RAG bled into output
+    device_bleed_patterns = [
+        r"Gastrostomy Tubes \(G-tubes\) & Jejunostomy Tubes \(J-tubes\):.*?\n\n",
+        r"Clinical Importance of Identifying Support Devices.*?\n\n",
+        r"Medical Literature Context:.*?\n\n"
+    ]
+    for pat in device_bleed_patterns:
+        text = re.sub(pat, "", text, flags=re.DOTALL | re.IGNORECASE)
+
     return text.strip()
 
 def _ollama_chat(prompt: str, model: str = OLLAMA_MODEL_NAME) -> str:

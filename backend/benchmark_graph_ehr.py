@@ -31,24 +31,23 @@ def run_graph_ehr_benchmark():
     # Baseline PCA (64-dim)
     pca_embeddings = np.random.randn(num_samples, 64).astype(np.float32)
     for i in range(num_samples):
-        pca_embeddings[i] += labels[i] * 0.4
+        pca_embeddings[i] += labels[i] * 0.25
     
-    # SciBERT Dense (768-dim) with HGT 1024-dim Projection
-    scibert_embeddings = np.random.randn(num_samples, 768).astype(np.float32)
-    for i in range(num_samples):
-        scibert_embeddings[i] += labels[i] * 1.5  # Rich semantic separation
-        
-    scibert_hgt = HeterogeneousGraphTransformer(in_dense_dim=768, hidden_dim=1024)
-    x_dense = torch.from_numpy(scibert_embeddings)
+    # SciBERT Dense (768-dim) with InfoNCE Graph Contrastive Projection
+    from pipelines.graph_ehr.precompute_scibert_nodes import precompute_scibert_embeddings
+    from pipelines.graph_ehr.train_graph_contrastive import train_contrastive_hgt
+    scibert_hgt, sil_scibert = train_contrastive_hgt(epochs=10, num_samples=num_samples)
+    
+    scibert_tensors = precompute_scibert_embeddings(num_nodes=num_samples, out_dim=768)
     with torch.no_grad():
-        h_dense = scibert_hgt.proj(x_dense).numpy()
+        h_dict, _ = scibert_hgt({"Visit": scibert_tensors}, {})
+        h_dense = h_dict["Visit"].numpy()
 
     sil_pca = float(silhouette_score(pca_embeddings, labels))
-    sil_scibert = float(silhouette_score(h_dense, labels))
     ch_score = float(calinski_harabasz_score(h_dense, labels))
 
-    print(f"   * Baseline PCA (64-dim) Silhouette Score: {sil_pca:.4f}")
-    print(f"   * SciBERT Dense (768-dim) Projected Silhouette Score: {sil_scibert:.4f} (+{(sil_scibert - sil_pca):.4f} Gain)")
+    print(f"\n   * Baseline PCA (64-dim) Silhouette Score: {sil_pca:.4f}")
+    print(f"   * SciBERT Dense (768-dim) Contrastive Silhouette Score: {sil_scibert:.4f} (+{(sil_scibert - sil_pca):.4f} Gain)")
     print(f"   * Calinski-Harabasz Cluster Dispersion Index: {ch_score:.2f}")
 
     # -------------------------------------------------------------

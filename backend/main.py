@@ -2,9 +2,10 @@
 from __future__ import annotations
 
 import os
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 from config import settings
 from api.v1.router import api_v1_router
@@ -33,9 +34,6 @@ if settings.OUTPUT_DIR.exists():
     app.mount("/outputs", StaticFiles(directory=str(settings.OUTPUT_DIR)), name="outputs")
 if settings.UPLOAD_DIR.exists():
     app.mount("/uploads", StaticFiles(directory=str(settings.UPLOAD_DIR)), name="uploads")
-
-from fastapi import HTTPException
-from fastapi.responses import FileResponse
 
 @app.get("/outputs/{path:path}")
 def serve_outputs(path: str):
@@ -74,16 +72,16 @@ def serve_uploads(path: str):
 @app.on_event("startup")
 def startup_event():
     import sys, requests
-    print(f"[ZenithDx] Server starting. OLLAMA_HOST={settings.OLLAMA_HOST}, OLLAMA_MODEL={settings.OLLAMA_MODEL}", file=sys.stderr)
+    print(f"[ZenithDx] Server starting. OLLAMA_HOST={settings.OLLAMA_HOST}, OLLAMA_MODEL={settings.OLLAMA_MODEL}", file=sys.stderr, flush=True)
     try:
-        r = requests.get(f"{settings.OLLAMA_HOST}/api/tags", timeout=3)
+        r = requests.get(f"{settings.OLLAMA_HOST}/api/tags", timeout=1)
         if r.status_code == 200:
             models = [m.get("name") for m in r.json().get("models", [])]
-            print(f"[ZenithDx] ✅ Ollama reachable. Installed models: {models}", file=sys.stderr)
+            print(f"[ZenithDx] Ollama reachable. Installed models: {models}", file=sys.stderr, flush=True)
         else:
-            print(f"[ZenithDx] ⚠️ Ollama status check returned code {r.status_code}", file=sys.stderr)
+            print(f"[ZenithDx] Ollama status check returned code {r.status_code}", file=sys.stderr, flush=True)
     except Exception as e:
-        print(f"[ZenithDx] ⚠️ Ollama server unreachable at {settings.OLLAMA_HOST}: {e}", file=sys.stderr)
+        print(f"[ZenithDx] Ollama status check note: {e}", file=sys.stderr, flush=True)
 
 @app.get("/")
 def root():
@@ -95,13 +93,11 @@ def root():
         "version": "1.0.0"
     }
 
-
 @app.get("/health", tags=["Health"])
 def health_check():
     """Docker healthcheck endpoint — returns 200 when the server is ready."""
     return {"status": "healthy", "service": settings.APP_NAME}
 
-
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=settings.DEBUG)
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=settings.DEBUG)

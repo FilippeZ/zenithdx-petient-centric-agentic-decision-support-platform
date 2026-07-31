@@ -395,7 +395,6 @@ export default function HomeDoctor() {
                 <tr style={{ background: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
                   <th style={{ padding: "0.85rem 1rem", fontSize: "0.75rem", fontWeight: 700, color: "#475569", letterSpacing: "0.06em", textTransform: "uppercase" }}>Patient Name</th>
                   <th style={{ padding: "0.85rem 1rem", fontSize: "0.75rem", fontWeight: 700, color: "#475569", letterSpacing: "0.06em", textTransform: "uppercase" }}>Symptoms / Data</th>
-                  <th style={{ padding: "0.85rem 1rem", fontSize: "0.75rem", fontWeight: 700, color: "#475569", letterSpacing: "0.06em", textTransform: "uppercase" }}>AI Risk Triage</th>
                   <th style={{ padding: "0.85rem 1rem", fontSize: "0.75rem", fontWeight: 700, color: "#475569", letterSpacing: "0.06em", textTransform: "uppercase" }}>Submission Date</th>
                   <th style={{ padding: "0.85rem 1rem", fontSize: "0.75rem", fontWeight: 700, color: "#475569", letterSpacing: "0.06em", textTransform: "uppercase", textAlign: "center" }}>Status</th>
                   <th style={{ padding: "0.85rem 1rem", fontSize: "0.75rem", fontWeight: 700, color: "#475569", letterSpacing: "0.06em", textTransform: "uppercase" }}>Report ID</th>
@@ -405,22 +404,21 @@ export default function HomeDoctor() {
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan={7} style={{ textAlign: "center", padding: "3rem", color: "#64748b" }}>Loading queue…</td>
+                    <td colSpan={6} style={{ textAlign: "center", padding: "3rem", color: "#64748b" }}>Loading queue…</td>
                   </tr>
                 ) : error ? (
                   <tr>
-                    <td colSpan={7} style={{ textAlign: "center", padding: "3rem", color: "#dc2626" }}>{error}</td>
+                    <td colSpan={6} style={{ textAlign: "center", padding: "3rem", color: "#dc2626" }}>{error}</td>
                   </tr>
                 ) : filtered.length === 0 ? (
                   <tr>
-                    <td colSpan={7} style={{ textAlign: "center", padding: "3rem", color: "#64748b" }}>No cases found matching filters.</td>
+                    <td colSpan={6} style={{ textAlign: "center", padding: "3rem", color: "#64748b" }}>No cases found matching filters.</td>
                   </tr>
                 ) : (
                   filtered.map((r, i) => {
                     const sc = statusColor(r.status);
                     const rid = r.report_id;
                     const busy = actionBusy[rid];
-                    const triage = calculateUrgency(r.symptoms);
                     return (
                       <motion.tr
                         key={rid}
@@ -437,16 +435,6 @@ export default function HomeDoctor() {
                             {r.image_path || r.has_image || r.xray_image ? "🫁" : "📝"}
                           </span>
                           {r.symptoms || "No symptoms recorded"}
-                        </td>
-                        {/* New Functionality: AI Risk Triage Badge Column */}
-                        <td style={{ padding: "1rem" }}>
-                          <span style={{
-                            display: "inline-flex", alignItems: "center", gap: "0.3rem",
-                            fontSize: "0.72rem", fontWeight: 700, padding: "0.25rem 0.6rem", borderRadius: 100,
-                            background: triage.bg, color: triage.text, border: `1px solid ${triage.border}`
-                          }}>
-                            {triage.label}
-                          </span>
                         </td>
                         <td style={{ padding: "1rem", color: "#64748b", fontSize: "0.85rem" }}>
                           {r.submission_date ? new Date(r.submission_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "—"}

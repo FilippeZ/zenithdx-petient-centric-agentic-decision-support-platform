@@ -69,3 +69,8 @@ uploads/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Temporary Test Artifacts
+test_output_report.pdf
+patient_subgraph.html
+zenithdx_full_graph.graphml

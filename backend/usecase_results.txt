@@ -1,7 +1,7 @@
 ================================================================================
                 ZENITHDX MULTI-MODAL USE CASES TEST REPORT
 ================================================================================
-Execution Date: 2026-07-31 20:55:18
+Execution Date: 2026-07-31 21:18:40
 Test X-Ray Image Source: pneumonia.jpeg
 Total Use Cases Executed: 4
 ================================================================================
@@ -14,12 +14,12 @@ Inputs:
   - Image Path: None
   - Patient ID: None
 Status: SUCCESS
-Execution Time: 69.07 seconds
+Execution Time: 52.19 seconds
 
 [1] IMAGE GENERATION & XAI METRICS:
   - Original X-Ray Saved: False -> Path: None
   - Grad-CAM Overlay Generated: False -> Path: None
-  - Captum Feature Ablation XAI Plot: True -> Path: C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\default\20260731_204713\captum_query_20260731_204715_seq.png
+  - Captum Feature Ablation XAI Plot: True -> Path: C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\default\20260731_211050\captum_query_20260731_211052_seq.png
 
 [2] VISION FINDINGS & CLASSIFICATION:
   - Findings/Probabilities: []
@@ -32,35 +32,34 @@ Execution Time: 69.07 seconds
 [4] DIAGNOSIS REPORT TEXT OUTPUT:
 ### **Clinical Assessment**
 
-The patient presents with acute onset of a tension headache, characterized by a dull, aching sensation typically described as a band or pressure around the forehead. The headache is accompanied by neck stiffness, suggesting muscle tension in the cervical region. Additionally, the patient reports mild dizziness, which may indicate some degree of autonomic nervous system activation.
+The patient presents with acute onset of a tension headache, characterized by a dull, aching sensation, typically described as a band or pressure around the head. The headache is moderate in intensity and is accompanied by neck stiffness, suggesting muscle tension in the cervical region. Additionally, the patient reports mild dizziness, which may indicate involvement of the vestibular system.
 
 ### **Differential Diagnosis**
 
-Based on the patient's symptoms, the following differential diagnoses should be considered:
+Based on the patient's symptoms, the following differential diagnosis should be considered:
 
-* Tension headache: a common type of headache caused by muscle tension in the neck and scalp
-* Cervicogenic headache: a type of headache caused by referred pain from the cervical spine
-* Migraine: although less likely given the absence of other typical migraine symptoms (e.g., aura, photophobia)
-* Sinusitis or rhinosinusitis: possible causes of headaches and dizziness due to inflammation of the sinuses
+* Tension headache: The most likely cause given the description of the headache and neck stiffness.
+* Vestibular-related dizziness: Could be related to inner ear dysfunction or benign paroxysmal positional vertigo (BPPV).
+* Cervicogenic headache: Possible if the patient has a history of cervical spine trauma or instability.
 
 ### **Final Diagnosis**
 
-Given the patient's presentation, a tentative diagnosis of tension headache is most likely. Further evaluation would be necessary to rule out other potential causes.
+Tension Headache
 
 ### **Diagnostic Rationale & Explanation**
 
-The clinical presentation of acute tension headache, neck stiffness, and mild dizziness aligns with a diagnosis of tension headache. The absence of other symptoms such as photophobia, phonophobia, or aura makes migraine less likely. While cervicogenic headache and sinusitis are possible considerations, they would require additional evaluation to confirm. A thorough assessment of cervical spine mobility and muscle tension is recommended to further support this diagnosis.
+The diagnosis of tension headache is based on the patient's self-reported symptoms of a dull, aching sensation around the head, accompanied by neck stiffness and mild dizziness. The absence of other symptoms such as photophobia, visual aura, or nausea makes migraine less likely. Tension headaches are often related to muscle tension in the cervical region, which may be exacerbated by stress or poor posture. Further evaluation with imaging studies or cervical spine manipulation may be necessary to rule out underlying causes of neck pain and stiffness.
 
-Note: Due to the lack of imaging findings and patient history, a comprehensive differential diagnosis has been provided based solely on the patient's reported symptoms.
+Note: Physical Examination: Unreported / Not performed in consultation
 
 [5] XAI CLINICAL REPORT TEXT OUTPUT:
 ### XAI Text Attribution Analysis (Captum Feature Ablation):
 - Target Clinical Query: "Patient presents with acute tension headache, neck stiffness, and mild dizziness."
 - Radiological Evaluation: No X-ray provided
 - Longitudinal History Integrated: No
-- Top Key Clinical Predictors: headache, dizziness, stiffness, acute, presents
-- Captum Sequence Attribution Plot: Generated (C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\default\20260731_204713\captum_query_20260731_204715_seq.png)
-- Captum Token Attribution Plot: Generated (C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\default\20260731_204713\captum_query_20260731_204715_tok.png)
+- Top Key Clinical Predictors: dizziness, headache, stiffness, patient, neck
+- Captum Sequence Attribution Plot: Generated (C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\default\20260731_211050\captum_query_20260731_211052_seq.png)
+- Captum Token Attribution Plot: Generated (C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\default\20260731_211050\captum_query_20260731_211052_tok.png)
 
 ================================================================================
 
@@ -72,15 +71,15 @@ Inputs:
   - Image Path: C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\pneumonia.jpeg
   - Patient ID: None
 Status: SUCCESS
-Execution Time: 113.44 seconds
+Execution Time: 143.96 seconds
 
 [1] IMAGE GENERATION & XAI METRICS:
   - Original X-Ray Saved: True -> Path: C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\default\pneumonia_original.png
   - Grad-CAM Overlay Generated: True -> Path: C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\default\pneumonia_gradcam_overlay.png
-  - Captum Feature Ablation XAI Plot: True -> Path: C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\default\20260731_204906\captum_query_20260731_204908_seq.png
+  - Captum Feature Ablation XAI Plot: True -> Path: C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\default\20260731_211314\captum_query_20260731_211315_seq.png
 
 [2] VISION FINDINGS & CLASSIFICATION:
-  - Findings/Probabilities: [('Lung Lesion', 0.5611447691917419), ('Edema', 0.5552887916564941), ('Pneumonia', 0.5235655903816223), ('Atelectasis', 0.48812445998191833), ('Consolidation', 0.4383118152618408)]
+  - Findings/Probabilities: [('Edema', 0.4993731379508972), ('Lung Lesion', 0.49261945486068726), ('Pneumonia', 0.48962196707725525), ('Consolidation', 0.4762454330921173), ('Atelectasis', 0.4762209951877594)]
   - Labels: []
 
 [3] PATIENT EHR HISTORY RETRIEVAL:
@@ -88,38 +87,41 @@ Execution Time: 113.44 seconds
   - History Excerpt: N/A (No patient history attached or retrieved)...
 
 [4] DIAGNOSIS REPORT TEXT OUTPUT:
+I appreciate your efforts to revise the report according to the strict schema. However, I noticed that you still included a "Recommendations" section at the end, which is not part of the required format.
+
+Here is the revised report with only the four required sections:
+
 ### **Clinical Assessment**
 
-The patient presents with severe persistent cough, high fever, dyspnea, and right-sided pleuritic chest pain, which are concerning symptoms that warrant further evaluation.
+The patient presents with severe persistent cough, high fever, dyspnea, and right-sided pleuritic chest pain. The patient's symptoms are concerning for a respiratory infection, specifically pneumonia or an atypical bacterial infection.
 
 ### **Differential Diagnosis**
 
-Based on the patient's symptoms, the following differential diagnoses should be considered:
+Based solely on the patient's reported symptoms, the following differential diagnosis can be considered:
 
-* Pneumonia (bacterial or viral)
-* Atypical bacterial infections (e.g., Mycoplasma pneumoniae, Chlamydia pneumoniae)
-* Viral respiratory infections (e.g., influenza, respiratory syncytial virus)
-* Pulmonary embolism
-* Pleurisy
+1. Pneumonia (bacterial or viral)
+2. Atypical bacterial infection (e.g., Mycoplasma pneumoniae, Chlamydophila pneumoniae)
+3. Viral respiratory infection (e.g., influenza, COVID-19)
+4. Pleuritis (inflammation of the pleura)
 
 ### **Final Diagnosis**
 
-Given the patient's symptoms and the absence of prior patient history, a definitive diagnosis cannot be made without further evaluation. However, based on the clinical presentation, pneumonia or an atypical bacterial infection is the most likely cause.
+Given the severity and persistence of the patient's symptoms, a definitive diagnosis cannot be made without further evaluation.
 
 ### **Diagnostic Rationale & Explanation**
 
-The presence of severe persistent cough, high fever, dyspnea, and right-sided pleuritic chest pain suggests an infectious process affecting the lungs. The absence of prior patient history makes it difficult to determine the underlying cause, but the symptoms are consistent with a respiratory infection. Further evaluation, including imaging studies (e.g., chest X-ray) and laboratory tests (e.g., complete blood count, erythrocyte sedimentation rate), is necessary to confirm the diagnosis and guide treatment.
+The patient's presentation is concerning for pneumonia or an atypical bacterial infection. However, without further evaluation, it is impossible to determine the exact cause of the patient's symptoms. The high fever and pleuritic chest pain suggest a more serious infection.
 
-Note: Physical Examination: Unreported / Not performed in consultation
+Note: Due to the lack of prior patient history and physical examination findings, no physical examination results were fabricated.
 
 [5] XAI CLINICAL REPORT TEXT OUTPUT:
 ### XAI Text Attribution Analysis (Captum Feature Ablation):
 - Target Clinical Query: "Patient presents with severe persistent cough, high fever, dyspnea, and right-sided pleuritic chest pain."
-- Radiological Findings Considered: Lung Lesion, Edema, Pneumonia, Atelectasis, Consolidation
+- Radiological Findings Considered: Edema, Lung Lesion, Pneumonia, Consolidation, Atelectasis
 - Longitudinal History Integrated: No
-- Top Key Clinical Predictors: dyspnea, pain, fever, cough, chest
-- Captum Sequence Attribution Plot: Generated (C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\default\20260731_204906\captum_query_20260731_204908_seq.png)
-- Captum Token Attribution Plot: Generated (C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\default\20260731_204906\captum_query_20260731_204908_tok.png)
+- Top Key Clinical Predictors: fever, chest, pain, cough, dyspnea
+- Captum Sequence Attribution Plot: Generated (C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\default\20260731_211314\captum_query_20260731_211315_seq.png)
+- Captum Token Attribution Plot: Generated (C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\default\20260731_211314\captum_query_20260731_211315_tok.png)
 
 ================================================================================
 
@@ -131,15 +133,15 @@ Inputs:
   - Image Path: C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\pneumonia.jpeg
   - Patient ID: 10000032
 Status: SUCCESS
-Execution Time: 208.33 seconds
+Execution Time: 180.6 seconds
 
 [1] IMAGE GENERATION & XAI METRICS:
   - Original X-Ray Saved: True -> Path: C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\10000032\pneumonia_original.png
   - Grad-CAM Overlay Generated: True -> Path: C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\10000032\pneumonia_gradcam_overlay.png
-  - Captum Feature Ablation XAI Plot: True -> Path: C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\10000032\20260731_205234\captum_query_20260731_205236_seq.png
+  - Captum Feature Ablation XAI Plot: True -> Path: C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\10000032\20260731_211614\captum_query_20260731_211616_seq.png
 
 [2] VISION FINDINGS & CLASSIFICATION:
-  - Findings/Probabilities: [('Lung Lesion', 0.5611447691917419), ('Edema', 0.5552887916564941), ('Pneumonia', 0.5235655903816223), ('Atelectasis', 0.48812445998191833), ('Consolidation', 0.4383118152618408)]
+  - Findings/Probabilities: [('Edema', 0.4993731379508972), ('Lung Lesion', 0.49261945486068726), ('Pneumonia', 0.48962196707725525), ('Consolidation', 0.4762454330921173), ('Atelectasis', 0.4762209951877594)]
   - Labels: []
 
 [3] PATIENT EHR HISTORY RETRIEVAL:
@@ -153,40 +155,39 @@ Chief Complain...
 [4] DIAGNOSIS REPORT TEXT OUTPUT:
 ### **Clinical Assessment**
 
-The patient presents with acute shortness of breath and fever, in addition to a known pulmonary history. Current vital signs reveal tachycardia (70.0 bpm) and mild hypotension (106.0/63.0 mmHg). The respiratory rate is elevated at 16.0 breaths per minute, while the oxygen saturation remains within normal limits (97.0%). The patient's temperature is slightly elevated at 98.4°F.
+The patient presents with acute shortness of breath and fever, in addition to a history of abdominal pain and distention. The current vital signs reveal a heart rate of 87.0 bpm, temperature of 97.8°C, respiratory rate of 14.0 breaths/min, oxygen saturation of 97.0%, systolic blood pressure of 43.0 mmHg, and diastolic blood pressure of 57.0 mmHg.
 
 ### **Differential Diagnosis**
 
 Based on the patient's presentation, differential diagnoses include:
 
-* Pulmonary embolism
-* Pneumonia
-* Acute respiratory distress syndrome (ARDS)
-* Chronic obstructive pulmonary disease (COPD) exacerbation
-* Liver decompensation or hepatorenal syndrome
+* Acute pulmonary embolism
+* Pneumonia or atypical pneumonia
+* Pulmonary edema
+* Gastrointestinal bleeding or perforation
 
-Given the patient's history of cirrhosis and previous episodes of abdominal pain, liver decompensation or hepatorenal syndrome should be considered in the differential diagnosis.
+Given the patient's history of cirrhosis and liver disease, it is also essential to consider complications related to liver disease, such as hepatic encephalopathy.
 
 ### **Final Diagnosis**
 
-Acute shortness of breath and fever are not consistent with a pulmonary embolism. The patient's presentation is more suggestive of pneumonia, given the elevated respiratory rate and mild hypotension. However, without further diagnostic testing (e.g., imaging studies), this diagnosis remains speculative.
+Acute Shortness of Breath due to Hypotension (Hypovolemic Shock)
 
 ### **Diagnostic Rationale & Explanation**
 
-The patient's presentation is more consistent with pneumonia, which can cause acute shortness of breath and fever. The elevated respiratory rate and mild hypotension are also consistent with this diagnosis. Given the patient's history of cirrhosis, liver decompensation or hepatorenal syndrome should be considered in the differential diagnosis. However, based on the current presentation, pneumonia is a more likely cause of the patient's symptoms.
+The diagnosis of acute shortness of breath due to hypotension is based on the patient's presentation of sudden onset of dyspnea and fever, in addition to a history of abdominal pain and distention. The current vital signs reveal severe hypotension (systolic blood pressure of 43.0 mmHg), which is consistent with hypovolemic shock. While pulmonary embolism cannot be ruled out without further testing, the presence of severe hypotension makes it a less likely diagnosis at this time.
 
-It is essential to note that further evaluation and testing (e.g., imaging studies) are necessary to confirm or rule out this diagnosis.
+The patient's history of cirrhosis and liver disease does not directly relate to the current presentation, but it is essential to consider complications related to liver disease. However, in this case, the clinical presentation is more consistent with hypovolemic shock than any complication of liver disease.
 
-Note: The RAG context has been removed as it does not directly pertain to the patient's presenting symptoms.
+Further testing, including imaging studies such as a chest X-ray or CT pulmonary angiography, would be necessary to confirm the diagnosis of pulmonary embolism and rule out other potential causes of acute shortness of breath.
 
 [5] XAI CLINICAL REPORT TEXT OUTPUT:
 ### XAI Text Attribution Analysis (Captum Feature Ablation):
 - Target Clinical Query: "Patient with known pulmonary history presents with acute shortness of breath and fever."
-- Radiological Findings Considered: Lung Lesion, Edema, Pneumonia, Atelectasis, Consolidation
+- Radiological Findings Considered: Edema, Lung Lesion, Pneumonia, Consolidation, Atelectasis
 - Longitudinal History Integrated: Yes
-- Top Key Clinical Predictors: fever, shortness, breath, patient, presents
-- Captum Sequence Attribution Plot: Generated (C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\10000032\20260731_205234\captum_query_20260731_205236_seq.png)
-- Captum Token Attribution Plot: Generated (C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\10000032\20260731_205234\captum_query_20260731_205236_tok.png)
+- Top Key Clinical Predictors: shortness, breath, fever, acute, known
+- Captum Sequence Attribution Plot: Generated (C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\10000032\20260731_211614\captum_query_20260731_211616_seq.png)
+- Captum Token Attribution Plot: Generated (C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\10000032\20260731_211614\captum_query_20260731_211616_tok.png)
 
 ================================================================================
 
@@ -198,12 +199,12 @@ Inputs:
   - Image Path: None
   - Patient ID: 10000032
 Status: SUCCESS
-Execution Time: 160.07 seconds
+Execution Time: 142.69 seconds
 
 [1] IMAGE GENERATION & XAI METRICS:
   - Original X-Ray Saved: False -> Path: None
   - Grad-CAM Overlay Generated: False -> Path: None
-  - Captum Feature Ablation XAI Plot: True -> Path: C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\10000032\20260731_205515\captum_query_20260731_205516_seq.png
+  - Captum Feature Ablation XAI Plot: True -> Path: C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\10000032\20260731_211838\captum_query_20260731_211839_seq.png
 
 [2] VISION FINDINGS & CLASSIFICATION:
   - Findings/Probabilities: []
@@ -218,51 +219,40 @@ Admitted: 2180-05-06 19:17:00 - Discharged: 2180-05-06 23:30:00 (Disposition: AD
 Chief Complain...
 
 [4] DIAGNOSIS REPORT TEXT OUTPUT:
-### **Clinical Assessment**
+### Clinical Assessment
 
-The patient, a 45-year-old male with a history of chronic liver disease, presents with abdominal pain and distention, consistent with his known diagnosis of cirrhosis of the liver (ICD: 5715). The patient's vital signs reveal tachycardia (70.0 bpm) and mild hypotension (106.0/63.0 mmHg), which may be related to his underlying liver disease or recent abdominal pain.
+The patient presents for a follow-up visit with a history of prior respiratory infection symptoms, abdominal distention, and hypotension. The current vital signs reveal a heart rate of 87.0 beats per minute, blood pressure of 43.0/63.0 mmHg, respiratory rate of 14.0 breaths per minute, oxygen saturation of 97.0%, and temperature of 97.8°F.
 
-### **Differential Diagnosis**
+### Differential Diagnosis
 
-Based on the patient's symptoms and history, a differential diagnosis of:
+Based on the patient's history and current presentation, a comprehensive differential diagnosis is as follows:
 
-* Abdominal organ dysfunction (e.g., pancreatitis, bowel obstruction)
-* Liver decompensation
-* Respiratory infection sequelae (e.g., pneumonia, pleurisy)
+*   **Gastrointestinal issues**: Given the patient's previous diagnoses of cirrhosis of the liver (ICD: 5715) and abdominal distention, it is essential to consider gastrointestinal complications such as ascites or variceal bleeding.
+*   **Respiratory infections**: The patient's history of prior respiratory infection symptoms may be related to an ongoing respiratory issue, potentially exacerbated by hypotension.
+*   **Hypotension**: The patient's current diagnosis of hypotension (ICD: 4589) is a critical concern, as it can lead to organ dysfunction and failure if not promptly addressed.
 
-is considered. The patient's recent respiratory infection symptoms may be related to his underlying liver disease or other comorbid conditions.
+### Final Diagnosis
 
-### **Final Diagnosis**
+Based on the clinical assessment and differential diagnosis, the final diagnosis is:
 
-The final diagnosis is **Abdominal Pain with Possible Liver Decompensation and Hypotension**.
+*   **Portal Hypertension**: Given the patient's history of cirrhosis of the liver (ICD: 5715) and current presentation of abdominal distention, hypotension, and respiratory symptoms, portal hypertension is a likely underlying cause.
 
-### **Diagnostic Rationale & Explanation**
+### Diagnostic Rationale & Explanation
 
-The patient's presentation of abdominal pain, distention, and hypotension suggests possible liver decompensation. The recent history of cirrhosis of the liver (ICD: 5715) and respiratory infection symptoms may be contributing factors to his current condition. Further evaluation is necessary to determine the underlying cause of his abdominal pain and hypotension.
+The diagnostic rationale for this final diagnosis is as follows:
 
-Given the patient's history of chronic liver disease, it is essential to consider complications such as hepatic encephalopathy or ascites. Additionally, the presence of abdominal distention warrants further investigation for potential bowel obstruction or other causes of abdominal pain.
-
-In light of the patient's recent respiratory infection symptoms and the absence of a chest X-ray, it is crucial to consider the possibility of respiratory infection sequelae, such as pneumonia or pleurisy, which may be contributing to his current condition. A thorough evaluation of the patient's respiratory system is necessary to determine the underlying cause of his symptoms.
-
-A comprehensive approach to diagnosing this patient includes:
-
-* Further evaluation of abdominal pain and distention
-* Assessment for signs of liver decompensation (e.g., jaundice, ascites)
-* Investigation into potential bowel obstruction or other causes of abdominal pain
-* Comprehensive respiratory evaluation to determine the underlying cause of his symptoms
-
-It is essential to consider the patient's overall clinical picture and not rely solely on the initial presentation. A thorough and comprehensive diagnostic approach will help guide further management and treatment decisions.
-
-**Note:** Physical Examination: Unreported / Not performed in consultation
+*   The patient's history of cirrhosis of the liver increases the risk of portal hypertension.
+*   The current presentation of abdominal distention, hypotension, and respiratory symptoms is consistent with portal hypertension.
+*   Further evaluation, including imaging studies (e.g., ultrasound or CT scan) and potentially endoscopic procedures (e.g., variceal ligation), may be necessary to confirm the diagnosis and guide management.
 
 [5] XAI CLINICAL REPORT TEXT OUTPUT:
 ### XAI Text Attribution Analysis (Captum Feature Ablation):
 - Target Clinical Query: "Patient followup visit for prior respiratory infection symptoms."
 - Radiological Evaluation: No X-ray provided
 - Longitudinal History Integrated: Yes
-- Top Key Clinical Predictors: visit, infection, patient, symptoms, prior
-- Captum Sequence Attribution Plot: Generated (C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\10000032\20260731_205515\captum_query_20260731_205516_seq.png)
-- Captum Token Attribution Plot: Generated (C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\10000032\20260731_205515\captum_query_20260731_205516_tok.png)
+- Top Key Clinical Predictors: patient, followup, symptoms, visit, prior
+- Captum Sequence Attribution Plot: Generated (C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\10000032\20260731_211838\captum_query_20260731_211839_seq.png)
+- Captum Token Attribution Plot: Generated (C:\Users\wwefi\OneDrive\Υπολογιστής\diploma-thesis\ZenithDx_Final\backend\outputs\10000032\20260731_211838\captum_query_20260731_211839_tok.png)
 
 ================================================================================
 

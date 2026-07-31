@@ -6,7 +6,7 @@ import sys
 from typing import List, Tuple, Optional, Any
 
 _COLBERT_MODEL = None
-SIMILARITY_THRESHOLD = 0.25  # Clinical relevance threshold to prevent RAG Bleed
+SIMILARITY_THRESHOLD = 0.35  # Clinical relevance threshold to prevent RAG Bleed
 
 MEDICAL_CONCEPT_EXPANSION = {
     "pneumonia": ["fever", "cough", "dyspnea", "opacity", "infiltrate", "consolidation", "sputum", "breath", "lung", "respiratory"],

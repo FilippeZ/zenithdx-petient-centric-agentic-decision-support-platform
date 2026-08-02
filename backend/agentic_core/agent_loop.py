@@ -354,7 +354,12 @@ workflow.add_edge("react_agent", "run_tool")
 workflow.add_edge("run_tool", "reflector")
 workflow.add_conditional_edges(
     "reflector",
-    path=should_continue_reflector
+    path=should_continue_reflector,
+    path_map={
+        "planner": "planner",
+        "react_agent": "react_agent",
+        "final_answer": "final_answer"
+    }
 )
 workflow.add_edge("final_answer", END)
 workflow.set_entry_point("planner")

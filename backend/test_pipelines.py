@@ -40,7 +40,7 @@ def test_1_vision_pipeline():
     img_bgr = cv2.imdecode(img_data, cv2.IMREAD_COLOR)
     img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
     
-    sa_unet = load_sa_unet(str(backend_dir / "data" / "image" / "s2a_unet_best.h5"))
+    sa_unet = load_sa_unet(str(backend_dir / "data" / "image" / "sa_unet_savedmodel"))
     mask = sa_unet_predict(sa_unet, img_rgb)
     assert mask is not None and mask.shape == img_rgb.shape[:2], "Mask shape mismatch!"
     coverage = float(np.mean(mask))

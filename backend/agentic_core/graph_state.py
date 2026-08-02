@@ -18,7 +18,7 @@ class AgentState(BaseModel):
     intermediate_steps: List[AgentAction] = Field(default_factory=list)
     agent_outcome: Union[str, dict, None] = None
     plan: List[str] = Field(default_factory=list)
-    metadata: Dict[str, Union[str, int, float]] = Field(default_factory=dict)
+    metadata: Dict[str, Any] = Field(default_factory=dict)
     self_refine_iter: int = 0
     step_count: int = 0  # Infinite loop protection guard
     context_cache: Dict[str, Any] = Field(default_factory=dict)

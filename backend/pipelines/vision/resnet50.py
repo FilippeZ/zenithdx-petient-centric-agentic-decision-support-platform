@@ -58,74 +58,161 @@ def create_model(num_classes: int = 6, pretrained: bool = True, freeze_backbone:
 def load_resnet(weights_path: str, label_cols: list[str] = None):
     """
     Loads ResNet-50 model and optimal class-specific decision thresholds.
+
+    Unicode-safe: reads the .pth file via Python's built-in open() in binary
+    mode and passes a BytesIO object to torch.load, bypassing the Windows
+    C-runtime path encoding limitation that affects torch.load with non-ASCII
+    file paths.
+
+    Smart backbone transfer: if the checkpoint was trained on a different number
+    of classes (e.g. 14-class CheXpert), the fc layer is skipped and only the
+    shared backbone (conv1 → layer4) is transferred. This brings in all the
+    valuable chest X-ray feature extractor weights while keeping the backend's
+    6-class classification head.
     """
+    import io
+    import pathlib
+
     if label_cols is None:
         label_cols = DEFAULT_CLINICAL_CLASSES
 
     print(f"[ResNet-50] Loading multi-label ResNet-50 model from: {weights_path}")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    
+
     model = create_model(len(label_cols), pretrained=True).to(device)
     thresholds = DEFAULT_CUTOFFS.copy()
 
-    if os.path.isfile(weights_path) and os.path.getsize(weights_path) > 100:
+    p = pathlib.Path(weights_path)
+
+    # Use pathlib.stat() — Unicode-safe on Windows (os.path.getsize can fail)
+    try:
+        file_size = p.stat().st_size if p.exists() else 0
+    except Exception:
+        file_size = 0
+
+    if file_size > 100:
         try:
+            # BytesIO bypass: avoids torch.load's internal C open() on Unicode paths
+            with open(str(p), "rb") as fh:
+                buffer = io.BytesIO(fh.read())
+
             try:
-                ckpt = torch.load(weights_path, map_location=device, weights_only=False)
+                ckpt = torch.load(buffer, map_location=device, weights_only=False)
             except TypeError:
-                ckpt = torch.load(weights_path, map_location=device)
+                buffer.seek(0)
+                ckpt = torch.load(buffer, map_location=device)
 
             if isinstance(ckpt, dict):
                 if "model_state_dict" in ckpt:
                     state_dict = ckpt["model_state_dict"]
                 elif "state_dict" in ckpt:
-                    state_dict = ckpt
+                    state_dict = ckpt["state_dict"]
                 else:
                     state_dict = ckpt
-                
+
                 if "best_thresholds" in ckpt:
                     thresholds = np.array(ckpt["best_thresholds"], dtype="float32")
+                    print(f"[ResNet-50] Loaded class-specific thresholds: {thresholds}", file=sys.stderr)
             else:
                 state_dict = ckpt
-                
-            model.load_state_dict(state_dict, strict=False)
-            print(f"[ResNet-50] Successfully loaded checkpoint from {weights_path}", file=sys.stderr)
+
+            # ── Auto-detect checkpoint class count from fc weight shape ───────
+            fc_weight_key = next((k for k in state_dict if k.endswith(".weight") and "fc" in k), None)
+            if fc_weight_key is not None:
+                ckpt_classes = state_dict[fc_weight_key].shape[0]
+            else:
+                ckpt_classes = len(label_cols)
+
+            if ckpt_classes != len(label_cols):
+                # ── Backbone-only transfer: skip fc layer ──────────────────────
+                # The checkpoint was trained on a different number of classes
+                # (e.g. 14-class CheXpert vs 6-class backend).  Transfer all
+                # shared backbone weights and ignore the classification head.
+                model_state = model.state_dict()
+                backbone_state = {
+                    k: v for k, v in state_dict.items()
+                    if k in model_state and "fc" not in k and v.shape == model_state[k].shape
+                }
+                model.load_state_dict(backbone_state, strict=False)
+                print(
+                    f"[ResNet-50] ✅ Backbone transfer: {ckpt_classes}-class checkpoint → "
+                    f"{len(label_cols)}-class model. Loaded {len(backbone_state)} layers "
+                    f"(fc skipped).",
+                    file=sys.stderr,
+                )
+            else:
+                model.load_state_dict(state_dict, strict=False)
+                print(f"[ResNet-50] ✅ Successfully loaded full checkpoint ({ckpt_classes} classes).", file=sys.stderr)
+
         except Exception as e:
             print(f"[ResNet-50] Checkpoint load warning ({e}). Using pretrained ResNet-50 base.", file=sys.stderr)
     else:
-        print(f"[ResNet-50] Weights file missing at {weights_path}. Using pretrained ResNet-50 base.", file=sys.stderr)
+        if file_size == 0:
+            print(
+                f"[ResNet-50] ⚠️  {weights_path} is empty (0 bytes). "
+                "Copy your trained best_model.pth there and restart.",
+                file=sys.stderr,
+            )
+        else:
+            print(f"[ResNet-50] Weights file missing at {weights_path}. Using pretrained ResNet-50 base.", file=sys.stderr)
 
     model.eval()
     return model, thresholds, device
 
+def get_safe_bounding_box_crop(isolated_lungs_np: np.ndarray, fixed_mask_np: np.ndarray, padding_percent=0.08):
+    """
+    Finds lung field boundaries from fixed_mask_np and crops isolated_lungs_np
+    with a safe padding margin (8%), preventing truncation of lung apices.
+    Returns (cropped_roi, (x1, y1, w, h), M_crop).
+    """
+    coords = cv2.findNonZero((fixed_mask_np > 0.3).astype(np.uint8))
+    img_h, img_w = isolated_lungs_np.shape[:2]
+    
+    if coords is None:
+        return isolated_lungs_np, (0, 0, img_w, img_h), fixed_mask_np
+        
+    x, y, w, h = cv2.boundingRect(coords)
+    
+    pad_x = int(w * padding_percent)
+    pad_y = int(h * padding_percent)
+    
+    x1 = max(0, x - pad_x)
+    y1 = max(0, y - pad_y)
+    x2 = min(img_w, x + w + pad_x)
+    y2 = min(img_h, y + h + pad_y)
+    
+    cropped_roi = isolated_lungs_np[y1:y2, x1:x2]
+    M_crop = fixed_mask_np[y1:y2, x1:x2]
+    bbox = (x1, y1, x2 - x1, y2 - y1)
+    
+    return cropped_roi, bbox, M_crop
+
 def extract_segmented_roi(img_rgb: np.ndarray, mask: np.ndarray):
     """
-    Strict Linear Pipeline Chaining Step 2:
-    1. Bounding box (xmin, ymin, w, h) extraction from S²A-UNet binary lung mask M.
-    2. Crop raw image I_raw and mask M to bounding box.
-    3. Element-wise mask gating on cropped section: I_segmented_crop = I_crop * M_crop (zeroing out non-lung background).
-    4. Resizing I_segmented_crop and M_crop to ResNet-50 input resolution (224x224).
-    5. Normalization with ImageNet stats to build input_tensor_224.
+    Step 1 Implementation:
+    1. Converts U-Net mask to float32 range [0.0, 1.0] and 3D stack (H, W, 3).
+    2. Element-wise mask gating: masked_input_image = img_rgb * mask_3d (zeroing non-lung background/bones/labels).
+    3. Safe bounding box crop (x, y, w, h) with 8% padding using get_safe_bounding_box_crop.
+    4. Resizes cropped lung ROI to ResNet-50 input size (224x224).
+    5. Normalizes via ImageNet stats -> input_tensor_224 for ResNet-50 inference.
     Returns (input_tensor_224, M_crop_224, (x, y, w, h), I_segmented_crop, segmented_full).
     """
     h_img, w_img = img_rgb.shape[:2]
-    mask_3d = np.repeat(mask[..., None], 3, axis=-1).astype(np.float32)
-    segmented_full = (img_rgb * mask_3d).astype(np.uint8)
 
-    binary_mask = (mask > 0.3).astype(np.uint8)
-    coords = cv2.findNonZero(binary_mask)
-    if coords is not None:
-        x, y, w, h = cv2.boundingRect(coords)
-    else:
-        x, y, w, h = 0, 0, w_img, h_img
+    # Ensure mask is 2D float32 strictly in range [0.0, 1.0]
+    mask_2d = mask[..., 0] if len(mask.shape) == 3 else mask
+    mask_float = mask_2d.astype(np.float32)
+    if mask_float.max() > 1.0:
+        mask_float /= 255.0
 
-    # Crop raw image and mask strictly to lung bounding box
-    I_crop = img_rgb[y:y+h, x:x+w]
-    M_crop = mask[y:y+h, x:x+w]
+    # 3D Mask Channel Stacking via np.stack
+    mask_3d = np.stack([mask_float] * 3, axis=-1)
 
-    # Element-wise mask gating on cropped section
-    M_crop_3d = np.repeat(M_crop[..., None], 3, axis=-1).astype(np.float32)
-    I_segmented_crop = (I_crop * M_crop_3d).astype(np.uint8)
+    # Element-wise multiplication: ResNet-50 sees ONLY lungs on pure black background
+    segmented_full = (img_rgb.astype(np.float32) * mask_3d).astype(np.uint8)
+
+    # Crop to segmented lung ROI with 8% safety padding
+    I_segmented_crop, bbox, M_crop = get_safe_bounding_box_crop(segmented_full, mask_float, padding_percent=0.08)
 
     # Resize cropped segmented lung to 224x224
     I_segmented_224 = cv2.resize(I_segmented_crop, IMG_SIZE_CLS, interpolation=cv2.INTER_LINEAR)
@@ -133,7 +220,7 @@ def extract_segmented_roi(img_rgb: np.ndarray, mask: np.ndarray):
 
     input_tensor_224 = RESNET_TRANSFORM(I_segmented_224).unsqueeze(0)
 
-    return input_tensor_224, M_crop_224, (x, y, w, h), I_segmented_crop, segmented_full
+    return input_tensor_224, M_crop_224, bbox, I_segmented_crop, segmented_full
 
 def resnet_predict(model_pt: nn.Module, img_rgb: np.ndarray, mask: np.ndarray, thresholds: np.ndarray, device: torch.device):
     """

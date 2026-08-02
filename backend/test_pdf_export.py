@@ -41,11 +41,11 @@ Physical examination reveals tenderness without peritonitis.
             ["Lung Opacity", 0.783],
             ["Pleural Effusion", 0.312]
         ],
-        "original_xray": "/outputs/original_xray_test.jpg",
-        "gradcam_overlay": "/outputs/gradcam_overlay_test.jpg",
+        "original_xray": str(Path(__file__).resolve().parent / "pneumonia.jpeg"),
+        "gradcam_overlay": str(Path(__file__).resolve().parent / "pneumonia.jpeg"),
         "xai_structured": {
-            "gradcam_segmented": "/outputs/segmented_gradcam_test.jpg",
-            "captum_image": "/outputs/captum_plot_test.jpg"
+            "gradcam_segmented": str(Path(__file__).resolve().parent / "pneumonia.jpeg"),
+            "captum_image": str(Path(__file__).resolve().parent / "pneumonia.jpeg")
         }
     }
 

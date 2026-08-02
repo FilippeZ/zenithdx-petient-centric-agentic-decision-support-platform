@@ -8,6 +8,7 @@ import base64
 import sys
 import re
 import html
+import traceback
 import qrcode
 from typing import Optional, Dict, Any, List
 from fastapi import APIRouter, Depends, HTTPException, Body, Response
@@ -209,7 +210,7 @@ from pipelines.pdf_generator import generate_pdf_report_bytes
 
 @router.get("/doctor/reports/{report_id}/pdf")
 def export_doctor_report_pdf(report_id: str, curr: dict = Depends(get_current_user)):
-    """Generates and downloads a structured PDF medical report with background image, logo, bold headings, and XAI maps."""
+    """Generates and downloads a structured PDF medical report for the doctor."""
     _doctor_only(curr)
     conn = get_db_connection()
     try:
@@ -240,12 +241,28 @@ def export_doctor_report_pdf(report_id: str, curr: dict = Depends(get_current_us
     finally:
         conn.close()
 
+    # Enrich row with history_text and gradcam_segmented from xai_structured JSON blob
+    xai_data = {}
+    if row.get("xai_structured"):
+        try:
+            xai_data = json.loads(row["xai_structured"]) if isinstance(row["xai_structured"], str) else row["xai_structured"]
+        except Exception:
+            pass
+    # History text — only inject if it was actually retrieved by the agent
+    if xai_data.get("history_retrieved") and xai_data.get("history_text"):
+        row["history_text"] = xai_data["history_text"]
+    else:
+        row["history_text"] = None
+    # Segmented Grad-CAM overlay from xai blob
+    if not row.get("gradcam_segmented"):
+        row["gradcam_segmented"] = xai_data.get("gradcam_segmented")
+
     try:
-        pdf_bytes = generate_pdf_report_bytes(row)
+        pdf_bytes = generate_pdf_report_bytes(row, is_patient_view=False)
         return Response(
             content=pdf_bytes,
             media_type="application/pdf",
-            headers={"Content-Disposition": f"attachment; filename=ZenithDx_Report_{str(report_id)[:8]}.pdf"}
+            headers={"Content-Disposition": f"attachment; filename=ZenithDx_Doctor_Report_{str(report_id)[:8]}.pdf"}
         )
     except Exception as e:
         tb = traceback.format_exc()

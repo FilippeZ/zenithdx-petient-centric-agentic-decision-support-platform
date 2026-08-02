@@ -338,8 +338,7 @@ export default function Reports() {
   const rawImages = [
     { label: "Original Chest X-ray", path: original_xray || structured.original_xray },
     { label: "Grad-CAM Overlay", path: gradcam_overlay || structured.gradcam_overlay },
-    { label: "Segmented Grad-CAM (S²A-UNet ROI)", path: report.gradcam_segmented || structured.gradcam_segmented },
-    { label: "Captum Text Attribution Plot", path: captum_image || structured.captum_image }
+    { label: "Segmented Grad-CAM (S²A-UNet ROI)", path: report.gradcam_segmented || structured.gradcam_segmented }
   ];
 
   rawImages.forEach((img) => {

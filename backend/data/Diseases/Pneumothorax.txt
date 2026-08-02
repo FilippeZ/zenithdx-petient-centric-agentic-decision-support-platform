@@ -1,0 +1,93 @@
+# **Pneumothorax (Collapsed Lung) - An Overview**
+
+### **What is Pneumothorax?**
+A **pneumothorax** occurs when air enters the space between the lung and the chest wall, known as the pleural space. This air buildup creates pressure on the lung, causing it to partially or fully collapse. Pneumothorax can be classified into different types:
+
+1. **Spontaneous Pneumothorax** – Occurs without trauma.
+   - **Primary Spontaneous Pneumothorax (PSP):** Happens in healthy individuals, often due to small air blisters (blebs) on the lung surface rupturing.
+   - **Secondary Spontaneous Pneumothorax (SSP):** Occurs in people with underlying lung diseases such as COPD, cystic fibrosis, or lung infections.
+
+2. **Traumatic Pneumothorax** – Caused by physical injuries, such as rib fractures, stab wounds, or complications from medical procedures.
+
+3. **Tension Pneumothorax** – A severe form where air keeps entering but cannot escape, leading to dangerous pressure buildup. This is a medical emergency.
+
+4. **Catamenial Pneumothorax** – A rare type associated with endometriosis, where endometrial tissue in the chest cavity causes lung collapse.
+
+---
+
+### **Symptoms and When to Seek Medical Help**
+Common symptoms include:
+- Sudden chest pain (usually one-sided)
+- Shortness of breath (dyspnea)
+- Rapid heart rate (tachycardia)
+- Fatigue
+- Bluish skin, lips, or nails (cyanosis) in severe cases
+
+If you experience **severe chest pain or difficulty breathing, seek emergency medical care immediately**.
+
+---
+
+### **Causes and Risk Factors**
+Pneumothorax can result from different causes, including:
+- **Lung diseases:** COPD, asthma, tuberculosis, lung cancer, cystic fibrosis.
+- **Chest injuries:** Blunt trauma (e.g., car accidents) or penetrating trauma (e.g., stab wounds).
+- **Medical procedures:** Complications from lung biopsies, mechanical ventilation, or central venous line placement.
+- **Smoking:** Increases the risk significantly, even in the absence of lung disease.
+- **Genetics:** Some inherited conditions (e.g., Marfan syndrome, Birt-Hogg-Dubé syndrome) can predispose individuals to pneumothorax.
+- **Lifestyle factors:** Activities involving rapid pressure changes, such as scuba diving and high-altitude flying.
+
+---
+
+### **Diagnosis**
+Healthcare providers use **medical imaging** to confirm pneumothorax:
+- **Chest X-ray:** The most common and first-line diagnostic tool.
+- **CT scan:** Provides a more detailed view, useful in complex cases.
+- **Ultrasound:** Often used in emergency situations to detect air in the pleural space.
+- **Blood tests (Arterial Blood Gas Analysis):** Measures oxygen and carbon dioxide levels to assess respiratory function.
+
+---
+
+### **Treatment Options**
+Treatment depends on the severity of lung collapse:
+
+#### **1. Observation (Small Pneumothorax)**
+- If the pneumothorax is small and symptoms are mild, doctors may monitor the condition with follow-up X-rays.
+- Oxygen therapy may be provided to help the lung re-expand faster.
+
+#### **2. Air Removal (Moderate to Large Pneumothorax)**
+- **Needle Aspiration:** A needle is inserted into the pleural space to remove excess air.
+- **Chest Tube Drainage:** A flexible tube is placed in the chest to continuously remove air and allow the lung to re-expand.
+
+#### **3. Nonsurgical Repair**
+- **Chemical Pleurodesis:** A substance (e.g., talc or doxycycline) is introduced into the pleural space to create an inflammatory response, causing the lung layers to stick together and prevent recurrence.
+- **Blood Patch Pleurodesis:** The patient’s own blood is injected into the pleural space to seal air leaks.
+- **Bronchoscopy with Valve Placement:** A one-way valve is inserted via a bronchoscope to help the lung re-expand.
+
+#### **4. Surgery (Recurrent or Severe Cases)**
+- **VATS (Video-Assisted Thoracoscopic Surgery):** A minimally invasive approach using a camera and small instruments to locate and repair air leaks.
+- **Pleurectomy:** Surgical removal of the pleura to prevent recurrence.
+- **Thoracotomy:** A larger chest incision may be required for severe cases.
+
+---
+
+### **Prevention and Long-Term Care**
+- **Quit smoking** to reduce the risk of recurrence.
+- **Avoid activities with drastic pressure changes** (scuba diving, high-altitude flights) if advised by a doctor.
+- **Regular check-ups** for individuals with underlying lung disease or a history of pneumothorax.
+
+### **Recovery and Prognosis**
+- Most people recover within **a few days to two weeks**.
+- Some may require longer hospital stays or additional procedures.
+- Recurrence is possible, especially in individuals with underlying lung disease or smokers.
+
+---
+
+### **Key Takeaways**
+- **Pneumothorax is a condition where air enters the pleural space, causing lung collapse.**
+- **Symptoms include sudden chest pain and shortness of breath.**
+- **It can result from lung disease, trauma, or occur spontaneously.**
+- **Diagnosis is confirmed through chest X-rays, CT scans, or ultrasound.**
+- **Treatment varies from observation to surgical intervention, depending on severity.**
+- **Preventative measures, such as quitting smoking and avoiding high-pressure activities, can reduce recurrence risks.**
+
+**If experiencing severe chest pain or difficulty breathing, seek immediate medical attention.**

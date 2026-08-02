@@ -74,3 +74,5 @@ Thumbs.db
 test_output_report.pdf
 patient_subgraph.html
 zenithdx_full_graph.graphml
+usecase_*.json
+backend/test_gradcam_isolated.png

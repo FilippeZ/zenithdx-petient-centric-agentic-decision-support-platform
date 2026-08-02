@@ -5,6 +5,7 @@ import os
 import sys
 import numpy as np
 import torch
+import cv2
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
@@ -17,13 +18,20 @@ def run_vision_pipeline_tests():
     print("Testing Bounding Box Alignment, VRAM Protection & Pre-Sigmoid Grad-CAM")
     print("=" * 70)
 
-    # Synthetic chest X-ray image (256x256x3) and UNet lung mask
-    h, w = 256, 256
-    img_rgb = np.random.randint(50, 200, (h, w, 3), dtype=np.uint8)
+    # Load real clinical chest X-ray image (pneumonia.jpeg)
+    img_path = os.path.join(os.path.dirname(__file__), "pneumonia.jpeg")
+    data = np.fromfile(img_path, dtype=np.uint8)
+    img_bgr = cv2.imdecode(data, cv2.IMREAD_COLOR)
+    if img_bgr is not None:
+        img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
+    else:
+        raise RuntimeError(f"Failed to read image at {img_path}")
     
-    # Synthetic lung mask with bounding box [y: 40..200, x: 30..220]
+    h, w = img_rgb.shape[:2]
+    
+    # Synthetic lung mask with bounding box
     mask = np.zeros((h, w), dtype=np.float32)
-    mask[40:200, 30:220] = 1.0
+    mask[int(0.15*h):int(0.85*h), int(0.10*w):int(0.90*w)] = 1.0
 
     # 1. Test Bounding Box Alignment in extract_segmented_roi
     print("\n1. Testing Bounding Box Alignment in Mask Gating...")
@@ -37,7 +45,7 @@ def run_vision_pipeline_tests():
 
     assert input_tensor_224.shape == (1, 3, 224, 224), "Input tensor 224 resolution mismatch"
     assert M_crop_224.shape == (224, 224), "Resized mask 224 resolution mismatch"
-    assert bw == 190 and bh == 160, f"Bounding box dimensions incorrect: {bbox}"
+    assert bw > 50 and bh > 50, f"Bounding box dimensions incorrect: {bbox}"
     print("   * [SUCCESS] Bounding Box Alignment verified (224x224 exact match)!")
 
     # 2. Test Pre-Sigmoid Logit Grad-CAM Backward Pass

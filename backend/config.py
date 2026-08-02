@@ -38,8 +38,8 @@ try:
         DATA_DIR: Path = HERE / "data"
 
         # Model Weights & Data File Paths
-        # SA-UNet is a TF SavedModel directory (nested: data/image/sa_unet_savedmodel/sa_unet_savedmodel)
-        SA_UNET_WEIGHTS: Path = HERE / "data" / "image" / "sa_unet_savedmodel" / "sa_unet_savedmodel"
+        # SA-UNet is a TF SavedModel directory
+        SA_UNET_WEIGHTS: Path = HERE / "data" / "image" / "sa_unet_exported.keras"
         RESNET_WEIGHTS: Path = HERE / "data" / "image" / "best_model.pth"
         CHEST_LABEL_COLS_PATH: Path = HERE / "data" / "chest_label_cols.csv"
 
@@ -79,7 +79,7 @@ except ImportError as _pydantic_err:
         OUTPUT_DIR: Path = HERE / "outputs"
         STATIC_DIR: Path = HERE / "static"
         DATA_DIR: Path = HERE / "data"
-        SA_UNET_WEIGHTS: Path = HERE / "data" / "image" / "sa_unet_savedmodel" / "sa_unet_savedmodel"
+        SA_UNET_WEIGHTS: Path = HERE / "data" / "image" / "sa_unet_exported.keras"
         RESNET_WEIGHTS: Path = HERE / "data" / "image" / "best_model.pth"
         CHEST_LABEL_COLS_PATH: Path = HERE / "data" / "chest_label_cols.csv"
         FAISS_PATIENT_INDEX_PATH: Path = HERE / "faiss_patient_index.bin"
@@ -118,7 +118,7 @@ except Exception as _settings_err:
         OUTPUT_DIR = HERE / "outputs"
         STATIC_DIR = HERE / "static"
         DATA_DIR = HERE / "data"
-        SA_UNET_WEIGHTS = HERE / "data" / "image" / "sa_unet_savedmodel" / "sa_unet_savedmodel"
+        SA_UNET_WEIGHTS = HERE / "data" / "image" / "sa_unet_exported.keras"
         RESNET_WEIGHTS = HERE / "data" / "image" / "best_model.pth"
         CHEST_LABEL_COLS_PATH = HERE / "data" / "chest_label_cols.csv"
         FAISS_PATIENT_INDEX_PATH = HERE / "faiss_patient_index.bin"
